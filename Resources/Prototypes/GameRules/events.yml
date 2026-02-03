@@ -192,8 +192,6 @@
     - id: ParadoxCloneSpawn
     #- id: RevenantSpawn  # GoobStation - removed till rework
     - id: SleeperAgents
-    - id: HereticMidround # Goob
-    - id: ChangelingMidround # Goob
     - id: ZombieOutbreak
     - id: LoneOpsSpawn
     - id: DerelictCyborgSpawn
@@ -498,7 +496,7 @@
 
   - type: AntagObjectives
     objectives:
-    - ParadoxCloneKillObjective
+    - ParadoxCloneFriendObjective
     - ParadoxCloneLivingObjective
   - type: AntagRandomSpawn # TODO: improve spawning so they only start in maints
   - type: AntagSelection
