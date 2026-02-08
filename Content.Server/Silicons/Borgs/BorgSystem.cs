@@ -442,7 +442,7 @@ public sealed partial class BorgSystem : SharedBorgSystem
             Toggle.TryActivate(uid);
             _powerCell.SetDrawEnabled(uid, _mobState.IsAlive(uid));
         }
-        _audio.PlayPvs(new SoundPathSpecifier("/Audio/Machines/liveagain.ogg"), uid); // DOWNSTREAM-TPirates: IPC screens
+        _audio.PlayPvs(new SoundPathSpecifier("/Audio/_EinsteinEngines/Effects/Silicon/startup.ogg"), uid); // DOWNSTREAM-TPirates: IPC screens
         _appearance.SetData(uid, BorgVisuals.HasPlayer, true);
     }
 

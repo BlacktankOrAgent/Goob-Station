@@ -32,7 +32,7 @@
 - type: soundCollection
   id: MothDeathGasp
   files:
-  - /Audio/Effects/Gasp/moth_DeathGasp.ogg 
+  - /Audio/Effects/Gasp/moth_DeathGasp.ogg
 
 # DOWNSTREAM-TPirates: IPC screens (start)
 - type: soundCollection
