@@ -63,10 +63,6 @@
 using Content.Server.Actions;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
-using Content.Shared.Audio;
-using Robust.Shared.Audio;
-using Robust.Shared.Audio.Systems;
-using Robust.Server.Audio;
 using Content.Server.Body.Components;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -109,6 +105,12 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+#region DOWNSTREAM-TPirates: IPC screens
+using Content.Shared.Audio;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
+using Robust.Server.Audio;
+#endregion
 
 namespace Content.Server.Silicons.Borgs;
 
@@ -136,7 +138,8 @@ public sealed partial class BorgSystem : SharedBorgSystem
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
     [Dependency] private readonly ISharedPlayerManager _player = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly SharedAudioSystem _audio = default!; // DOWNSTREAM-TPirates: IPC screens
+
 
     public static readonly ProtoId<JobPrototype> BorgJobId = "Borg";
 
@@ -439,7 +442,7 @@ public sealed partial class BorgSystem : SharedBorgSystem
             Toggle.TryActivate(uid);
             _powerCell.SetDrawEnabled(uid, _mobState.IsAlive(uid));
         }
-        _audio.PlayPvs(new SoundPathSpecifier("/Audio/Machines/liveagain.ogg"), uid);
+        _audio.PlayPvs(new SoundPathSpecifier("/Audio/Machines/liveagain.ogg"), uid); // DOWNSTREAM-TPirates: IPC screens
         _appearance.SetData(uid, BorgVisuals.HasPlayer, true);
     }
 
