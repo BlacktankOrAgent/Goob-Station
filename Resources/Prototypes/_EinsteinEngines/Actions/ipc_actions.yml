@@ -9,6 +9,8 @@
     itemIconStyle: ScaledAction
     iconSize: 144, 144
     iconOffset: 2, 36
+    checkConsciousness: true
+    checkCanInteract: true
     clientExclusive: true
   - type: InstantAction
     event: !type:ScreenSaverActionEvent

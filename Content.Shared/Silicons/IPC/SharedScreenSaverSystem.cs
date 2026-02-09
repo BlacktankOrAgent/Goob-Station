@@ -9,6 +9,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Network;
 using System.Linq;
 using Content.Shared.Mobs;
+using Content.Shared.Mobs.Systems;
 
 namespace Content.Shared.Silicons.IPC;
 
@@ -33,6 +34,7 @@ public abstract class SharedScreenSaverSystem : EntitySystem
     [Dependency] protected readonly SharedActionsSystem Actions = default!;
     [Dependency] private readonly MarkingManager _markingManager = default!;
     [Dependency] private readonly SharedHumanoidAppearanceSystem _humanoid = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
 
     public override void Initialize()
     {
@@ -48,6 +50,9 @@ public abstract class SharedScreenSaverSystem : EntitySystem
 
     private void OnMobStateChanged(EntityUid uid, ScreenSaverComponent component, MobStateChangedEvent args)
     {
+        if (component.ActionEntity != null)
+            Actions.SetEnabled(component.ActionEntity.Value, args.NewMobState != MobState.Dead);
+
         if (args.NewMobState != MobState.Dead || args.OldMobState == MobState.Dead)
             return;
 
@@ -113,6 +118,9 @@ public abstract class SharedScreenSaverSystem : EntitySystem
 
         if (dirty && NetManager.IsServer && EntityManager.GetComponent<MetaDataComponent>(uid).EntityLifeStage >= EntityLifeStage.MapInitialized)
             Dirty(uid, component);
+
+        if (component.ActionEntity != null)
+            Actions.SetEnabled(component.ActionEntity.Value, _mobState.IsAlive(uid));
 
         if (component.ActionEntity == null || string.IsNullOrEmpty(component.CurrentScreen))
             return;
