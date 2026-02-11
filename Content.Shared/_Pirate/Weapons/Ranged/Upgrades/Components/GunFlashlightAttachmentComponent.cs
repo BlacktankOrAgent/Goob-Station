@@ -14,7 +14,7 @@ namespace Content.Shared._Pirate.Weapons.Ranged.Upgrades.Components;
 public sealed partial class GunFlashlightAttachmentComponent : Component
 {
     [DataField("sprite")]
-    public ResPath Sprite = new("/Textures/Objects/Weapons/Guns/Basic/kinetic_accelerator.rsi");
+    public ResPath Sprite = new("/Textures/_Pirate/Objects/Weapons/Guns/Upgrades/gun_flashlight_attachment.rsi");
 
     [DataField("stateOff")]
     public string StateOff = "flight";
