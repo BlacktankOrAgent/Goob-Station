@@ -20546,3 +20546,15 @@ Entries:
       message: Клієнт більше не крашиться після мерджу апстріму.
   id: 2401
   time: '2026-02-12T06:18:22.0000000+00:00'
+- author: NotActuallyMarty
+  changes:
+    - type: Fix
+      message: BSO's command monitor displays command status correctly again.
+  id: 2402
+  time: '2026-02-12T11:51:35.0000000+00:00'
+- author: NotActuallyMarty
+  changes:
+    - type: Fix
+      message: Interacting on a crawling person no longer permastuns them.
+  id: 2403
+  time: '2026-02-12T11:54:46.0000000+00:00'
