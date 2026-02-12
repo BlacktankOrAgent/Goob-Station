@@ -97,7 +97,6 @@ using Content.Server.GameTicking;
 using Content.Server.Ghost.Components;
 using Content.Server.Mind;
 using Content.Server.Roles.Jobs;
-using Content.Server.Warps;
 #region DOWNSTREAM-TPirates: ghost follow menu update
 using System.Diagnostics.CodeAnalysis;
 using Content.Shared.Access.Components;
@@ -148,6 +147,7 @@ using Content.Shared._Shitmed.Body;
 using Content.Shared._Shitmed.Damage;
 using Content.Shared._Shitmed.Targeting;
 using Content.Shared._EinsteinEngines.Silicon.Components;
+using Content.Shared.Warps;
 using Robust.Shared.Utility;
 
 namespace Content.Server.Ghost
