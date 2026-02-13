@@ -107,6 +107,7 @@ using Content.Shared.Examine;
 using Content.Shared.Eye;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Follower;
+using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
@@ -211,8 +212,12 @@ namespace Content.Server.Ghost
             SubscribeLocalEvent<ToggleGhostVisibilityToAllEvent>(OnToggleGhostVisibilityToAll);
 
             SubscribeLocalEvent<GhostComponent, GetVisMaskEvent>(OnGhostVis);
-            SubscribeLocalEvent<EntityStartedFollowingEvent>(ev => OnFollowChanged(ev)); // DOWNSTREAM-TPirates: ghost follow menu update
-            SubscribeLocalEvent<EntityStoppedFollowingEvent>(ev => OnFollowChanged(ev)); // DOWNSTREAM-TPirates: ghost follow menu update
+            #region DOWNSTREAM-TPirates: ghost follow menu update
+            SubscribeLocalEvent<EntityStartedFollowingEvent>(ev => OnFollowChanged(ev));
+            SubscribeLocalEvent<EntityStoppedFollowingEvent>(ev => OnFollowChanged(ev));
+            SubscribeLocalEvent<MetaDataComponent, EntityTerminatingEvent>(OnWarpObserverEntityTerminating);
+            SubscribeLocalEvent<RoundRestartCleanupEvent>(OnWarpObserverRoundRestart);
+            #endregion
         }
 
         private void OnGhostVis(Entity<GhostComponent> ent, ref GetVisMaskEvent args)
@@ -404,10 +409,11 @@ namespace Content.Server.Ghost
             }
 
             #region DOWNSTREAM-TPirates: ghost follow menu update
+            var playerOwnedWarpTargets = BuildPlayerOwnedWarpIndex(entity);
             var response = new GhostWarpsResponseEvent(
                 GetLocationWarps()
-                    .Concat(GetPlayerWarps(entity))
-                    .Concat(GetDeadPlayerWarps(entity))
+                    .Concat(GetPlayerWarps(playerOwnedWarpTargets))
+                    .Concat(GetDeadPlayerWarps(playerOwnedWarpTargets))
                     .Concat(GetGhostWarps(entity))
                     .Concat(GetMobWarps())
                     .ToList());

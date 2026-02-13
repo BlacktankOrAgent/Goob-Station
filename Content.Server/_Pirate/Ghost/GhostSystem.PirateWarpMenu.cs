@@ -9,6 +9,7 @@ using Content.Shared.Access.Systems;
 using Content.Shared.CCVar;
 using Content.Shared.Damage;
 using Content.Shared.Follower;
+using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
@@ -16,6 +17,7 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Prototypes;
+using Content.Shared.NPC.Systems;
 using Content.Shared.PDA;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Silicons.StationAi;
@@ -36,6 +38,7 @@ public sealed partial class GhostSystem
 {
     [Dependency] private readonly AccessReaderSystem _accessReader = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!;
+    [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
 
     private static readonly HashSet<ProtoId<NpcFactionPrototype>> ImportantNpcFactions = new()
     {
@@ -82,6 +85,16 @@ public sealed partial class GhostSystem
 
             RaiseNetworkEvent(ev, session.Channel);
         }
+    }
+
+    private void OnWarpObserverEntityTerminating(EntityUid uid, MetaDataComponent component, ref EntityTerminatingEvent args)
+    {
+        _lastBroadcastObserverCounts.Remove(GetNetEntity(uid));
+    }
+
+    private void OnWarpObserverRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        _lastBroadcastObserverCounts.Clear();
     }
 
     private IEnumerable<GhostWarp> GetLocationWarps()
@@ -133,14 +146,10 @@ public sealed partial class GhostSystem
     {
         if (HasComp<StationAiHeldComponent>(uid) ||
             HasComp<StationAiOverlayComponent>(uid) ||
-            HasComp<StationAiVisionComponent>(uid))
+            HasComp<StationAiVisionComponent>(uid) ||
+            HasComp<StationAiHoloComponent>(uid))
             return true;
-
-        if (!TryComp<MetaDataComponent>(uid, out var meta))
-            return false;
-
-        var protoId = meta.EntityPrototype?.ID;
-        return protoId == "StationAiHolo" || protoId == "StationAiHoloLocal";
+        return false;
     }
 
     /// <summary>
@@ -238,9 +247,9 @@ public sealed partial class GhostSystem
         return core.RemoteEntity is { Valid: true } remote ? remote : attached;
     }
 
-    private IEnumerable<GhostWarp> GetPlayerWarps(EntityUid except)
+    private IEnumerable<GhostWarp> GetPlayerWarps(IReadOnlyList<(EntityUid Target, EntityUid? MindId, MobState MobState)> playerOwnedTargets)
     {
-        foreach (var (target, mindId, mobState) in GetPlayerOwnedWarpTargets(except))
+        foreach (var (target, mindId, mobState) in playerOwnedTargets)
         {
             if (mobState == MobState.Dead)
                 continue;
@@ -265,12 +274,12 @@ public sealed partial class GhostSystem
     /// Job/icon from entity's ID card so profession persists after respawn when mind leaves the corpse.
     /// Limited by ghost.warp_max_dead to avoid performance issues when many corpses exist.
     /// </summary>
-    private IEnumerable<GhostWarp> GetDeadPlayerWarps(EntityUid except)
+    private IEnumerable<GhostWarp> GetDeadPlayerWarps(IReadOnlyList<(EntityUid Target, EntityUid? MindId, MobState MobState)> playerOwnedTargets)
     {
         var maxDead = _configurationManager.GetCVar(CCVars.GhostWarpMaxDead);
         var count = 0;
 
-        foreach (var (target, mindId, mobState) in GetPlayerOwnedWarpTargets(except))
+        foreach (var (target, mindId, mobState) in playerOwnedTargets)
         {
             if (mobState != MobState.Dead)
                 continue;
@@ -293,14 +302,15 @@ public sealed partial class GhostSystem
     }
 
     /// <summary>
-    /// Enumerates all player-owned entities for ghost warp classification.
+    /// Builds all player-owned entities for ghost warp classification.
     /// This is keyed by real player minds (has user id) and then resolved to the visible target
     /// (e.g. AI eye remote entity) to avoid session-only blind spots and ad-hoc SSD handling.
     /// </summary>
-    private IEnumerable<(EntityUid Target, EntityUid? MindId, MobState MobState)> GetPlayerOwnedWarpTargets(EntityUid except)
+    private List<(EntityUid Target, EntityUid? MindId, MobState MobState)> BuildPlayerOwnedWarpIndex(EntityUid except)
     {
         var seenTargets = new HashSet<EntityUid>();
         var historicallyPlayerOwned = new HashSet<EntityUid>();
+        var result = new List<(EntityUid Target, EntityUid? MindId, MobState MobState)>();
         var mindQuery = AllEntityQuery<MindComponent>();
         while (mindQuery.MoveNext(out _, out var knownMind))
         {
@@ -362,8 +372,10 @@ public sealed partial class GhostSystem
             if (mobState is not (MobState.Alive or MobState.Critical or MobState.Dead or MobState.Invalid))
                 continue;
 
-            yield return (target, mindId, mobState);
+            result.Add((target, mindId, mobState));
         }
+
+        return result;
     }
 
     /// <summary>
@@ -413,7 +425,7 @@ public sealed partial class GhostSystem
             // Hide ambient mindless mobs by default; keep only "interesting" NPC targets.
             var hasGhostRoleTargeting = HasComp<GhostRoleComponent>(uid) || HasComp<GhostTakeoverAvailableComponent>(uid);
             var hasImportantFaction = TryComp<NpcFactionMemberComponent>(uid, out var factionComp) &&
-                                      factionComp.Factions.Any(faction => ImportantNpcFactions.Contains(faction));
+                                      _npcFaction.IsMemberOfAny((uid, factionComp), ImportantNpcFactions);
             if (!hasGhostRoleTargeting && !hasImportantFaction)
                 continue;
 
