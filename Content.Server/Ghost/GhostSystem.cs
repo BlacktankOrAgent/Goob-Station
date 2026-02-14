@@ -415,7 +415,7 @@ namespace Content.Server.Ghost
                     .Concat(GetPlayerWarps(playerOwnedWarpTargets))
                     .Concat(GetDeadPlayerWarps(playerOwnedWarpTargets))
                     .Concat(GetGhostWarps(entity))
-                    .Concat(GetMobWarps())
+                    .Concat(GetMobWarps(playerOwnedWarpTargets))
                     .ToList());
             #endregion
             RaiseNetworkEvent(response, args.SenderSession.Channel);

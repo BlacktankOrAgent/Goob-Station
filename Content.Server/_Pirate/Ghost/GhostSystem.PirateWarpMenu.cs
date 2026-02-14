@@ -405,13 +405,18 @@ public sealed partial class GhostSystem
     /// Living mobs without a mind (NPCs) for the "Mobs" section.
     /// Dead mindless mobs are in "Dead", so we exclude dead here.
     /// </summary>
-    private IEnumerable<GhostWarp> GetMobWarps()
+    private IEnumerable<GhostWarp> GetMobWarps(IReadOnlyList<(EntityUid Target, EntityUid? MindId, MobState MobState)> playerOwnedTargets)
     {
         var maxNpcs = _configurationManager.GetCVar(CCVars.GhostWarpMaxMobs);
         var count = 0;
+        var playerOwnedTargetSet = new HashSet<EntityUid>(playerOwnedTargets.Select(x => x.Target));
         var query = AllEntityQuery<MobStateComponent, MetaDataComponent>();
         while (query.MoveNext(out var uid, out var mobState, out var meta) && count < maxNpcs)
         {
+            // Already represented in Players/Dead sections.
+            if (playerOwnedTargetSet.Contains(uid))
+                continue;
+
             if (_ghostQuery.HasComp(uid))
                 continue;
 
