@@ -21,6 +21,7 @@ using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
+using Robust.Shared.Audio;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
@@ -35,8 +36,20 @@ public sealed partial class PullingSystem
     /// </summary>
     private readonly Dictionary<EntityUid, GrabFollowupSuppression> _followupSuppressions = new();
     private static readonly TimeSpan suppressionDuration = TimeSpan.FromSeconds(1);
+    private TimeSpan _nextFollowupSuppressionPrune;
 
     private readonly record struct GrabFollowupSuppression(EntityUid Target, TimeSpan ExpiresAt);
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (_followupSuppressions.Count == 0 || _timing.CurTime < _nextFollowupSuppressionPrune)
+            return;
+
+        _nextFollowupSuppressionPrune = _timing.CurTime + suppressionDuration;
+        PruneExpiredFollowupSuppressions();
+    }
 
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
     [Dependency] private readonly SharedBodySystem _body = default!;
@@ -86,41 +99,15 @@ public sealed partial class PullingSystem
             if (!_doAfter.TryStartDoAfter(sliceDoAfter))
                 return;
 
-            if (_netManager.IsServer)
-            {
-                var throatLimb = Loc.GetString("popup-grab-limb-throat");
-                var tool = Identity.Entity(usedItem, EntityManager);
-                _popup.PopupEntity(
-                    Loc.GetString("popup-grab-throat-slice-start-self",
-                        ("target", Identity.Entity(ent.Owner, EntityManager)),
-                        ("tool", tool),
-                        ("limb", throatLimb)),
-                    args.User,
-                    args.User,
-                    PopupType.MediumCaution);
+            _audio.PlayPvs(new SoundPathSpecifier("/Audio/_Pirate/Effects/butcher.ogg"), ent.Owner);
 
-                _popup.PopupEntity(
-                    Loc.GetString("popup-grab-throat-slice-start-target",
-                        ("puller", Identity.Entity(args.User, EntityManager)),
-                        ("tool", tool),
-                        ("limb", throatLimb)),
-                    ent.Owner,
-                    ent.Owner,
-                    PopupType.MediumCaution);
-
-                _popup.PopupEntity(
-                    Loc.GetString("popup-grab-throat-slice-start-others",
-                        ("puller", Identity.Entity(args.User, EntityManager)),
-                        ("target", Identity.Entity(ent.Owner, EntityManager)),
-                        ("tool", tool),
-                        ("limb", throatLimb)),
-                    ent.Owner,
-                    Filter.Pvs(ent.Owner, entityManager: EntityManager)
-                        .RemovePlayerByAttachedEntity(args.User)
-                        .RemovePlayerByAttachedEntity(ent.Owner),
-                    true,
-                    PopupType.MediumCaution);
-            }
+            var throatLimb = Loc.GetString("popup-grab-limb-throat");
+            PopupGrabAction(args.User,
+                ent.Owner,
+                "popup-grab-throat-slice-start",
+                PopupType.MediumCaution,
+                ("tool", usedItem),
+                ("limb", throatLimb));
 
             args.Cancel();
             return;
@@ -148,41 +135,13 @@ public sealed partial class PullingSystem
         if (!_doAfter.TryStartDoAfter(doAfter))
             return;
 
-        if (_netManager.IsServer)
-        {
-            var limb = GetGrabLimbName(targetPart);
-            var tool = Identity.Entity(usedItem, EntityManager);
-            _popup.PopupEntity(
-                Loc.GetString("popup-grab-bone-break-start-self",
-                    ("target", Identity.Entity(ent.Owner, EntityManager)),
-                    ("tool", tool),
-                    ("limb", limb)),
-                args.User,
-                args.User,
-                PopupType.MediumCaution);
-
-            _popup.PopupEntity(
-                Loc.GetString("popup-grab-bone-break-start-target",
-                    ("puller", Identity.Entity(args.User, EntityManager)),
-                    ("tool", tool),
-                    ("limb", limb)),
-                ent.Owner,
-                ent.Owner,
-                PopupType.MediumCaution);
-
-            _popup.PopupEntity(
-                Loc.GetString("popup-grab-bone-break-start-others",
-                    ("puller", Identity.Entity(args.User, EntityManager)),
-                    ("target", Identity.Entity(ent.Owner, EntityManager)),
-                    ("tool", tool),
-                    ("limb", limb)),
-                ent.Owner,
-                Filter.Pvs(ent.Owner, entityManager: EntityManager)
-                    .RemovePlayerByAttachedEntity(args.User)
-                    .RemovePlayerByAttachedEntity(ent.Owner),
-                    true,
-                    PopupType.MediumCaution);
-        }
+        var limb = GetGrabLimbName(targetPart);
+        PopupGrabAction(args.User,
+            ent.Owner,
+            "popup-grab-bone-break-start",
+            PopupType.MediumCaution,
+            ("tool", usedItem),
+            ("limb", limb));
 
         args.Cancel();
     }
@@ -233,38 +192,17 @@ public sealed partial class PullingSystem
             ent.Comp.BoneBreakBaseChance + bluntDamage * ent.Comp.BoneBreakChancePerBluntDamage,
             ent.Comp.BoneBreakBaseChance,
             ent.Comp.BoneBreakMaxChance);
+        var limb = GetGrabLimbName(args.TargetPart);
 
         if (!_random.Prob(chance))
         {
             ApplyEmpoweredMeleeHit(ent.Owner, target, used, args.TargetPart, ent.Comp.BoneBreakStrikeMultiplier);
 
-            if (_netManager.IsServer)
-            {
-                _popup.PopupEntity(
-                    Loc.GetString("popup-grab-bone-break-fail-self",
-                        ("target", Identity.Entity(target, EntityManager))),
-                    ent.Owner,
-                    ent.Owner,
-                    PopupType.MediumCaution);
-
-                _popup.PopupEntity(
-                    Loc.GetString("popup-grab-bone-break-fail-target",
-                        ("puller", Identity.Entity(ent.Owner, EntityManager))),
-                    target,
-                    target,
-                    PopupType.MediumCaution);
-
-                _popup.PopupEntity(
-                    Loc.GetString("popup-grab-bone-break-fail-others",
-                        ("puller", Identity.Entity(ent.Owner, EntityManager)),
-                        ("target", Identity.Entity(target, EntityManager))),
-                    target,
-                    Filter.Pvs(target, entityManager: EntityManager)
-                        .RemovePlayerByAttachedEntity(ent.Owner)
-                        .RemovePlayerByAttachedEntity(target),
-                    true,
-                    PopupType.MediumCaution);
-            }
+            PopupGrabAction(ent.Owner,
+                target,
+                "popup-grab-bone-break-fail",
+                PopupType.MediumCaution,
+                ("limb", limb));
 
             return;
         }
@@ -275,35 +213,13 @@ public sealed partial class PullingSystem
             args.TargetPart,
             "Blunt",
             ent.Comp.BoneBreakBaseDamage + bluntDamage * ent.Comp.BoneBreakDamagePerBluntDamage,
-            7f);
+            ent.Comp.BoneBreakTraumaWoundSeverity);
 
-        if (_netManager.IsServer)
-        {
-            _popup.PopupEntity(
-                Loc.GetString("popup-grab-bone-break-success-self",
-                    ("target", Identity.Entity(target, EntityManager))),
-                ent.Owner,
-                ent.Owner,
-                PopupType.LargeCaution);
-
-            _popup.PopupEntity(
-                Loc.GetString("popup-grab-bone-break-success-target",
-                    ("puller", Identity.Entity(ent.Owner, EntityManager))),
-                target,
-                target,
-                PopupType.LargeCaution);
-
-            _popup.PopupEntity(
-                Loc.GetString("popup-grab-bone-break-success-others",
-                    ("puller", Identity.Entity(ent.Owner, EntityManager)),
-                    ("target", Identity.Entity(target, EntityManager))),
-                target,
-                Filter.Pvs(target, entityManager: EntityManager)
-                    .RemovePlayerByAttachedEntity(ent.Owner)
-                    .RemovePlayerByAttachedEntity(target),
-                true,
-                PopupType.LargeCaution);
-        }
+        PopupGrabAction(ent.Owner,
+            target,
+            "popup-grab-bone-break-success",
+            PopupType.LargeCaution,
+            ("limb", limb));
     }
 
     private void OnGrabThroatSliceDoAfter(Entity<PullerComponent> ent, ref ThroatSliceDoAfterEvent args)
@@ -351,39 +267,13 @@ public sealed partial class PullingSystem
             args.TargetPart,
             "Slash",
             ent.Comp.ThroatSliceBaseSeverity + sharpDamage * ent.Comp.ThroatSliceSeverityPerSharpDamage,
-            8f);
+            ent.Comp.ThroatSliceWoundSeverityMultiplier);
 
-        if (_netManager.IsServer)
-        {
-            var tool = Identity.Entity(used, EntityManager);
-            _popup.PopupEntity(
-                Loc.GetString("popup-grab-throat-slice-success-self",
-                    ("target", Identity.Entity(target, EntityManager)),
-                    ("tool", tool)),
-                ent.Owner,
-                ent.Owner,
-                PopupType.LargeCaution);
-
-            _popup.PopupEntity(
-                Loc.GetString("popup-grab-throat-slice-success-target",
-                    ("puller", Identity.Entity(ent.Owner, EntityManager)),
-                    ("tool", tool)),
-                target,
-                target,
-                PopupType.LargeCaution);
-
-            _popup.PopupEntity(
-                Loc.GetString("popup-grab-throat-slice-success-others",
-                    ("puller", Identity.Entity(ent.Owner, EntityManager)),
-                    ("target", Identity.Entity(target, EntityManager)),
-                    ("tool", tool)),
-                target,
-                Filter.Pvs(target, entityManager: EntityManager)
-                    .RemovePlayerByAttachedEntity(ent.Owner)
-                    .RemovePlayerByAttachedEntity(target),
-                true,
-                PopupType.LargeCaution);
-        }
+        PopupGrabAction(ent.Owner,
+            target,
+            "popup-grab-throat-slice-success",
+            PopupType.LargeCaution,
+            ("tool", used));
     }
 
     private bool CanStartBoneBreakDoAfter(
@@ -538,26 +428,39 @@ public sealed partial class PullingSystem
             return;
 
         var originalTarget = targeting.Target;
-        targeting.Target = targetPart;
-        Dirty(attacker, targeting);
-
         var originalDamage = new DamageSpecifier(melee.Damage);
+        targeting.Target = targetPart;
         melee.Damage = originalDamage * multiplier;
-        Dirty(used, melee);
-
-        TryPerformFollowupAttack(attacker, target, used, melee);
-
-        melee.Damage = originalDamage;
-        Dirty(used, melee);
-
-        targeting.Target = originalTarget;
         Dirty(attacker, targeting);
+        Dirty(used, melee);
+
+        try
+        {
+            TryPerformFollowupAttack(attacker, target, used, melee);
+        }
+        finally
+        {
+            melee.Damage = originalDamage;
+            targeting.Target = originalTarget;
+            Dirty(used, melee);
+            Dirty(attacker, targeting);
+        }
     }
 
     /// <summary>
-    /// Tries to perform a normal light attack after a grab action.
-    /// Falls back to bypassing cooldown once, then to direct light-attack execution.
-    /// This keeps normal melee visuals/sounds/effects while avoiding random no-hit outcomes.
+    /// Three-tier follow-up for grab finishers:
+    /// 1) Try <see cref="SharedMeleeWeaponSystem.AttemptLightAttack"/> normally.
+    /// 2) If that fails due to cooldown, temporarily clamp <c>melee.NextAttack</c> to now and try
+    ///    <see cref="SharedMeleeWeaponSystem.AttemptLightAttack"/> again.
+    /// 3) Last resort: call the public virtual <see cref="SharedMeleeWeaponSystem.DoLightAttack"/>
+    ///    entry point directly.
+    ///
+    /// We intentionally use the same public API path other systems use for forced melee interactions.
+    /// The temporary <c>melee.NextAttack</c> mutation is an established pattern in this codebase
+    /// (see <c>SharedHereticBladeSystem</c>) and is safe here because we restore timing when needed.
+    /// This preserves standard melee checks/effects (range/LOS, damageability, harmful-action hooks,
+    /// sounds, lunge and damage effects) while minimizing random no-hit outcomes.
+    /// TODO: If API clarity becomes important, consider a dedicated ForceAttack helper in melee.
     /// </summary>
     private void TryPerformFollowupAttack(
         EntityUid attacker,
@@ -638,6 +541,23 @@ public sealed partial class PullingSystem
         return true;
     }
 
+    private void PruneExpiredFollowupSuppressions()
+    {
+        var now = _timing.CurTime;
+        var expired = new List<EntityUid>();
+
+        foreach (var (uid, suppression) in _followupSuppressions)
+        {
+            if (suppression.ExpiresAt < now)
+                expired.Add(uid);
+        }
+
+        foreach (var uid in expired)
+        {
+            _followupSuppressions.Remove(uid);
+        }
+    }
+
     private void ApplyFinisherDamage(
         EntityUid target,
         EntityUid attacker,
@@ -670,6 +590,57 @@ public sealed partial class PullingSystem
             user,
             user,
             PopupType.MediumCaution);
+    }
+
+    private void PopupGrabAction(
+        EntityUid user,
+        EntityUid target,
+        string keyPrefix,
+        PopupType type,
+        params (string Name, object Value)[] extraArgs)
+    {
+        if (!_netManager.IsServer)
+            return;
+
+        var selfArgs = new List<(string, object)> { ("target", Identity.Entity(target, EntityManager)) };
+        var targetArgs = new List<(string, object)> { ("puller", Identity.Entity(user, EntityManager)) };
+        var othersArgs = new List<(string, object)>
+        {
+            ("puller", Identity.Entity(user, EntityManager)),
+            ("target", Identity.Entity(target, EntityManager)),
+        };
+
+        foreach (var (name, value) in extraArgs)
+        {
+            var normalized = value is EntityUid uid
+                ? Identity.Entity(uid, EntityManager)
+                : value;
+
+            selfArgs.Add((name, normalized));
+            targetArgs.Add((name, normalized));
+            othersArgs.Add((name, normalized));
+        }
+
+        _popup.PopupEntity(
+            Loc.GetString($"{keyPrefix}-self", selfArgs.ToArray()),
+            user,
+            user,
+            type);
+
+        _popup.PopupEntity(
+            Loc.GetString($"{keyPrefix}-target", targetArgs.ToArray()),
+            target,
+            target,
+            type);
+
+        _popup.PopupEntity(
+            Loc.GetString($"{keyPrefix}-others", othersArgs.ToArray()),
+            target,
+            Filter.Pvs(target, entityManager: EntityManager)
+                .RemovePlayerByAttachedEntity(user)
+                .RemovePlayerByAttachedEntity(target),
+            true,
+            type);
     }
 
     private string GetGrabLimbName(TargetBodyPart targetPart)
