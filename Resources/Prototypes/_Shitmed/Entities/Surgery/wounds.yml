@@ -29,6 +29,9 @@
     mangleSeverity: Severe
     integrityMultiplier: 0.5 #heheheha
   - type: TraumaInflicter
+    faceMutilationMarkings: # DOWNSTREAM-TPirates: face mutilation
+    - HeadTwisting # DOWNSTREAM-TPirates: face mutilation
+    - HeadTwistingFlipped # DOWNSTREAM-TPirates: face mutilation
     severityThreshold: 12
     allowedTraumas:
     - Dismemberment
@@ -68,6 +71,9 @@
     integrityMultiplier: 0.1
     mangleSeverity: Severe
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 12
     allowedTraumas:
     - Dismemberment
@@ -106,6 +112,9 @@
     integrityMultiplier: 0.15
     selfHealMultiplier: 0
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 6
     allowArmourDeduction:
     - OrganDamage
@@ -141,6 +150,9 @@
     integrityMultiplier: 0.17
     mangleSeverity: Severe
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 9
     allowedTraumas:
     - Dismemberment
@@ -174,6 +186,9 @@
     scarWound: BurnScar
     integrityMultiplier: 0.4 # boiling people
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 17
     allowedTraumas:
     - OrganDamage
@@ -208,6 +223,9 @@
     scarWound: BurnScar
     integrityMultiplier: 0.34 # boiling people
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 17
     allowedTraumas:
 #    - OrganDamage
@@ -239,6 +257,9 @@
     scarWound: BurnScar
     integrityMultiplier: 0.34
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 12
     allowedTraumas:
     - VeinsDamage
@@ -262,6 +283,9 @@
     woundVisibility: AdvancedScanner
     integrityMultiplier: 0
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 0
     allowedTraumas:
     - NerveDamage
@@ -285,6 +309,9 @@
     scarWound: BurnScar
     integrityMultiplier: 0.07
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 9
     allowedTraumas:
     - OrganDamage
@@ -311,6 +338,9 @@
     integrityMultiplier: 0.15
     selfHealMultiplier: 0
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 0
     allowedTraumas:
     - OrganDamage
@@ -338,6 +368,9 @@
     scarWound: BurnScar
     integrityMultiplier: 0
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 12
     allowedTraumas:
     - VeinsDamage
@@ -364,6 +397,9 @@
     integrityMultiplier: 0
     selfHealMultiplier: 0
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 11
     allowedTraumas:
     - OrganDamage
@@ -391,6 +427,9 @@
     woundVisibility: HandScanner
     integrityMultiplier: 0
   - type: TraumaInflicter
+    faceMutilationMarkings:
+    - HeadTwisting
+    - HeadTwistingFlipped
     severityThreshold: 7
     allowedTraumas:
     - OrganDamage
