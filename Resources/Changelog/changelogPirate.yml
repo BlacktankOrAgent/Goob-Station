@@ -7,3 +7,9 @@ Entries:
       message: add... changelog?
   id: 1
   time: '2026-02-19T15:57:48.0000000+00:00'
+- author: Vareniko
+  changes:
+    - type: Add
+      message: Можливість лежати під меблями
+  id: 2
+  time: '2026-02-22T12:40:49.0000000+00:00'
