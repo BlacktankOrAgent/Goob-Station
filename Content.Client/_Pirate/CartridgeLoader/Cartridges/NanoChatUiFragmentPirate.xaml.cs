@@ -27,6 +27,10 @@ namespace Content.Client._Pirate.CartridgeLoader.Cartridges;
 [GenerateTypedNameReferences]
 public sealed partial class NanoChatUiFragmentPirate : BoxContainer
 {
+    private static readonly TimeSpan SeparatorGap = TimeSpan.FromMinutes(1);
+    private static readonly Color TimeSeparatorLineColor = Color.FromHex("#50597844");
+    private static readonly Color TimeSeparatorTextColor = Color.FromHex("#9ca6c2");
+
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IEntitySystemManager _entitySystem = default!;
 
@@ -245,8 +249,6 @@ public sealed partial class NanoChatUiFragmentPirate : BoxContainer
 
     private void UpdateMessages(Dictionary<uint, List<NanoChatMessage>> messages)
     {
-        var separatorGap = TimeSpan.FromMinutes(1);
-
         _messages = messages;
         var activeChat = _pendingChat ?? _currentChat;
         if (activeChat != _renderedChat)
@@ -297,7 +299,7 @@ public sealed partial class NanoChatUiFragmentPirate : BoxContainer
 
         for (var i = _renderedMessages.Count; i < chatMessages.Count; i++)
         {
-            previousStationTime = AddRenderedMessage(chatMessages[i], previousStationTime, separatorGap);
+            previousStationTime = AddRenderedMessage(chatMessages[i], previousStationTime, SeparatorGap);
         }
 
         if (chatMessages.Count <= previousCount)
@@ -386,7 +388,7 @@ public sealed partial class NanoChatUiFragmentPirate : BoxContainer
             MaxSize = new Vector2(float.MaxValue, 1),
             PanelOverride = new StyleBoxFlat
             {
-                BackgroundColor = Color.FromHex("#50597844")
+                BackgroundColor = TimeSeparatorLineColor
             }
         });
 
@@ -395,7 +397,7 @@ public sealed partial class NanoChatUiFragmentPirate : BoxContainer
             Text = stationTime.ToString(@"hh\:mm\:ss"),
             Margin = new Thickness(12, 0, 12, 0),
             StyleClasses = { "LabelSubText" },
-            ModulateSelfOverride = Color.FromHex("#9ca6c2")
+            ModulateSelfOverride = TimeSeparatorTextColor
         });
 
         separatorRow.AddChild(new PanelContainer
@@ -406,7 +408,7 @@ public sealed partial class NanoChatUiFragmentPirate : BoxContainer
             MaxSize = new Vector2(float.MaxValue, 1),
             PanelOverride = new StyleBoxFlat
             {
-                BackgroundColor = Color.FromHex("#50597844")
+                BackgroundColor = TimeSeparatorLineColor
             }
         });
 

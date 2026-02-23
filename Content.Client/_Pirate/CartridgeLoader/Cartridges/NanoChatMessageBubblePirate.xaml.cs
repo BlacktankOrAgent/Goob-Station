@@ -22,7 +22,6 @@ public sealed partial class NanoChatMessageBubblePirate : BoxContainer
 {
     public static readonly Color OwnMessageColor = Color.FromHex("#1f402fd9");
     public static readonly Color OtherMessageColor = Color.FromHex("#3b4258f0");
-    public static readonly Color BorderColor = Color.FromHex("#00000000");
     public static readonly Color TextColor = Color.FromHex("#e1e6f0");
     public static readonly Color ErrorColor = Color.FromHex("#cc3333");
     private bool? _previousIsOwnMessage;
@@ -39,7 +38,6 @@ public sealed partial class NanoChatMessageBubblePirate : BoxContainer
 
         // Configure message appearance
         style.BackgroundColor = isOwnMessage ? OwnMessageColor : OtherMessageColor;
-        style.BorderColor = BorderColor;
         style.BorderThickness = new Thickness(0);
 
         // Set message content
