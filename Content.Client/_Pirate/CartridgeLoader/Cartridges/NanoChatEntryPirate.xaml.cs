@@ -36,11 +36,11 @@ public sealed partial class NanoChatEntryPirate : BoxContainer
         _pressHandler = _ => OnPressed?.Invoke(_number);
         ChatButton.OnPressed += _pressHandler;
 
-        NameLabel.Text = TruncateForEntry(recipient.Name, NameMaxChars);
+        NameLabel.Text = TruncateForEntry(recipient.Name, NameMaxChars) ?? string.Empty;
         NameLabel.ToolTip = recipient.Name;
 
         var jobTitle = recipient.JobTitle ?? string.Empty;
-        JobLabel.Text = TruncateForEntry(jobTitle, JobMaxChars);
+        JobLabel.Text = TruncateForEntry(jobTitle, JobMaxChars) ?? string.Empty;
         JobLabel.ToolTip = jobTitle;
         JobLabel.Visible = !string.IsNullOrWhiteSpace(jobTitle);
         UnreadIndicator.Visible = recipient.HasUnread || isSelected;
@@ -54,9 +54,12 @@ public sealed partial class NanoChatEntryPirate : BoxContainer
         ChatButton.ModulateSelfOverride = isSelected ? SelectedEntryColor : null;
     }
 
-    private static string TruncateForEntry(string value, int maxChars)
+    private static string? TruncateForEntry(string? value, int maxChars)
     {
-        if (string.IsNullOrWhiteSpace(value) || value.Length <= maxChars)
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        if (value.Length <= maxChars)
             return value;
 
         if (maxChars <= 3)

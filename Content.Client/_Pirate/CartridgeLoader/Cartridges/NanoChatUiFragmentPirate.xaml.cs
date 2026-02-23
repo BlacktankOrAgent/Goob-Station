@@ -417,17 +417,13 @@ public sealed partial class NanoChatUiFragmentPirate : BoxContainer
 
     private void UpdateMuteButton()
     {
-        if (BellMutedIcon != null)
-            BellMutedIcon.Visible = _notificationsMuted;
-
-        if (BellIcon != null)
-            BellIcon.Visible = !_notificationsMuted;
+        BellMutedIcon.Visible = _notificationsMuted;
+        BellIcon.Visible = !_notificationsMuted;
     }
 
     private void UpdateListNumber()
     {
-        if (ListNumberButton != null)
-            ListNumberButton.Pressed = _listNumber;
+        ListNumberButton.Pressed = _listNumber;
     }
 
     public void UpdateState(NanoChatUiState state)
