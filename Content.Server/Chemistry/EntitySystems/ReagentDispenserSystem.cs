@@ -427,6 +427,14 @@ namespace Content.Server.Chemistry.EntitySystems
                 return false;
             }
 
+            if (!_solutionContainerSystem.TryGetRefillableSolution(outputContainer.Value, out var dstRefillable, out _))
+            {
+                reason = RecipeDispenseFailureReason.MissingOutputContainer;
+                return false;
+            }
+
+            var cachedSources = new Dictionary<string, (EntityUid Container, Entity<Content.Shared.Chemistry.Components.SolutionComponent>? Drainable)>(recipe.Count);
+
             // Pre-check recipe contents so recipe usage either succeeds as a whole or aborts with a precise error.
             foreach (var (reagentId, quantity) in recipe)
             {
@@ -437,7 +445,7 @@ namespace Content.Server.Chemistry.EntitySystems
                     return false;
                 }
 
-                if (!_solutionContainerSystem.TryGetDrainableSolution(srcContainer, out _, out var srcSoln))
+                if (!_solutionContainerSystem.TryGetDrainableSolution(srcContainer, out var srcDrainable, out var srcSoln))
                 {
                     reason = RecipeDispenseFailureReason.ReagentNotFound;
                     failedReagentId = reagentId;
@@ -451,35 +459,31 @@ namespace Content.Server.Chemistry.EntitySystems
                     failedReagentId = reagentId;
                     return false;
                 }
+
+                cachedSources[reagentId] = (srcContainer, srcDrainable);
             }
 
             foreach (var (reagentId, quantity) in recipe)
             {
-                if (!TryGetStoredContainerForReagentId(reagentDispenser.Owner, reagentId, out var srcContainer))
+                if (!cachedSources.TryGetValue(reagentId, out var source))
                 {
                     reason = RecipeDispenseFailureReason.ReagentNotFound;
                     failedReagentId = reagentId;
                     return false;
                 }
 
-                if (!_solutionContainerSystem.TryGetDrainableSolution(srcContainer, out var srcSoln, out _))
+                if (source.Drainable is not { } srcDrainable)
                 {
                     reason = RecipeDispenseFailureReason.ReagentNotFound;
                     failedReagentId = reagentId;
                     return false;
                 }
 
-                if (!_solutionContainerSystem.TryGetRefillableSolution(outputContainer.Value, out var dstRefillable, out _))
-                {
-                    reason = RecipeDispenseFailureReason.MissingOutputContainer;
-                    return false;
-                }
-
-                _openable.SetOpen(srcContainer, true);
+                _openable.SetOpen(source.Container, true);
                 var transferred = _solutionTransferSystem.Transfer(
                     reagentDispenser,
-                    srcContainer,
-                    srcSoln.Value,
+                    source.Container,
+                    srcDrainable,
                     outputContainer.Value,
                     dstRefillable.Value,
                     quantity.Int());
@@ -491,7 +495,6 @@ namespace Content.Server.Chemistry.EntitySystems
                     return false;
                 }
             }
-
             return true;
         }
 
@@ -675,8 +678,3 @@ namespace Content.Server.Chemistry.EntitySystems
         }
     }
 }
-
-
-
-
-

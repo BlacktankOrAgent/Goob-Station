@@ -287,7 +287,3 @@ namespace Content.Shared.Chemistry
         Key
     }
 }
-
-
-
-
