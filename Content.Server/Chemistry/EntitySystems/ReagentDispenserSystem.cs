@@ -319,13 +319,19 @@ namespace Content.Server.Chemistry.EntitySystems
             if (!TryGetValidatedRecipeName(message.Name, out var name) ||
                 reagentDispenser.Comp.RecordingRecipe == null ||
                 reagentDispenser.Comp.RecordingRecipe.Count == 0)
+            {
+                ErrorSound(reagentDispenser); // Pirate: chem recipes
                 return;
+            }
 
             // Validate that each reagent is currently dispensable by this machine.
             foreach (var reagent in reagentDispenser.Comp.RecordingRecipe.Keys)
             {
                 if (!TryGetStoredContainerForReagentId(reagentDispenser.Owner, reagent, out _))
+                {
+                    ErrorSound(reagentDispenser); // Pirate: chem recipes
                     return;
+                }
             }
 
             reagentDispenser.Comp.SavedRecipes[name] = new Dictionary<string, FixedPoint2>(reagentDispenser.Comp.RecordingRecipe);
