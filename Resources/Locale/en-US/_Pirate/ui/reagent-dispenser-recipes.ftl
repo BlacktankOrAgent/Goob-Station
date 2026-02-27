@@ -29,9 +29,4 @@ reagent-dispenser-window-recipes-recording = Recording in progress.
 reagent-dispenser-window-recipes-idle = Not recording.
 reagent-dispenser-window-recipes-virtual-container-name = Virtual beaker
 reagent-dispenser-window-recipes-virtual-container-empty = Nothing recorded.
-
-reagent-dispenser-recipes-error-reagent-not-found = Reagent not found: {$target}. Abort.
-reagent-dispenser-recipes-error-not-enough-reagent = Not enough reagent: {$target}. Abort.
-
 reagent-dispenser-window-reagents-title = Reagents
-

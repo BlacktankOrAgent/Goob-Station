@@ -52,8 +52,6 @@ using Robust.Shared.Prototypes;
 using Content.Shared.Labels.Components;
 using Content.Shared.Storage;
 using Content.Server.Hands.Systems;
-using Content.Server.Popups; // Pirate: chem recipes
-using Content.Shared.Popups; // Pirate: chem recipes
 
 namespace Content.Server.Chemistry.EntitySystems
 {
@@ -72,8 +70,6 @@ namespace Content.Server.Chemistry.EntitySystems
         [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly OpenableSystem _openable = default!;
         [Dependency] private readonly HandsSystem _handsSystem = default!;
-        [Dependency] private readonly PopupSystem _popupSystem = default!; // Pirate: chem recipes
-
         public override void Initialize()
         {
             base.Initialize();
@@ -97,7 +93,6 @@ namespace Content.Server.Chemistry.EntitySystems
         #region Pirate: chem recipes
         private void RegisterPirateRecipeEvents()
         {
-            SubscribeLocalEvent<ReagentDispenserComponent, EntRemovedFromContainerMessage>(OnRecipeDiskRemoved, after: [typeof(SharedStorageSystem)]);
             SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserStartRecipeRecordingMessage>(OnStartRecipeRecordingMessage);
             SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserCancelRecipeRecordingMessage>(OnCancelRecipeRecordingMessage);
             SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserSaveRecipeMessage>(OnSaveRecipeMessage);
@@ -113,15 +108,13 @@ namespace Content.Server.Chemistry.EntitySystems
         private void SubscribeUpdateUiState<T>(Entity<ReagentDispenserComponent> ent, ref T ev)
         {
             UpdateUiState(ent);
+
+            if (ev is EntRemovedFromContainerMessage removed &&
+                removed.Container.ID == SharedReagentDispenser.RecipeDiskSlotName)
+                ClickSound(ent); // Pirate: chem recipes
         }
 
         #region Pirate: chem recipes
-        private void OnRecipeDiskRemoved(Entity<ReagentDispenserComponent> ent, ref EntRemovedFromContainerMessage args)
-        {
-            if (args.Container.ID == SharedReagentDispenser.RecipeDiskSlotName)
-                ClickSound(ent);
-        }
-
         private void UpdateUiState(Entity<ReagentDispenserComponent> reagentDispenser)
         {
             var outputContainer = _itemSlotsSystem.GetItemOrNull(reagentDispenser, SharedReagentDispenser.OutputSlotName);
@@ -359,7 +352,6 @@ namespace Content.Server.Chemistry.EntitySystems
 
             if (!TryDispenseRecipe(reagentDispenser, recipe, out var reason, out var failedReagentId))
             {
-                ShowRecipeFailurePopup(reagentDispenser, reason, failedReagentId, message.Actor);
                 ErrorSound(reagentDispenser);
                 return;
             }
@@ -387,7 +379,6 @@ namespace Content.Server.Chemistry.EntitySystems
 
             if (!TryDispenseRecipe(reagentDispenser, recipe, out var reason, out var failedReagentId))
             {
-                ShowRecipeFailurePopup(reagentDispenser, reason, failedReagentId, message.Actor);
                 ErrorSound(reagentDispenser);
                 return;
             }
@@ -639,37 +630,6 @@ namespace Content.Server.Chemistry.EntitySystems
             }
 
             return true;
-        }
-
-        private void ShowRecipeFailurePopup(
-            Entity<ReagentDispenserComponent> reagentDispenser,
-            RecipeDispenseFailureReason reason,
-            string? failedReagentId,
-            EntityUid actor)
-        {
-            if (actor == EntityUid.Invalid)
-                return;
-
-            var target = GetRecipeReagentName(failedReagentId);
-            var text = reason switch
-            {
-                RecipeDispenseFailureReason.ReagentNotFound => Loc.GetString("reagent-dispenser-recipes-error-reagent-not-found", ("target", target)),
-                RecipeDispenseFailureReason.NotEnoughReagent => Loc.GetString("reagent-dispenser-recipes-error-not-enough-reagent", ("target", target)),
-                _ => null,
-            };
-
-            if (text != null)
-                _popupSystem.PopupEntity(text, reagentDispenser.Owner, actor, PopupType.MediumCaution);
-        }
-
-        private string GetRecipeReagentName(string? reagentId)
-        {
-            if (reagentId == null)
-                return Loc.GetString("reagent-dispenser-window-reagent-name-not-found-text");
-
-            return _prototypeManager.TryIndex(reagentId, out ReagentPrototype? proto)
-                ? proto.LocalizedName
-                : reagentId;
         }
 
         private enum RecipeDispenseFailureReason
