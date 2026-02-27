@@ -74,28 +74,22 @@ namespace Content.Server.Chemistry.Components
         [DataField]
         public ItemSlot BeakerSlot = new();
 
-        #region Pirate: chem recipes
-        [DataField]
-        public ItemSlot RecipeDiskSlot = new();
-
-        [ViewVariables]
-        public Dictionary<string, Dictionary<string, FixedPoint2>> SavedRecipes = new();
-
-        [ViewVariables]
-        public Dictionary<string, FixedPoint2>? RecordingRecipe;
-        #endregion
-
-        #region Sounds
         [DataField("clickSound"), ViewVariables(VVAccess.ReadWrite)]
         public SoundSpecifier ClickSound = new SoundPathSpecifier("/Audio/Machines/machine_switch.ogg");
 
-        [DataField("errorSound"), ViewVariables(VVAccess.ReadWrite)]
-        public SoundSpecifier ErrorSound = new SoundPathSpecifier("/Audio/_Pirate/Machines/terminal_error.ogg");
-        #endregion
-
-        #region Configuration
         [ViewVariables(VVAccess.ReadWrite)]
         public ReagentDispenserDispenseAmount DispenseAmount = ReagentDispenserDispenseAmount.U10;
+
+        #region Pirate: chem recipes
+        [DataField]
+        public ItemSlot RecipeDiskSlot = new();
+        [ViewVariables]
+        public Dictionary<string, Dictionary<string, FixedPoint2>> SavedRecipes = new();
+        [ViewVariables]
+        public Dictionary<string, FixedPoint2>? RecordingRecipe;
+
+        [DataField("errorSound"), ViewVariables(VVAccess.ReadWrite)]
+        public SoundSpecifier ErrorSound = new SoundPathSpecifier("/Audio/_Pirate/Machines/terminal_error.ogg");
         #endregion
     }
 }

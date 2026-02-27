@@ -113,7 +113,85 @@ namespace Content.Shared.Chemistry
 
     }
 
+    public enum ReagentDispenserDispenseAmount
+    {
+        U1 = 1,
+        U5 = 5,
+        U10 = 10,
+        U15 = 15,
+        U20 = 20,
+        U25 = 25,
+        U30 = 30,
+        U50 = 50,
+        U100 = 100,
+    }
+
+    [Serializable, NetSerializable]
+    public sealed class ReagentInventoryItem(ItemStorageLocation storageLocation, string reagentLabel, FixedPoint2 quantity, Color reagentColor)
+    {
+        public ItemStorageLocation StorageLocation = storageLocation;
+        public string ReagentLabel = reagentLabel;
+        public FixedPoint2 Quantity = quantity;
+        public Color ReagentColor = reagentColor;
+    }
+
+    [Serializable, NetSerializable]
+    public sealed class ReagentDispenserBoundUserInterfaceState : BoundUserInterfaceState
+    {
+        public readonly ContainerInfo? OutputContainer;
+
+        public readonly NetEntity? OutputContainerEntity;
+
+        /// <summary>
+        /// A list of the reagents which this dispenser can dispense.
+        /// </summary>
+        public readonly List<ReagentInventoryItem> Inventory;
+
+        public readonly ReagentDispenserDispenseAmount SelectedDispenseAmount;
+
+        public readonly List<ReagentDispenserRecipeItem> SavedRecipes;// Pirate: chem recipes
+        public readonly bool HasRecipeDisk;// Pirate: chem recipes
+        public readonly List<ReagentDispenserRecipeItem> DiskRecipes;// Pirate: chem recipes
+        public readonly bool IsRecordingRecipe;// Pirate: chem recipes
+        public readonly List<ReagentQuantity> RecordingRecipeReagents;// Pirate: chem recipes
+
+        public ReagentDispenserBoundUserInterfaceState( // Pirate: chem recipes
+            ContainerInfo? outputContainer,
+            NetEntity? outputContainerEntity,
+            List<ReagentInventoryItem> inventory,
+            ReagentDispenserDispenseAmount selectedDispenseAmount,
+            List<ReagentDispenserRecipeItem> savedRecipes,
+            bool hasRecipeDisk,
+            List<ReagentDispenserRecipeItem> diskRecipes,
+            bool isRecordingRecipe,
+            List<ReagentQuantity> recordingRecipeReagents)
+        {
+            OutputContainer = outputContainer;
+            OutputContainerEntity = outputContainerEntity;
+            Inventory = inventory;
+            SelectedDispenseAmount = selectedDispenseAmount;
+            #region Pirate: chem recipes
+            SavedRecipes = savedRecipes;
+            HasRecipeDisk = hasRecipeDisk;
+            DiskRecipes = diskRecipes;
+            IsRecordingRecipe = isRecordingRecipe;
+            RecordingRecipeReagents = recordingRecipeReagents;
+            #endregion
+        }
+    }
+
+    [Serializable, NetSerializable]
+    public enum ReagentDispenserUiKey
+    {
+        Key
+    }
     #region Pirate: chem recipes
+    [Serializable, NetSerializable]
+    public sealed class ReagentDispenserRecipeItem(string name, Color color)
+    {
+        public string Name = name;
+        public Color Color = color;
+    }
     [Serializable, NetSerializable]
     public sealed class ReagentDispenserStartRecipeRecordingMessage : BoundUserInterfaceMessage
     {
@@ -205,85 +283,5 @@ namespace Content.Shared.Chemistry
             Name = name;
         }
     }
-
     #endregion
-    public enum ReagentDispenserDispenseAmount
-    {
-        U1 = 1,
-        U5 = 5,
-        U10 = 10,
-        U15 = 15,
-        U20 = 20,
-        U25 = 25,
-        U30 = 30,
-        U50 = 50,
-        U100 = 100,
-    }
-
-    [Serializable, NetSerializable]
-    public sealed class ReagentInventoryItem(ItemStorageLocation storageLocation, string reagentLabel, FixedPoint2 quantity, Color reagentColor)
-    {
-        public ItemStorageLocation StorageLocation = storageLocation;
-        public string ReagentLabel = reagentLabel;
-        public FixedPoint2 Quantity = quantity;
-        public Color ReagentColor = reagentColor;
-    }
-
-    #region Pirate: chem recipes
-    [Serializable, NetSerializable]
-    public sealed class ReagentDispenserRecipeItem(string name, Color color)
-    {
-        public string Name = name;
-        public Color Color = color;
-    }
-
-    [Serializable, NetSerializable]
-    public sealed class ReagentDispenserBoundUserInterfaceState : BoundUserInterfaceState
-    {
-        public readonly ContainerInfo? OutputContainer;
-
-        public readonly NetEntity? OutputContainerEntity;
-
-        /// <summary>
-        /// A list of the reagents which this dispenser can dispense.
-        /// </summary>
-        public readonly List<ReagentInventoryItem> Inventory;
-
-        public readonly ReagentDispenserDispenseAmount SelectedDispenseAmount;
-        public readonly List<ReagentDispenserRecipeItem> SavedRecipes;
-        public readonly bool HasRecipeDisk;
-        public readonly List<ReagentDispenserRecipeItem> DiskRecipes;
-        public readonly bool IsRecordingRecipe;
-        public readonly List<ReagentQuantity> RecordingRecipeReagents;
-
-        public ReagentDispenserBoundUserInterfaceState(
-            ContainerInfo? outputContainer,
-            NetEntity? outputContainerEntity,
-            List<ReagentInventoryItem> inventory,
-            ReagentDispenserDispenseAmount selectedDispenseAmount,
-            List<ReagentDispenserRecipeItem> savedRecipes,
-            bool hasRecipeDisk,
-            List<ReagentDispenserRecipeItem> diskRecipes,
-            bool isRecordingRecipe,
-            List<ReagentQuantity> recordingRecipeReagents)
-        {
-            OutputContainer = outputContainer;
-            OutputContainerEntity = outputContainerEntity;
-            Inventory = inventory;
-            SelectedDispenseAmount = selectedDispenseAmount;
-            SavedRecipes = savedRecipes;
-            HasRecipeDisk = hasRecipeDisk;
-            DiskRecipes = diskRecipes;
-            IsRecordingRecipe = isRecordingRecipe;
-            RecordingRecipeReagents = recordingRecipeReagents;
-        }
-    }
-
-    #endregion
-
-    [Serializable, NetSerializable]
-    public enum ReagentDispenserUiKey
-    {
-        Key
-    }
 }

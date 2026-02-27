@@ -133,4 +133,4 @@
       storagebase: !type:Container
   - type: StaticPrice
     price: 1000
-  - type: WiresPanel
+  - type: WiresPanel 

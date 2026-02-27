@@ -35,10 +35,10 @@
 
 using System.Linq;
 using System.Diagnostics.CodeAnalysis; // Pirate: chem recipes
+using Content.Shared.Chemistry.Reagent; // Pirate: chem recipes
 using Content.Server.Chemistry.Components;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.EntitySystems;
-using Content.Shared.Chemistry.Reagent; // Pirate: chem recipes
 using Content.Shared.Containers.ItemSlots;
 using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Nutrition.EntitySystems;
@@ -70,6 +70,7 @@ namespace Content.Server.Chemistry.EntitySystems
         [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly OpenableSystem _openable = default!;
         [Dependency] private readonly HandsSystem _handsSystem = default!;
+
         public override void Initialize()
         {
             base.Initialize();
@@ -89,38 +90,23 @@ namespace Content.Server.Chemistry.EntitySystems
             SubscribeLocalEvent<ReagentDispenserComponent, MapInitEvent>(OnMapInit, before: new[] { typeof(ItemSlotsSystem) });
         }
 
-
-        #region Pirate: chem recipes
-        private void RegisterPirateRecipeEvents()
-        {
-            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserStartRecipeRecordingMessage>(OnStartRecipeRecordingMessage);
-            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserCancelRecipeRecordingMessage>(OnCancelRecipeRecordingMessage);
-            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserSaveRecipeMessage>(OnSaveRecipeMessage);
-            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserDispenseRecipeMessage>(OnDispenseRecipeMessage);
-            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserDeleteRecipeMessage>(OnDeleteRecipeMessage);
-            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserClearRecipesMessage>(OnClearRecipesMessage);
-            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserSaveRecipeToDiskMessage>(OnSaveRecipeToDiskMessage);
-            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserCopyDiskRecipeMessage>(OnCopyDiskRecipeMessage);
-            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserDispenseDiskRecipeMessage>(OnDispenseDiskRecipeMessage);
-            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserDeleteDiskRecipeMessage>(OnDeleteDiskRecipeMessage);
-        }
-        #endregion
         private void SubscribeUpdateUiState<T>(Entity<ReagentDispenserComponent> ent, ref T ev)
         {
             UpdateUiState(ent);
-
+            #region Pirate: chem recipes
             if (ev is EntRemovedFromContainerMessage removed &&
                 removed.Container.ID == SharedReagentDispenser.RecipeDiskSlotName)
-                ClickSound(ent); // Pirate: chem recipes
+                ClickSound(ent);
+            #endregion
         }
 
-        #region Pirate: chem recipes
         private void UpdateUiState(Entity<ReagentDispenserComponent> reagentDispenser)
         {
             var outputContainer = _itemSlotsSystem.GetItemOrNull(reagentDispenser, SharedReagentDispenser.OutputSlotName);
             var outputContainerInfo = BuildOutputContainerInfo(outputContainer);
 
             var inventory = GetInventory(reagentDispenser);
+            #region Pirate: chem recipes
             var savedRecipes = reagentDispenser.Comp.SavedRecipes
                 .OrderBy(x => x.Key)
                 .Select(x => new ReagentDispenserRecipeItem(x.Key, GetRecipeColor(x.Value)))
@@ -142,37 +128,8 @@ namespace Content.Server.Chemistry.EntitySystems
                 diskRecipes,
                 reagentDispenser.Comp.RecordingRecipe != null,
                 recordingReagents);
+            #endregion
             _userInterfaceSystem.SetUiState(reagentDispenser.Owner, ReagentDispenserUiKey.Key, state);
-        }
-
-        private Color GetRecipeColor(Dictionary<string, FixedPoint2> recipe)
-        {
-            if (recipe.Count == 0)
-                return Color.Transparent;
-
-            var runningTotalQuantity = FixedPoint2.Zero;
-            var first = true;
-            Color mixColor = default;
-
-            foreach (var (reagentId, quantity) in recipe.OrderBy(x => x.Key))
-            {
-                runningTotalQuantity += quantity;
-
-                if (!_prototypeManager.TryIndex(reagentId, out ReagentPrototype? proto))
-                    continue;
-
-                if (first)
-                {
-                    first = false;
-                    mixColor = proto.SubstanceColor;
-                    continue;
-                }
-
-                var interpolateValue = quantity.Float() / runningTotalQuantity.Float();
-                mixColor = Color.InterpolateBetween(mixColor, proto.SubstanceColor, interpolateValue);
-            }
-
-            return mixColor;
         }
 
         private ContainerInfo? BuildOutputContainerInfo(EntityUid? container)
@@ -243,6 +200,7 @@ namespace Content.Server.Chemistry.EntitySystems
             if (storedContainer == EntityUid.Invalid)
                 return;
 
+            #region Pirate: chem recipes
             if (reagentDispenser.Comp.RecordingRecipe != null)
             {
                 var amount = FixedPoint2.New((int)reagentDispenser.Comp.DispenseAmount);
@@ -254,6 +212,7 @@ namespace Content.Server.Chemistry.EntitySystems
 
                 return;
             }
+            #endregion
 
             var outputContainer = _itemSlotsSystem.GetItemOrNull(reagentDispenser, SharedReagentDispenser.OutputSlotName);
             if (outputContainer is not { Valid: true } || !_solutionContainerSystem.TryGetFitsInDispenser(outputContainer.Value, out var solution, out _))
@@ -298,6 +257,64 @@ namespace Content.Server.Chemistry.EntitySystems
             _solutionContainerSystem.RemoveAllSolution(solution.Value);
             UpdateUiState(reagentDispenser);
             ClickSound(reagentDispenser);
+        }
+
+        private void ClickSound(Entity<ReagentDispenserComponent> reagentDispenser)
+        {
+            _audioSystem.PlayPvs(reagentDispenser.Comp.ClickSound, reagentDispenser, AudioParams.Default.WithVolume(-2f));
+        }
+
+        /// <summary>
+        /// Initializes the beaker slot
+        /// </summary>
+        private void OnMapInit(Entity<ReagentDispenserComponent> ent, ref MapInitEvent args)
+        {
+            _itemSlotsSystem.AddItemSlot(ent.Owner, SharedReagentDispenser.OutputSlotName, ent.Comp.BeakerSlot);
+            _itemSlotsSystem.AddItemSlot(ent.Owner, SharedReagentDispenser.RecipeDiskSlotName, ent.Comp.RecipeDiskSlot); // Pirate: chem recipes
+        }
+
+        #region Pirate: chem recipes
+        private void RegisterPirateRecipeEvents()
+        {
+            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserStartRecipeRecordingMessage>(OnStartRecipeRecordingMessage);
+            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserCancelRecipeRecordingMessage>(OnCancelRecipeRecordingMessage);
+            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserSaveRecipeMessage>(OnSaveRecipeMessage);
+            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserDispenseRecipeMessage>(OnDispenseRecipeMessage);
+            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserDeleteRecipeMessage>(OnDeleteRecipeMessage);
+            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserClearRecipesMessage>(OnClearRecipesMessage);
+            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserSaveRecipeToDiskMessage>(OnSaveRecipeToDiskMessage);
+            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserCopyDiskRecipeMessage>(OnCopyDiskRecipeMessage);
+            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserDispenseDiskRecipeMessage>(OnDispenseDiskRecipeMessage);
+            SubscribeLocalEvent<ReagentDispenserComponent, ReagentDispenserDeleteDiskRecipeMessage>(OnDeleteDiskRecipeMessage);
+        }
+        private Color GetRecipeColor(Dictionary<string, FixedPoint2> recipe)
+        {
+            if (recipe.Count == 0)
+                return Color.Transparent;
+
+            var runningTotalQuantity = FixedPoint2.Zero;
+            var first = true;
+            Color mixColor = default;
+
+            foreach (var (reagentId, quantity) in recipe.OrderBy(x => x.Key))
+            {
+                runningTotalQuantity += quantity;
+
+                if (!_prototypeManager.TryIndex(reagentId, out ReagentPrototype? proto))
+                    continue;
+
+                if (first)
+                {
+                    first = false;
+                    mixColor = proto.SubstanceColor;
+                    continue;
+                }
+
+                var interpolateValue = quantity.Float() / runningTotalQuantity.Float();
+                mixColor = Color.InterpolateBetween(mixColor, proto.SubstanceColor, interpolateValue);
+            }
+
+            return mixColor;
         }
 
         private void OnStartRecipeRecordingMessage(Entity<ReagentDispenserComponent> reagentDispenser, ref ReagentDispenserStartRecipeRecordingMessage message)
@@ -592,6 +609,17 @@ namespace Content.Server.Chemistry.EntitySystems
             if (transferredAmount <= FixedPoint2.Zero)
                 return false;
 
+            // Pirate: chem recipes - preserve exact dispense amount for pure sources (avoid 10 -> 9 rounding).
+            if (sol.Contents.Count == 1 && sol.Contents[0].Reagent.Prototype is { } onlyReagentId)
+            {
+                if (recordingRecipe.TryGetValue(onlyReagentId, out var existing))
+                    recordingRecipe[onlyReagentId] = existing + transferredAmount;
+                else
+                    recordingRecipe.Add(onlyReagentId, transferredAmount);
+
+                return true;
+            }
+
             var transferRatio = transferredAmount / sol.Volume;
             var recordedAny = false;
 
@@ -614,6 +642,7 @@ namespace Content.Server.Chemistry.EntitySystems
 
             return recordedAny;
         }
+
 
         private bool TryGetStoredContainerForReagentId(EntityUid dispenser, string reagentId, [NotNullWhen(true)] out EntityUid container)
         {
@@ -671,25 +700,11 @@ namespace Content.Server.Chemistry.EntitySystems
             NotEnoughReagent,
             TransferFailed,
         }
-
-        #endregion
-        private void ClickSound(Entity<ReagentDispenserComponent> reagentDispenser)
-        {
-            _audioSystem.PlayPvs(reagentDispenser.Comp.ClickSound, reagentDispenser, AudioParams.Default.WithVolume(-2f));
-        }
-
-        private void ErrorSound(Entity<ReagentDispenserComponent> reagentDispenser) // Pirate: chem recipes
+                private void ErrorSound(Entity<ReagentDispenserComponent> reagentDispenser) // Pirate: chem recipes
         {
             _audioSystem.PlayPvs(reagentDispenser.Comp.ErrorSound, reagentDispenser, AudioParams.Default.WithVolume(-2f));
         }
 
-        /// <summary>
-        /// Initializes the beaker slot
-        /// </summary>
-        private void OnMapInit(Entity<ReagentDispenserComponent> ent, ref MapInitEvent args)
-        {
-            _itemSlotsSystem.AddItemSlot(ent.Owner, SharedReagentDispenser.OutputSlotName, ent.Comp.BeakerSlot);
-            _itemSlotsSystem.AddItemSlot(ent.Owner, SharedReagentDispenser.RecipeDiskSlotName, ent.Comp.RecipeDiskSlot); // Pirate: chem recipes
-        }
+        #endregion
     }
 }

@@ -67,6 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                              VerticalExpand="True"
                              MinHeight="50"
                              SizeFlagsStretchRatio="2.5">
+                <!-- Pirate: chem recipes (start) -->
                 <BoxContainer Orientation="Vertical"
                               HorizontalExpand="True"
                               VerticalExpand="True">
@@ -128,6 +129,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                                    Access="Public"
                                    Columns="3" />
                 </BoxContainer>
+                <!-- Pirate: chem recipes (end) -->
             </ScrollContainer>
             <ScrollContainer HScrollEnabled="False"
                              HorizontalExpand="True"
