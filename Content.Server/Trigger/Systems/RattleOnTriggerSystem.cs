@@ -1,11 +1,11 @@
 using Content.Server.Radio.EntitySystems;
 using Content.Server.Pinpointer;
 using Content.Shared.Mobs.Components;
-using Content.Shared.Radio;
 using Content.Shared.Trigger;
 using Content.Shared.Trigger.Components.Effects;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
+using Content.Shared.Radio; // Pirates: death rattle update
 using Content.Server.Station.Systems; // Pirates: death rattle update
 using Robust.Shared.Map; // Pirates: death rattle update
 
