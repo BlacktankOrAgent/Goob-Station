@@ -109,7 +109,7 @@ public sealed class PaperBoundUserInterface : BoundUserInterface
 
         _window = this.CreateWindow<PaperWindow>();
         _window.OnSaved += InputOnTextEntered;
-        _window.OnMacroMenuUsed += OnMacroMenuUsed;
+        _window.OnMacroMenuUsed += OnMacroMenuUsed; // Pirate: paperwork tags
 
         if (EntMan.TryGetComponent<PaperComponent>(Owner, out var paper))
         {
@@ -138,8 +138,10 @@ public sealed class PaperBoundUserInterface : BoundUserInterface
         }
     }
 
+    #region Pirate: paperwork tags
     private void OnMacroMenuUsed()
     {
         SendMessage(new PaperMacroMenuUsedMessage(PaperAction.Write));
     }
+    #endregion
 }

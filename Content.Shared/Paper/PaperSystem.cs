@@ -75,24 +75,28 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Content.Shared.Administration.Logs;
-using Content.Shared.Access.Systems;
-using Content.Shared.GameTicking;
 using Content.Shared.UserInterface;
 using Content.Shared.Database;
 using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
-using Content.Shared.PDA;
-using Content.Shared.Station;
 using Content.Shared.Tag;
 using Robust.Shared.Player;
 using Robust.Shared.Audio.Systems;
 using static Content.Shared.Paper.PaperComponent;
 using Robust.Shared.Prototypes;
+
+#region Pirate: paperwork tags
+using System.Globalization;
+using System.Text.RegularExpressions;
+using Content.Shared.Access.Systems;
+using Content.Shared.GameTicking;
+using Content.Shared.PDA;
+using Content.Shared.Station;
+#endregion
+
 
 namespace Content.Shared.Paper;
 
@@ -106,17 +110,18 @@ public sealed class PaperSystem : EntitySystem
     [Dependency] private readonly SharedUserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly MetaDataSystem _metaSystem = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    private static readonly ProtoId<TagPrototype> WriteIgnoreStampsTag = "WriteIgnoreStamps";
+    private static readonly ProtoId<TagPrototype> WriteTag = "Write";
+    #region Pirate: paperwork tags
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly SharedStationSystem _station = default!;
     [Dependency] private readonly SharedGameTicker _ticker = default!;
-
-    private static readonly ProtoId<TagPrototype> WriteIgnoreStampsTag = "WriteIgnoreStamps";
-    private static readonly ProtoId<TagPrototype> WriteTag = "Write";
     private const int StationBaseYear = 2468;
     private static readonly Regex StationCodeRegex = new(@"\b[A-Z]{2,5}-\d{1,4}\b", RegexOptions.Compiled);
     private static readonly Regex StationLabelRegex = new(
         @"(?:^|\s)(?:Station|Станція|Станция)\s*:\s*(?<value>[^\s,.;:]+)",
         RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+    #endregion
 
     public override void Initialize()
     {
@@ -128,7 +133,7 @@ public sealed class PaperSystem : EntitySystem
         SubscribeLocalEvent<PaperComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<PaperComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<PaperComponent, PaperInputTextMessage>(OnInputTextMessage);
-        SubscribeLocalEvent<PaperComponent, PaperMacroMenuUsedMessage>(OnMacroMenuUsedMessage);
+        SubscribeLocalEvent<PaperComponent, PaperMacroMenuUsedMessage>(OnMacroMenuUsedMessage); // Pirate: paperwork tags
 
         SubscribeLocalEvent<ActivateOnPaperOpenedComponent, PaperWriteEvent>(OnPaperWrite);
     }
@@ -272,13 +277,13 @@ public sealed class PaperSystem : EntitySystem
         if (ev.Cancelled)
             return;
 
-        var processedText = ExpandPaperMacros(entity, args.Actor, args.Text);
+        var processedText = ExpandPaperMacros(entity, args.Actor, args.Text); // Pirate: paperwork tags
 
-        if (processedText.Length <= entity.Comp.ContentSize)
+        if (processedText.Length <= entity.Comp.ContentSize) // Pirate: paperwork tags
         {
-            SetContent(entity, processedText);
+            SetContent(entity, processedText); // Pirate: paperwork tags
 
-            var paperStatus = string.IsNullOrWhiteSpace(processedText) ? PaperStatus.Blank : PaperStatus.Written;
+            var paperStatus = string.IsNullOrWhiteSpace(processedText) ? PaperStatus.Blank : PaperStatus.Written; // Pirate: paperwork tags
 
             if (TryComp<AppearanceComponent>(entity, out var appearance))
                 _appearance.SetData(entity, PaperVisuals.Status, paperStatus, appearance);
@@ -288,7 +293,7 @@ public sealed class PaperSystem : EntitySystem
 
             _adminLogger.Add(LogType.Chat,
                 LogImpact.Low,
-                $"{ToPrettyString(args.Actor):player} has written on {ToPrettyString(entity):entity} the following text: {processedText}");
+                $"{ToPrettyString(args.Actor):player} has written on {ToPrettyString(entity):entity} the following text: {processedText}"); // Pirate: paperwork tags
 
             _audio.PlayPvs(entity.Comp.Sound, entity);
         }
@@ -297,6 +302,7 @@ public sealed class PaperSystem : EntitySystem
         UpdateUserInterface(entity);
     }
 
+    #region Pirate: paperwork tags
     private void OnMacroMenuUsedMessage(Entity<PaperComponent> entity, ref PaperMacroMenuUsedMessage args)
     {
         if (args.Action != PaperAction.Write || entity.Comp.Mode != PaperAction.Write)
@@ -408,6 +414,7 @@ public sealed class PaperSystem : EntitySystem
 
         return Loc.GetString("alert-level-unknown");
     }
+    #endregion
 
     private void OnPaperWrite(Entity<ActivateOnPaperOpenedComponent> entity, ref PaperWriteEvent args)
     {

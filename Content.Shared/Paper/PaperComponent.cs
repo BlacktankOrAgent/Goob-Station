@@ -144,6 +144,7 @@ public sealed partial class PaperComponent : Component
         }
     }
 
+    #region Pirate: paperwork tags
     [Serializable, NetSerializable]
     public sealed class PaperMacroMenuUsedMessage : BoundUserInterfaceMessage
     {
@@ -154,6 +155,7 @@ public sealed partial class PaperComponent : Component
             Action = action;
         }
     }
+    #endregion
 
     [Serializable, NetSerializable]
     public enum PaperUiKey
