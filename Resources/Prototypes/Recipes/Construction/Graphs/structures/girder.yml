@@ -282,6 +282,7 @@
               amount: 2
               doAfter: 1
 
+    # Pirate Onyx Wall start
     - node: reinforcedGirder
       entity: ReinforcedGirder
       edges:
@@ -302,6 +303,7 @@
               doAfter: 1
             - tool: Welding
               doAfter: 6
+      # Pirate Onyx Wall end
 
         - to: shuttleWall
           completed:
@@ -397,6 +399,7 @@
             - tool: Cutting
               doAfter: 1
 
+    # Pirate Onyx Wall start
     - node: plastitaniumWallOnyx
       entity: WallPlastitaniumOnyx
       edges:
@@ -467,6 +470,7 @@
                   data: 0
             - tool: Cutting
               doAfter: 1
+    # Pirate Onyx Wall end
 
     - node: shuttleWall
       entity: WallShuttle
