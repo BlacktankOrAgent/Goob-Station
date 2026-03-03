@@ -513,7 +513,7 @@
 ## Other - Інше
 - type: loadoutGroup
   id: SyndicateSuit
-  name: loadout-group-syndicte-suit
+  name: loadout-group-syndicate-suit
   loadouts:
   - LoadoutJumpsuitOperative
   - LoadoutJumpskirtOperative

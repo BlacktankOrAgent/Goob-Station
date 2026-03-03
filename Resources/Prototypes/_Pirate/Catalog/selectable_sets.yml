@@ -115,7 +115,7 @@
   name: Пояс інструментів
   description: Пояс просунутих інструментів
   sprite:
-    sprite: Clothing/belt/ce.rsi
+    sprite: Clothing/Belt/ce.rsi
     state: icon
   content:
   - ClothingBeltChiefEngineerFilled

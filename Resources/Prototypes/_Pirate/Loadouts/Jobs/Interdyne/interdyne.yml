@@ -85,7 +85,7 @@
 - type: loadout
   id: LoadoutClothingBeltCombatSurgeryInterdyne
   equipment:
-    back: ClothingBeltCombatSurgeryAdvancedFilledInterdyneGreen
+    belt: ClothingBeltCombatSurgeryAdvancedFilledInterdyneGreen
 
 #Інше
 - type: loadout

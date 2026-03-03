@@ -25,7 +25,7 @@
 - type: entity
   parent: DefaultStationBeaconSecurity
   id: DefaultStationBeaconInterdyneSecurity
-  suffix: Interyne SEC
+  suffix: Interdyne SEC
   components:
   - type: NavMapBeacon
     defaultText: station-beacon-interdyne-sec
