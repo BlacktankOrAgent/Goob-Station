@@ -73,7 +73,10 @@ public sealed partial class TextureButton : ContainerButton
         set
         {
             if (_clickSound != null)
+            {
                 _clickSound.Dispose();
+                _clickSound = null;
+            }
 
             if (value == null)
                 return;

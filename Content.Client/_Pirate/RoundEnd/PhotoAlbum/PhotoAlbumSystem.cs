@@ -9,6 +9,7 @@ namespace Content.Client._Pirate.RoundEnd.PhotoAlbum;
 public sealed class PhotoAlbumSystem : EntitySystem
 {
     public List<AlbumData>? Albums { get; private set; }
+    public event Action? AlbumsUpdated;
 
     public override void Initialize()
     {
@@ -17,7 +18,11 @@ public sealed class PhotoAlbumSystem : EntitySystem
         SubscribeNetworkEvent<PhotoAlbumEvent>(OnStationImagesReceived);
     }
 
-    private void OnStationImagesReceived(PhotoAlbumEvent ev) => Albums = ev.Albums;
+    private void OnStationImagesReceived(PhotoAlbumEvent ev)
+    {
+        Albums = ev.Albums;
+        AlbumsUpdated?.Invoke();
+    }
 
     public void ClearImagesData() => Albums = null;
 }

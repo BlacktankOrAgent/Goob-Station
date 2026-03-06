@@ -66,6 +66,7 @@ namespace Content.Client.RoundEnd
     {
         private readonly IFileDialogManager _fileDialogManager; // # Pirate: camera
         private readonly IEntityManager _entityManager;
+        private readonly TabContainer _roundEndTabs;
         public int RoundId;
 
         public RoundEndSummaryWindow(string gm, string roundEnd, TimeSpan roundTimeSpan, int roundId,
@@ -85,15 +86,13 @@ namespace Content.Client.RoundEnd
             // Also good for serious info.
 
             RoundId = roundId;
-            var roundEndTabs = new TabContainer();
-            roundEndTabs.AddChild(MakeRoundEndSummaryTab(gm, roundEnd, roundTimeSpan, roundId));
-            roundEndTabs.AddChild(MakePlayerManifestTab(info));
-            roundEndTabs.AddChild(MakeStationReportTab()); //goob
-            var photoTab = MakePhotoReportTab(); // # Pirate: camera
-            if (photoTab is not null) // # Pirate: camera
-                roundEndTabs.AddChild(photoTab); // # Pirate: camera
+            _roundEndTabs = new TabContainer();
+            _roundEndTabs.AddChild(MakeRoundEndSummaryTab(gm, roundEnd, roundTimeSpan, roundId));
+            _roundEndTabs.AddChild(MakePlayerManifestTab(info));
+            _roundEndTabs.AddChild(MakeStationReportTab()); //goob
+            AddOrUpdatePhotoReportTab(); // # Pirate: camera
 
-            Contents.AddChild(roundEndTabs);
+            Contents.AddChild(_roundEndTabs);
 
             OpenCenteredRight();
             MoveToFront();

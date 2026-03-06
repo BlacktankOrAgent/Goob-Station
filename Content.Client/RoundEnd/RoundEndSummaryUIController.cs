@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Client.GameTicking.Managers;
+using Content.Client._Pirate.RoundEnd.PhotoAlbum;
 using Content.Shared.GameTicking;
 using Content.Shared.Input;
 using JetBrains.Annotations;
@@ -19,12 +20,15 @@ namespace Content.Client.RoundEnd;
 
 [UsedImplicitly]
 public sealed class RoundEndSummaryUIController : UIController,
-    IOnSystemLoaded<ClientGameTicker>
+    IOnSystemLoaded<ClientGameTicker>,
+    IOnSystemChanged<PhotoAlbumSystem>
 {
     [Dependency] private readonly IInputManager _input = default!;
     [Dependency] private readonly IFileDialogManager _fileDialogManager = default!; // # Pirate: camera
+    [Dependency] private readonly IUserInterfaceManager _uiManager = default!;
 
     private RoundEndSummaryWindow? _window;
+    private PhotoAlbumSystem? _photoAlbum;
 
     private void ToggleScoreboardWindow(ICommonSession? session = null)
     {
@@ -56,5 +60,29 @@ public sealed class RoundEndSummaryUIController : UIController,
     {
         _input.SetInputCommand(ContentKeyFunctions.ToggleRoundEndSummaryWindow,
             InputCmdHandler.FromDelegate(ToggleScoreboardWindow));
+    }
+
+    public void OnSystemLoaded(PhotoAlbumSystem system)
+    {
+        _photoAlbum = system;
+        _photoAlbum.AlbumsUpdated += OnPhotoAlbumsUpdated;
+    }
+
+    public void OnSystemUnloaded(PhotoAlbumSystem system)
+    {
+        if (_photoAlbum is null)
+            return;
+
+        _photoAlbum.AlbumsUpdated -= OnPhotoAlbumsUpdated;
+        _photoAlbum = null;
+    }
+
+    private void OnPhotoAlbumsUpdated()
+    {
+        _uiManager.DeferAction(() =>
+        {
+            if (_window is { Disposed: false })
+                _window.AddOrUpdatePhotoReportTab();
+        });
     }
 }

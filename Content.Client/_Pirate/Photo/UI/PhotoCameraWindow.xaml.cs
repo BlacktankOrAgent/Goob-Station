@@ -118,41 +118,45 @@ public sealed partial class PhotoCameraWindow : FancyWindow
 
             try
             {
-                using var data = new MemoryStream();
-                image.SaveAsPng(data);
-                fullImageBytes = data.ToArray();
+                try
+                {
+                    using var data = new MemoryStream();
+                    image.SaveAsPng(data);
+                    fullImageBytes = data.ToArray();
+                }
+                catch (System.Exception ex)
+                {
+                    Logger.ErrorS("photo-camera", $"Failed to write screenshot PNG via image.SaveAsPng while building fullImageBytes in {nameof(PhotoCameraWindow)}: {ex}");
+                    return;
+                }
+
+                try
+                {
+                    // Build a miniature preview from the captured full image.
+                    var stageOne = DownscaleBox(image.GetPixelSpan(), image.Width, image.Height, PreviewSampleSize, PreviewSampleSize);
+                    var stageTwo = DownscaleBox(stageOne, PreviewSampleSize, PreviewSampleSize, PreviewSize, PreviewSize);
+                    using var miniature = new Image<Rgba32>(PreviewSize, PreviewSize);
+                    stageTwo.CopyTo(miniature.GetPixelSpan());
+
+                    using var previewStream = new MemoryStream();
+                    miniature.SaveAsPng(previewStream);
+                    previewBytes = previewStream.ToArray();
+                }
+                catch (System.Exception ex)
+                {
+                    previewBytes = null;
+                    Logger.WarningS("photo-camera",
+                        $"Failed to generate previewBytes in {nameof(PhotoCameraWindow)} (DownscaleBox/miniature.SaveAsPng). " +
+                        $"Continuing with fullImageBytes only; possible cause is invalid image data or PNG encoding failure. {ex}");
+                }
+
+                callback(fullImageBytes, previewBytes);
             }
-            catch (System.Exception ex)
+            finally
             {
-                Logger.ErrorS("photo-camera", $"Failed to write screenshot PNG via image.SaveAsPng while building fullImageBytes in {nameof(PhotoCameraWindow)}: {ex}");
                 filterScope.Dispose();
                 _pendingSuppressionScopes.Remove(filterScope);
-                return;
             }
-
-            try
-            {
-                // Build a miniature preview from the captured full image.
-                var stageOne = DownscaleBox(image.GetPixelSpan(), image.Width, image.Height, PreviewSampleSize, PreviewSampleSize);
-                var stageTwo = DownscaleBox(stageOne, PreviewSampleSize, PreviewSampleSize, PreviewSize, PreviewSize);
-                using var miniature = new Image<Rgba32>(PreviewSize, PreviewSize);
-                stageTwo.CopyTo(miniature.GetPixelSpan());
-
-                using var previewStream = new MemoryStream();
-                miniature.SaveAsPng(previewStream);
-                previewBytes = previewStream.ToArray();
-            }
-            catch (System.Exception ex)
-            {
-                previewBytes = null;
-                Logger.WarningS("photo-camera",
-                    $"Failed to generate previewBytes in {nameof(PhotoCameraWindow)} (DownscaleBox/miniature.SaveAsPng). " +
-                    $"Continuing with fullImageBytes only; possible cause is invalid image data or PNG encoding failure. {ex}");
-            }
-
-            callback(fullImageBytes, previewBytes);
-            filterScope.Dispose();
-            _pendingSuppressionScopes.Remove(filterScope);
         });
     }
 

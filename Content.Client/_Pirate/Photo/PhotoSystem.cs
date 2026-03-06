@@ -13,8 +13,6 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
     public IReadOnlyDictionary<PhotoCameraComponent, PhotoCameraBoundUserInterface> ActiveCameras => _activeCameras;
 
     public override void Update(float frameTime)
-
-    public override void Update(float frameTime)
     {
         base.Update(frameTime);
 

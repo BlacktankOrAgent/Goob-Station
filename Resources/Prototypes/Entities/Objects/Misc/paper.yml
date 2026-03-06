@@ -218,11 +218,6 @@
           Quantity: 1
   - type: Item
     size: Tiny
-  - type: PhysicalComposition #Goobstation - Recycle update
-    materialComposition:
-      Paper: 100 # Pirate: camera
-  - type: Material # Pirate: camera
-
 - type: entity
   name: paper
   parent: BasePaper

@@ -37,8 +37,11 @@ public sealed partial class PhotoCardWindow : BaseWindow
             using var stream = new MemoryStream(imageData);
             ImageDisplay.Texture = Texture.LoadFromPNGStream(stream);
         }
-        catch
+        catch (Exception ex)
         {
+            Logger.WarningS("photo-card",
+                $"Failed to load photo card image in {nameof(PhotoCardWindow)}. " +
+                $"Message: {ex.Message}\nStackTrace: {ex.StackTrace}");
             ImageDisplay.Texture = null;
         }
     }

@@ -22,7 +22,21 @@ public sealed partial class RoundEndSummaryWindow
     private readonly Dictionary<int, string> _photoDownloadPaths = new();
     private readonly List<(TextureButton Button, Action<ButtonEventArgs> Handler)> _photoDownloadHandlers = new();
     private readonly List<TextureRect> _photoTextureRects = new();
+    private BoxContainer? _photoReportTab;
     private int _nextPhotoDownloadId;
+
+    public void AddOrUpdatePhotoReportTab()
+    {
+        if (_photoReportTab != null)
+            return;
+
+        var photoTab = MakePhotoReportTab();
+        if (photoTab is null)
+            return;
+
+        _photoReportTab = photoTab;
+        _roundEndTabs.AddChild(photoTab);
+    }
 
     private BoxContainer? MakePhotoReportTab()
     {
