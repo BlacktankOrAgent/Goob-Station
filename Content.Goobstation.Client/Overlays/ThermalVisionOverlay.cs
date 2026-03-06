@@ -8,6 +8,7 @@
 
 using System.Linq;
 using System.Numerics;
+using Content.Client._Pirate.Photo;
 using Content.Goobstation.Shared.Overlays;
 using Content.Shared.Body.Components;
 using Content.Shared.Stealth.Components;
@@ -32,6 +33,7 @@ public sealed class ThermalVisionOverlay : Overlay
     private readonly SpriteSystem _sprite;
     private readonly ContainerSystem _container;
     private readonly SharedPointLightSystem _light;
+    private readonly PhotoCaptureFilterSystem _photoCaptureFilter; // # Pirate: camera
 
     public override bool RequestScreenTexture => true;
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
@@ -52,12 +54,19 @@ public sealed class ThermalVisionOverlay : Overlay
         _transform = _entity.System<TransformSystem>();
         _sprite = _entity.System<SpriteSystem>();
         _light = _entity.System<SharedPointLightSystem>();
+        _photoCaptureFilter = _entity.System<PhotoCaptureFilterSystem>(); // # Pirate: camera
 
         ZIndex = -1;
     }
 
     protected override void Draw(in OverlayDrawArgs args)
     {
+        if (_photoCaptureFilter.IsSuppressedForEye(args.Viewport.Eye, PhotoCaptureSuppressionMask.VisionEffects)) // # Pirate: camera
+        {
+            ResetLight(false); // # Pirate: camera
+            return;
+        }
+
         if (ScreenTexture is null || Comp is null)
             return;
 

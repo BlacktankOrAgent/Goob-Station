@@ -4,6 +4,7 @@
   name: loadout-group-trinkets
   loadouts:
   - TrinketsClothingHeadPaperSack
+  - TrinketsPhotoAlbum
   subgroups:
   - PiratePlushies
 

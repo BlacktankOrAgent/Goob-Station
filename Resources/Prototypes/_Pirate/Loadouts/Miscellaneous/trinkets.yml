@@ -5,6 +5,12 @@
     back:
     - ClothingHeadPaperSack
 
+- type: loadout
+  id: TrinketsPhotoAlbum
+  storage:
+    back:
+    - PhotoAlbumLoadoutSigned
+
 # Toys / Іграшки
 - type: loadout
   id: PlushieEntony

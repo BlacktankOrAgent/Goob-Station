@@ -243,11 +243,46 @@ public sealed partial class FaxPrintout
     [DataField]
     public bool Locked { get; private set; }
 
+    [DataField]
+    public EntityUid? EntityUid { get; private set; } // # Pirate: camera
+
+    [DataField]
+    public byte[]? PhotoImageData { get; private set; }
+
+    [DataField]
+    public byte[]? PhotoPreviewData { get; private set; }
+
+    [DataField]
+    public string? PhotoCustomName { get; private set; }
+
+    [DataField]
+    public string? PhotoCustomDescription { get; private set; }
+
+    [DataField]
+    public string? PhotoCaption { get; private set; }
+
+    [DataField]
+    public string? PhotoEntityDescription { get; private set; }
+
     private FaxPrintout()
     {
     }
 
-    public FaxPrintout(string content, string name, string? label = null, string? prototypeId = null, string? stampState = null, List<StampDisplayInfo>? stampedBy = null, bool locked = false)
+    public FaxPrintout(
+        string content,
+        string name,
+        string? label = null,
+        string? prototypeId = null,
+        string? stampState = null,
+        List<StampDisplayInfo>? stampedBy = null,
+        bool locked = false,
+        EntityUid? entityUid = null,
+        byte[]? photoImageData = null,
+        byte[]? photoPreviewData = null,
+        string? photoCustomName = null,
+        string? photoCustomDescription = null,
+        string? photoCaption = null,
+        string? photoEntityDescription = null) // # Pirate: camera
     {
         Content = content;
         Name = name;
@@ -256,5 +291,12 @@ public sealed partial class FaxPrintout
         StampState = stampState;
         StampedBy = stampedBy ?? new List<StampDisplayInfo>();
         Locked = locked;
+        EntityUid = entityUid; // # Pirate: camera
+        PhotoImageData = photoImageData;
+        PhotoPreviewData = photoPreviewData;
+        PhotoCustomName = photoCustomName;
+        PhotoCustomDescription = photoCustomDescription;
+        PhotoCaption = photoCaption;
+        PhotoEntityDescription = photoEntityDescription;
     }
 }

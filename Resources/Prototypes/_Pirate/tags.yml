@@ -21,3 +21,9 @@
 
 - type: Tag
   id: OreTitanium
+
+- type: Tag
+  id: Photo # Pirate: camera
+
+- type: Tag
+  id: CameraFilm # Pirate: camera

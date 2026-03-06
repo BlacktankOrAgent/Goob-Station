@@ -111,6 +111,7 @@
 
 using Content.Goobstation.Common.Administration.Notifications; // Goobstation - Admin Notifications
 using Content.Goobstation.Shared.Fax; // Goobstation
+using Content.Server._Pirate.Photo;
 using Content.Server.Administration;
 using Content.Server.Administration.Managers;
 using Content.Server.Chat.Managers;
@@ -135,6 +136,7 @@ using Content.Shared.Labels.EntitySystems;
 using Content.Shared.Mobs.Components;
 using Content.Shared.NameModifier.Components;
 using Content.Shared.Paper;
+using Content.Shared._Pirate.Photo;
 using Content.Shared.Power;
 using Content.Shared.Tools;
 using Content.Shared.UserInterface;
@@ -413,17 +415,39 @@ public sealed class FaxSystem : EntitySystem
 
                     break;
                 case FaxConstants.FaxPrintCommand:
-                    if (!args.Data.TryGetValue(FaxConstants.FaxPaperNameData, out string? name) ||
-                        !args.Data.TryGetValue(FaxConstants.FaxPaperContentData, out string? content))
+                    if (!args.Data.TryGetValue(FaxConstants.FaxPaperNameData, out string? name))
                         return;
 
+                    args.Data.TryGetValue(FaxConstants.FaxPaperContentData, out string? content);
                     args.Data.TryGetValue(FaxConstants.FaxPaperLabelData, out string? label);
                     args.Data.TryGetValue(FaxConstants.FaxPaperStampStateData, out string? stampState);
                     args.Data.TryGetValue(FaxConstants.FaxPaperStampedByData, out List<StampDisplayInfo>? stampedBy);
                     args.Data.TryGetValue(FaxConstants.FaxPaperPrototypeData, out string? prototypeId);
                     args.Data.TryGetValue(FaxConstants.FaxPaperLockedData, out bool? locked);
+                    args.Data.TryGetValue(FaxConstants.FaxPhotoImageData, out byte[]? photoImageData);
+                    args.Data.TryGetValue(FaxConstants.FaxPhotoPreviewData, out byte[]? photoPreviewData);
+                    args.Data.TryGetValue(FaxConstants.FaxPhotoCustomNameData, out string? photoCustomName);
+                    args.Data.TryGetValue(FaxConstants.FaxPhotoCustomDescriptionData, out string? photoCustomDescription);
+                    args.Data.TryGetValue(FaxConstants.FaxPhotoCaptionData, out string? photoCaption);
+                    args.Data.TryGetValue(FaxConstants.FaxPhotoEntityDescriptionData, out string? photoEntityDescription);
 
-                    var printout = new FaxPrintout(content, name, label, prototypeId, stampState, stampedBy, locked ?? false);
+                    if (photoImageData == null && content == null)
+                        return;
+
+                    var printout = new FaxPrintout(
+                        content ?? string.Empty,
+                        name,
+                        label,
+                        prototypeId,
+                        stampState,
+                        stampedBy,
+                        locked ?? false,
+                        photoImageData: photoImageData,
+                        photoPreviewData: photoPreviewData,
+                        photoCustomName: photoCustomName,
+                        photoCustomDescription: photoCustomDescription,
+                        photoCaption: photoCaption,
+                        photoEntityDescription: photoEntityDescription);
                     Receive(uid, printout, args.SenderAddress);
 
                     break;
@@ -453,6 +477,9 @@ public sealed class FaxSystem : EntitySystem
 
     private void OnFileButtonPressed(EntityUid uid, FaxMachineComponent component, FaxFileMessage args)
     {
+        if (TryComp<PhotoCardComponent>(component.PaperSlot.Item, out _))
+            return;
+
         args.Label = args.Label?[..Math.Min(args.Label.Length, FaxFileMessageValidation.MaxLabelSize)];
         args.Content = args.Content[..Math.Min(args.Content.Length, FaxFileMessageValidation.MaxContentSize)];
         PrintFile(uid, component, args);
@@ -530,7 +557,8 @@ public sealed class FaxSystem : EntitySystem
         var canCopy = isPaperInserted &&
                       component.SendTimeoutRemaining <= 0 &&
                       component.InsertingTimeRemaining <= 0;
-        var state = new FaxUiState(component.FaxName, component.KnownFaxes, canSend, canCopy, isPaperInserted, component.DestinationFaxAddress);
+        var canPrintFile = !TryComp<PhotoCardComponent>(component.PaperSlot.Item, out _);
+        var state = new FaxUiState(component.FaxName, component.KnownFaxes, canSend, canCopy, canPrintFile, isPaperInserted, component.DestinationFaxAddress);
         _userInterface.SetUiState(uid, FaxUiKey.Key, state);
     }
 
@@ -576,6 +604,9 @@ public sealed class FaxSystem : EntitySystem
     /// </summary>
     public void PrintFile(EntityUid uid, FaxMachineComponent component, FaxFileMessage args)
     {
+        if (TryComp<PhotoCardComponent>(component.PaperSlot.Item, out _))
+            return;
+
         var prototype = args.OfficePaper ? component.PrintOfficePaperId : component.PrintPaperId;
 
         var name = Loc.GetString("fax-machine-printed-paper-name");
@@ -611,21 +642,41 @@ public sealed class FaxSystem : EntitySystem
         if (sendEntity == null)
             return;
 
-        if (!TryComp(sendEntity, out MetaDataComponent? metadata) ||
-            !TryComp<PaperComponent>(sendEntity, out var paper))
+        if (!TryComp(sendEntity, out MetaDataComponent? metadata))
             return;
 
         TryComp<LabelComponent>(sendEntity, out var labelComponent);
         TryComp<NameModifierComponent>(sendEntity, out var nameMod);
 
-        // TODO: See comment in 'Send()' about not being able to copy whole entities
-        var printout = new FaxPrintout(paper.Content,
-                                       nameMod?.BaseName ?? metadata.EntityName,
-                                       labelComponent?.CurrentLabel,
-                                       metadata.EntityPrototype?.ID ?? component.PrintPaperId,
-                                       paper.StampState,
-                                       paper.StampedBy,
-                                       paper.EditingDisabled);
+        FaxPrintout? printout = null; // # Pirate: camera
+
+        if (TryComp<PaperComponent>(sendEntity, out var paper))
+        {
+            printout = new FaxPrintout(paper.Content,
+                nameMod?.BaseName ?? metadata.EntityName,
+                labelComponent?.CurrentLabel,
+                metadata.EntityPrototype?.ID ?? component.PrintPaperId,
+                paper.StampState,
+                paper.StampedBy,
+                paper.EditingDisabled);
+        }
+        else if (TryComp<PhotoCardComponent>(sendEntity, out var photo))
+        {
+            printout = new FaxPrintout(
+                string.Empty,
+                nameMod?.BaseName ?? metadata.EntityName,
+                labelComponent?.CurrentLabel,
+                metadata.EntityPrototype?.ID ?? "PhotoCard",
+                photoImageData: photo.ImageData,
+                photoPreviewData: photo.PreviewData,
+                photoCustomName: photo.CustomName,
+                photoCustomDescription: photo.CustomDescription,
+                photoCaption: photo.Caption,
+                photoEntityDescription: metadata.EntityDescription);
+        }
+
+        if (printout is null) // # Pirate: camera
+            return;
 
         component.PrintingQueue.Enqueue(printout);
         component.SendTimeoutRemaining += component.SendTimeout;
@@ -667,37 +718,73 @@ public sealed class FaxSystem : EntitySystem
         if (!component.KnownFaxes.TryGetValue(component.DestinationFaxAddress, out var faxName))
             return;
 
-        if (!TryComp(sendEntity, out MetaDataComponent? metadata) ||
-           !TryComp<PaperComponent>(sendEntity, out var paper))
+        if (!TryComp(sendEntity, out MetaDataComponent? metadata))
             return;
 
         TryComp<NameModifierComponent>(sendEntity, out var nameMod);
-
         TryComp<LabelComponent>(sendEntity, out var labelComponent);
 
-        var payload = new NetworkPayload()
-        {
-            // Goobstation merge conflict landmine: if how faxes work is changed FaxSlipSystem.cs might become broken
-            { DeviceNetworkConstants.Command, FaxConstants.FaxPrintCommand },
-            { FaxConstants.FaxPaperNameData, nameMod?.BaseName ?? metadata.EntityName },
-            { FaxConstants.FaxPaperLabelData, labelComponent?.CurrentLabel },
-            { FaxConstants.FaxPaperContentData, paper.Content },
-            { FaxConstants.FaxPaperLockedData, paper.EditingDisabled },
-        };
+        NetworkPayload payload;
+        string logContent;
 
-        if (metadata.EntityPrototype != null)
+        if (TryComp<PaperComponent>(sendEntity, out var paper))
         {
-            // TODO: Ideally, we could just make a copy of the whole entity when it's
-            // faxed, in order to preserve visuals, etc.. This functionality isn't
-            // available yet, so we'll pass along the originating prototypeId and fall
-            // back to component.PrintPaperId in SpawnPaperFromQueue if we can't find one here.
-            payload[FaxConstants.FaxPaperPrototypeData] = metadata.EntityPrototype.ID;
+            payload = new NetworkPayload()
+            {
+                // Goobstation merge conflict landmine: if how faxes work is changed FaxSlipSystem.cs might become broken
+                { DeviceNetworkConstants.Command, FaxConstants.FaxPrintCommand },
+                { FaxConstants.FaxPaperNameData, nameMod?.BaseName ?? metadata.EntityName },
+                { FaxConstants.FaxPaperLabelData, labelComponent?.CurrentLabel },
+                { FaxConstants.FaxPaperContentData, paper.Content },
+                { FaxConstants.FaxPaperLockedData, paper.EditingDisabled },
+            };
+
+            if (metadata.EntityPrototype != null)
+            {
+                // TODO: Ideally, we could just make a copy of the whole entity when it's
+                // faxed, in order to preserve visuals, etc.. This functionality isn't
+                // available yet, so we'll pass along the originating prototypeId and fall
+                // back to component.PrintPaperId in SpawnPaperFromQueue if we can't find one here.
+                payload[FaxConstants.FaxPaperPrototypeData] = metadata.EntityPrototype.ID;
+            }
+
+            if (paper.StampState != null)
+            {
+                payload[FaxConstants.FaxPaperStampStateData] = paper.StampState;
+                payload[FaxConstants.FaxPaperStampedByData] = paper.StampedBy;
+            }
+
+            logContent = paper.Content;
         }
-
-        if (paper.StampState != null)
+        else if (TryComp<PhotoCardComponent>(sendEntity, out var photo))
         {
-            payload[FaxConstants.FaxPaperStampStateData] = paper.StampState;
-            payload[FaxConstants.FaxPaperStampedByData] = paper.StampedBy;
+            if (photo.ImageData == null)
+                return;
+
+            payload = new NetworkPayload()
+            {
+                { DeviceNetworkConstants.Command, FaxConstants.FaxPrintCommand },
+                { FaxConstants.FaxPaperNameData, nameMod?.BaseName ?? metadata.EntityName },
+                { FaxConstants.FaxPaperLabelData, labelComponent?.CurrentLabel },
+                { FaxConstants.FaxPaperContentData, string.Empty },
+                { FaxConstants.FaxPhotoImageData, photo.ImageData },
+                { FaxConstants.FaxPhotoCustomNameData, photo.CustomName },
+                { FaxConstants.FaxPhotoCustomDescriptionData, photo.CustomDescription },
+                { FaxConstants.FaxPhotoCaptionData, photo.Caption },
+                { FaxConstants.FaxPhotoEntityDescriptionData, metadata.EntityDescription },
+            };
+
+            if (photo.PreviewData != null)
+                payload[FaxConstants.FaxPhotoPreviewData] = photo.PreviewData;
+
+            if (metadata.EntityPrototype != null)
+                payload[FaxConstants.FaxPaperPrototypeData] = metadata.EntityPrototype.ID;
+
+            logContent = photo.CustomName ?? string.Empty;
+        }
+        else
+        {
+            return;
         }
 
         _deviceNetworkSystem.QueuePacket(uid, component.DestinationFaxAddress, payload);
@@ -708,7 +795,7 @@ public sealed class FaxSystem : EntitySystem
             $"{ToPrettyString(args.Actor):actor} " +
             $"sent fax from \"{component.FaxName}\" {ToPrettyString(uid):tool} " +
             $"to \"{faxName}\" ({component.DestinationFaxAddress}) " +
-            $"of {ToPrettyString(sendEntity):subject}: {paper.Content}");
+            $"of {ToPrettyString(sendEntity):subject}: {logContent}");
 
         component.SendTimeoutRemaining += component.SendTimeout;
 
@@ -749,11 +836,27 @@ public sealed class FaxSystem : EntitySystem
 
         var printout = component.PrintingQueue.Dequeue();
 
-        var entityToSpawn = printout.PrototypeId.Length == 0 ? component.PrintPaperId.ToString() : printout.PrototypeId;
+        var entityToSpawn = printout.PrototypeId.Length == 0
+            ? (printout.PhotoImageData != null ? "PhotoCard" : component.PrintPaperId.ToString())
+            : printout.PrototypeId;
         var coordinates = _transform.GetMapCoordinates(uid); // Goobstation
         var printed = Spawn(entityToSpawn, coordinates);
 
-        if (TryComp<PaperComponent>(printed, out var paper))
+        if (printout.PhotoImageData != null && TryComp<PhotoCardComponent>(printed, out var faxedPhoto))
+        {
+            faxedPhoto.ImageData = printout.PhotoImageData;
+            faxedPhoto.PreviewData = printout.PhotoPreviewData;
+            faxedPhoto.CustomName = printout.PhotoCustomName;
+            faxedPhoto.CustomDescription = printout.PhotoCustomDescription;
+            faxedPhoto.Caption = printout.PhotoCaption;
+
+            if (!string.IsNullOrWhiteSpace(printout.PhotoEntityDescription))
+                _metaData.SetEntityDescription(printed, printout.PhotoEntityDescription);
+
+            if (TryComp<AppearanceComponent>(printed, out var appearance))
+                _appearanceSystem.SetData(printed, PhotoCardVisuals.PreviewImage, faxedPhoto.PreviewData ?? Array.Empty<byte>(), appearance);
+        }
+        else if (TryComp<PaperComponent>(printed, out var paper))
         {
             _paperSystem.SetContent((printed, paper), printout.Content);
 
@@ -767,6 +870,22 @@ public sealed class FaxSystem : EntitySystem
             }
 
             paper.EditingDisabled = printout.Locked;
+        }
+        else if (printout.EntityUid.HasValue && TryComp<PhotoCardComponent>(printout.EntityUid, out var photo))
+        {
+            var newPhoto = EnsureComp<PhotoCardComponent>(printed);
+            newPhoto.ImageData = photo.ImageData;
+            newPhoto.PreviewData = photo.PreviewData;
+            newPhoto.CustomName = photo.CustomName;
+            newPhoto.CustomDescription = photo.CustomDescription;
+            newPhoto.Caption = photo.Caption;
+
+            var sourceDescription = MetaData(printout.EntityUid.Value).EntityDescription;
+            if (!string.IsNullOrWhiteSpace(sourceDescription))
+                _metaData.SetEntityDescription(printed, sourceDescription);
+
+            if (TryComp<AppearanceComponent>(printed, out var appearance))
+                _appearanceSystem.SetData(printed, PhotoCardVisuals.PreviewImage, newPhoto.PreviewData ?? Array.Empty<byte>(), appearance);
         }
 
         _metaData.SetEntityName(printed, printout.Name);

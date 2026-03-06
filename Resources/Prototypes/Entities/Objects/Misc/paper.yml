@@ -220,7 +220,8 @@
     size: Tiny
   - type: PhysicalComposition #Goobstation - Recycle update
     materialComposition:
-      Paper: 25
+      Paper: 100 # Pirate: camera
+  - type: Material # Pirate: camera
 
 - type: entity
   name: paper
@@ -258,6 +259,7 @@
   - type: PhysicalComposition
     materialComposition:
       SheetPrinter: 100
+      Paper: 100 # Pirate: camera
   # Pirate Port Document Printer ^^^
 
 - type: entity

@@ -47,6 +47,8 @@ public sealed partial class FaxWindow : DefaultWindow
     {
         CopyButton.Disabled = !state.CanCopy;
         SendButton.Disabled = !state.CanSend;
+        FileButton.Disabled = !state.CanPrintFile;
+        PaperButton.Disabled = !state.CanPrintFile;
         FromLabel.Text = state.DeviceName;
 
         if (state.IsPaperInserted)
