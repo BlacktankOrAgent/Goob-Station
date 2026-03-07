@@ -87,7 +87,7 @@
     - CassetteTape
     - CassetteTape
     - MicrophoneInstrument # Goobstation
-    - PhotoCamera # Pirate: camera
+    - PhotoCameraFilled # Pirate: camera
     - CameraFilm # Pirate: camera
     - CameraFilm # Pirate: camera
     - PhotoAlbumLoadoutSigned # Pirate: camera

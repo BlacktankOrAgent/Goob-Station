@@ -41,13 +41,13 @@
 
 - type: entity
   id: PhotoAlbumLoadoutSigned
-  parent: PhotoAlbumTGGreen
+  parent: PhotoAlbumGreen
   suffix: loadout
   components:
   - type: AutoSignPhotoAlbum
 
 - type: entity
-  id: PhotoAlbumTGGreen
+  id: PhotoAlbumGreen
   parent: PhotoAlbum
   name: green photo album
   components:
@@ -62,7 +62,7 @@
     state: album_green
 
 - type: entity
-  id: PhotoAlbumTGRed
+  id: PhotoAlbumRed
   parent: PhotoAlbum
   name: red photo album
   components:
@@ -77,7 +77,7 @@
     state: album_red
 
 - type: entity
-  id: PhotoAlbumTGBlue
+  id: PhotoAlbumBlue
   parent: PhotoAlbum
   name: blue photo album
   components:
@@ -93,7 +93,7 @@
 
 - type: entity
   id: PhotoAlbumHeadCaptain
-  parent: PhotoAlbumTGBlue
+  parent: PhotoAlbumBlue
   name: captain's photo album
   components:
   - type: PhotoAlbum
@@ -103,7 +103,7 @@
 
 - type: entity
   id: PhotoAlbumHeadHop
-  parent: PhotoAlbumTGBlue
+  parent: PhotoAlbumBlue
   name: head of personnel's photo album
   components:
   - type: PhotoAlbum
@@ -113,7 +113,7 @@
 
 - type: entity
   id: PhotoAlbumHeadHos
-  parent: PhotoAlbumTGBlue
+  parent: PhotoAlbumBlue
   name: head of security's photo album
   components:
   - type: PhotoAlbum
@@ -123,7 +123,7 @@
 
 - type: entity
   id: PhotoAlbumHeadRd
-  parent: PhotoAlbumTGBlue
+  parent: PhotoAlbumBlue
   name: research director's photo album
   components:
   - type: PhotoAlbum
@@ -133,7 +133,7 @@
 
 - type: entity
   id: PhotoAlbumHeadCmo
-  parent: PhotoAlbumTGBlue
+  parent: PhotoAlbumBlue
   name: chief medical officer's photo album
   components:
   - type: PhotoAlbum
@@ -143,7 +143,7 @@
 
 - type: entity
   id: PhotoAlbumHeadQm
-  parent: PhotoAlbumTGBlue
+  parent: PhotoAlbumBlue
   name: quartermaster's photo album
   components:
   - type: PhotoAlbum
@@ -153,7 +153,7 @@
 
 - type: entity
   id: PhotoAlbumHeadCe
-  parent: PhotoAlbumTGBlue
+  parent: PhotoAlbumBlue
   name: chief engineer's photo album
   components:
   - type: PhotoAlbum

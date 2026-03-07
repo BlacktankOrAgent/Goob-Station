@@ -14,6 +14,7 @@ using Content.Shared.Interaction;
 using Content.Shared.Materials;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Physics;
 using Content.Shared.Tag;
 using Content.Shared.Timing;
 using Content.Shared.UserInterface;
@@ -21,6 +22,7 @@ using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 using Robust.Shared.Enums;
 using Robust.Shared.GameObjects.Components.Localization;
+using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using System.Numerics;
@@ -49,6 +51,7 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
     const int MAX_SIZE = 1024 * 96;
     // 16 KB
     const int MAX_PREVIEW_SIZE = 1024 * 16;
+    private const int MaxCapturedEntities = 64;
     private const int MaxCustomNameLength = 32;
     private const int MaxCustomDescriptionLength = 128;
     private const int MaxCustomCaptionLength = 256;
@@ -89,6 +92,9 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
 
     private void OnTakeImageMessage(EntityUid uid, PhotoCameraComponent component, PhotoCameraTakeImageMessage message)
     {
+        if (component.User is not { } user || user != message.Actor)
+            return;
+
         if (message.Data.Length > MAX_SIZE)
             return;
 
@@ -103,8 +109,12 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
             previewData = preview;
         }
 
-        if (TryTakeImage(uid, component, message.Data, previewData, message.CapturedEntities, message.Zoom))
-            RaiseLocalEvent(new PhotoCameraTakeImageEvent(uid, message.Actor, message.PhotoPosition, message.Zoom));
+        var sanitizedZoom = SanitizeCaptureZoom(component, message.Zoom);
+        var sanitizedEntities = SanitizeCapturedEntities(uid, component, message.CapturedEntities, sanitizedZoom);
+        var photoPosition = _transform.GetMapCoordinates(uid);
+
+        if (TryTakeImage(uid, component, message.Data, previewData, sanitizedEntities, sanitizedZoom))
+            RaiseLocalEvent(new PhotoCameraTakeImageEvent(uid, user, photoPosition, sanitizedZoom));
     }
 
     private void UpdateCameraInterface(EntityUid uid, PhotoCameraComponent component, EntityUid? player = null)
@@ -158,7 +168,7 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
         TryPromptPhotoCustomization(args.User, uid);
     }
 
-    private bool TryTakeImage(EntityUid uid, PhotoCameraComponent component, byte[] imageData, byte[]? previewData, IReadOnlyList<NetEntity> capturedEntities, float zoom)
+    private bool TryTakeImage(EntityUid uid, PhotoCameraComponent component, byte[] imageData, byte[]? previewData, IReadOnlyList<EntityUid> capturedEntities, float zoom)
     {
         if (_delay.IsDelayed(uid))
             return false;
@@ -176,7 +186,7 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
         return printCard;
     }
 
-    private bool PrintCard(EntityUid uid, PhotoCameraComponent component, byte[] imageData, byte[]? previewData, IReadOnlyList<NetEntity> capturedEntities, float zoom)
+    private bool PrintCard(EntityUid uid, PhotoCameraComponent component, byte[] imageData, byte[]? previewData, IReadOnlyList<EntityUid> capturedEntities, float zoom)
     {
         if (!_material.TryChangeMaterialAmount(uid, component.CardMaterial, -component.CardCost))
         {
@@ -236,7 +246,7 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
                 data[4] == 0x0D && data[5] == 0x0A && data[6] == 0x1A && data[7] == 0x0A;
     }
 
-    private PhotoCaptureMetadata BuildPhotoMetadata(EntityUid photographer, IReadOnlyList<NetEntity> capturedEntities, Vector2 viewBox, float zoom)
+    private PhotoCaptureMetadata BuildPhotoMetadata(EntityUid photographer, IReadOnlyList<EntityUid> capturedEntities, Vector2 viewBox, float zoom)
     {
         var areaWidth = Math.Max(1, (int) MathF.Ceiling(viewBox.X * Math.Clamp(zoom, 0.01f, 10f)));
         var areaHeight = Math.Max(1, (int) MathF.Ceiling(viewBox.Y * Math.Clamp(zoom, 0.01f, 10f)));
@@ -251,9 +261,8 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
         var namesSeen = new List<string>();
         var seen = new HashSet<EntityUid>();
 
-        foreach (var netEntity in capturedEntities)
+        foreach (var entity in capturedEntities)
         {
-            var entity = GetEntity(netEntity);
             if (!Exists(entity) || !seen.Add(entity))
                 continue;
 
@@ -279,6 +288,79 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
             deadSeen,
             namesSeen,
             string.Join("\n", descriptionLines));
+    }
+
+    private static float SanitizeCaptureZoom(PhotoCameraComponent component, float zoom)
+    {
+        var minZoom = Math.Min(component.MinZoom, component.MaxZoom);
+        var maxZoom = Math.Max(component.MinZoom, component.MaxZoom);
+
+        if (!float.IsFinite(zoom))
+            return maxZoom;
+
+        return Math.Clamp(zoom, minZoom, maxZoom);
+    }
+
+    private List<EntityUid> SanitizeCapturedEntities(
+        EntityUid cameraUid,
+        PhotoCameraComponent component,
+        IReadOnlyList<NetEntity> capturedEntities,
+        float zoom)
+    {
+        var sanitized = new List<EntityUid>();
+        if (capturedEntities.Count == 0)
+            return sanitized;
+
+        var cameraCoords = _transform.GetMapCoordinates(cameraUid);
+        if (cameraCoords.MapId == MapId.Nullspace)
+            return sanitized;
+
+        var captureRange = GetCaptureRange(component, zoom);
+        var maxCandidates = Math.Min(capturedEntities.Count, MaxCapturedEntities);
+        var seen = new HashSet<EntityUid>();
+
+        for (var i = 0; i < maxCandidates; i++)
+        {
+            if (!TryGetEntity(capturedEntities[i], out var entity) || entity == null)
+                continue;
+
+            var entityUid = entity.Value;
+            if (!seen.Add(entityUid))
+                continue;
+
+            if (!IsValidCaptureTarget(entityUid, cameraCoords, captureRange))
+                continue;
+
+            sanitized.Add(entityUid);
+        }
+
+        return sanitized;
+    }
+
+    private static float GetCaptureRange(PhotoCameraComponent component, float zoom)
+    {
+        var width = Math.Abs(component.ViewBox.X * zoom);
+        var height = Math.Abs(component.ViewBox.Y * zoom);
+        return Math.Max(1f, MathF.Sqrt(width * width + height * height));
+    }
+
+    private bool IsValidCaptureTarget(EntityUid target, MapCoordinates cameraCoords, float captureRange)
+    {
+        if (!TryComp<MobStateComponent>(target, out _))
+            return false;
+
+        var targetCoords = _transform.GetMapCoordinates(target);
+        if (targetCoords.MapId != cameraCoords.MapId)
+            return false;
+
+        if ((targetCoords.Position - cameraCoords.Position).LengthSquared() > captureRange * captureRange)
+            return false;
+
+        return _interactionSystem.InRangeUnobstructed(
+            cameraCoords,
+            target,
+            range: captureRange,
+            collisionMask: CollisionGroup.Opaque);
     }
 
     private List<string> GetHeldItems(EntityUid entity, EntityUid photographer)
@@ -565,6 +647,8 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
 
         if (!string.IsNullOrWhiteSpace(composedDescription))
             _metaData.SetEntityDescription(uid, composedDescription);
+        else
+            _metaData.SetEntityDescription(uid, string.IsNullOrWhiteSpace(baseDescription) ? string.Empty : baseDescription);
     }
 
     // Photo Card

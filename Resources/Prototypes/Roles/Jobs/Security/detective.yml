@@ -128,7 +128,7 @@
     - ForensicPad
     - ForensicScanner
     - ClothingMaskGasSecurity # Goobstation
-    - PhotoCamera # Pirate: camera
+    - PhotoCameraFilled # Pirate: camera
     - CameraFilm # Pirate: camera
 
 - type: chameleonOutfit

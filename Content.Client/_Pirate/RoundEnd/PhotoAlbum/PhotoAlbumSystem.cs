@@ -38,11 +38,10 @@ public sealed class PhotoAlbumSystem : EntitySystem
 
     private void OnPhotoImageReceived(PhotoAlbumImageResponseEvent ev)
     {
-        _fullImageData[ev.ImageId] = ev.ImageData;
-
         if (!TryTakePendingImageRequest(ev.ImageId, out var pending))
             return;
 
+        _fullImageData[ev.ImageId] = ev.ImageData;
         pending.Dispose();
         pending.Completion.TrySetResult(ev.ImageData);
     }
@@ -80,6 +79,7 @@ public sealed class PhotoAlbumSystem : EntitySystem
     {
         Albums = null;
         ClearImageCaches();
+        AlbumsUpdated?.Invoke();
     }
 
     private void ClearImageCaches()

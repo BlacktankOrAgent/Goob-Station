@@ -766,12 +766,14 @@ public sealed class FaxSystem : EntitySystem
             if (photo.ImageData == null)
                 return;
 
+            var photoContent = photo.CustomDescription ?? photo.Caption ?? metadata.EntityDescription ?? string.Empty;
+
             payload = new NetworkPayload()
             {
                 { DeviceNetworkConstants.Command, FaxConstants.FaxPrintCommand },
                 { FaxConstants.FaxPaperNameData, nameMod?.BaseName ?? metadata.EntityName },
                 { FaxConstants.FaxPaperLabelData, labelComponent?.CurrentLabel },
-                { FaxConstants.FaxPaperContentData, string.Empty },
+                { FaxConstants.FaxPaperContentData, photoContent },
                 { FaxConstants.FaxPhotoImageData, photo.ImageData },
                 { FaxConstants.FaxPhotoCustomNameData, photo.CustomName },
                 { FaxConstants.FaxPhotoCustomDescriptionData, photo.CustomDescription },
