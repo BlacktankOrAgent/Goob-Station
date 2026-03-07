@@ -206,6 +206,7 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
             return;
         }
 
+        _audio.PlayPvs(component.InsertSound, uid);
         UpdateCameraInterface(uid, component);
     }
 

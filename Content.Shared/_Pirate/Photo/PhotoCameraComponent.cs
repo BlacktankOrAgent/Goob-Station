@@ -22,6 +22,8 @@ public sealed partial class PhotoCameraComponent : Component
     public SoundSpecifier PhotoSound = new SoundCollectionSpecifier("PhotoCameraShutter");
     [DataField]
     public SoundSpecifier ErrorSound = new SoundPathSpecifier("/Audio/Machines/airlock_deny.ogg");
+    [DataField]
+    public SoundSpecifier InsertSound = new SoundPathSpecifier("/Audio/Machines/id_insert.ogg");
 
     [DataField]
     public string CardPrototype = "PhotoCard";
