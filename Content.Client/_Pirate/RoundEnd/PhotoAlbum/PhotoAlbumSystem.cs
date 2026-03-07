@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Content.Shared.GameTicking;
 using Content.Shared._Pirate.RoundEnd;
 
 namespace Content.Client._Pirate.RoundEnd.PhotoAlbum;
@@ -27,6 +28,7 @@ public sealed class PhotoAlbumSystem : EntitySystem
 
         SubscribeNetworkEvent<PhotoAlbumEvent>(OnStationImagesReceived);
         SubscribeNetworkEvent<PhotoAlbumImageResponseEvent>(OnPhotoImageReceived);
+        SubscribeNetworkEvent<TickerJoinGameEvent>(OnJoinGame);
     }
 
     private void OnStationImagesReceived(PhotoAlbumEvent ev)
@@ -44,6 +46,11 @@ public sealed class PhotoAlbumSystem : EntitySystem
         _fullImageData[ev.ImageId] = ev.ImageData;
         pending.Dispose();
         pending.Completion.TrySetResult(ev.ImageData);
+    }
+
+    private void OnJoinGame(TickerJoinGameEvent ev)
+    {
+        ResetAlbums();
     }
 
     public Task<byte[]?> GetFullImageDataAsync(Guid imageId)
@@ -77,12 +84,18 @@ public sealed class PhotoAlbumSystem : EntitySystem
 
     public void ClearImagesData()
     {
+        ClearImageCaches();
+        AlbumsUpdated?.Invoke();
+    }
+
+    public void ResetAlbums()
+    {
         Albums = null;
         ClearImageCaches();
         AlbumsUpdated?.Invoke();
     }
 
-    private void ClearImageCaches()
+    public void ClearImageCaches()
     {
         List<PendingImageRequest> pendingRequests = new();
 

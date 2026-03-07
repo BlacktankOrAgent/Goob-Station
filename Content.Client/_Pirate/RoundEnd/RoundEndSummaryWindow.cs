@@ -186,7 +186,7 @@ public sealed partial class RoundEndSummaryWindow
         stationAlbumContainerScrollbox.AddChild(stationAlbumContainer);
         stationAlbumTab.AddChild(stationAlbumContainerScrollbox);
 
-        stationAlbumSystem.ClearImagesData();
+        stationAlbumSystem.ClearImageCaches();
 
         return stationAlbumTab;
     }

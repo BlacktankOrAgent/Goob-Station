@@ -25,6 +25,9 @@ using Robust.Shared.GameObjects.Components.Localization;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using System.IO;
 using System.Numerics;
 
 namespace Content.Server._Pirate.Photo;
@@ -33,6 +36,7 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
 {
     private static readonly ProtoId<TagPrototype> CameraFilmTag = "CameraFilm";
     private static readonly ProtoId<TagPrototype> WriteTag = "Write";
+    private readonly Dictionary<EntityUid, int> _openCameraCounts = new();
 
     [Dependency] private readonly UserInterfaceSystem _userInterface = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
@@ -51,6 +55,12 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
     const int MAX_SIZE = 1024 * 96;
     // 16 KB
     const int MAX_PREVIEW_SIZE = 1024 * 16;
+    const int MAX_WIDTH = 1024;
+    const int MAX_HEIGHT = 1024;
+    const int MAX_PIXELS = MAX_WIDTH * MAX_HEIGHT;
+    const int MAX_PREVIEW_WIDTH = 256;
+    const int MAX_PREVIEW_HEIGHT = 256;
+    const int MAX_PREVIEW_PIXELS = MAX_PREVIEW_WIDTH * MAX_PREVIEW_HEIGHT;
     private const int MaxCapturedEntities = 64;
     private const int MaxCustomNameLength = 32;
     private const int MaxCustomDescriptionLength = 128;
@@ -66,6 +76,7 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
             subs.Event<BoundUIClosedEvent>(OnCameraBoundUiClose);
             subs.Event<PhotoCameraTakeImageMessage>(OnTakeImageMessage);
         });
+        SubscribeLocalEvent<PhotoCameraComponent, ComponentRemove>(OnCameraComponentRemove);
         SubscribeLocalEvent<PhotoCameraComponent, MaterialAmountChangedEvent>(OnPaperInserted);
         SubscribeLocalEvent<PhotoCameraComponent, InteractUsingEvent>(OnCameraInteractUsing);
 
@@ -77,34 +88,68 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
     {
         UpdateCameraInterface(uid, component);
 
-        component.User = args.User;
-        EnsureComp<PhotoCameraUserComponent>(args.User);
+        if (!component.OpenUsers.Add(args.User))
+            return;
+
+        IncrementOpenCameraCount(args.User);
     }
 
     private void OnCameraBoundUiClose(EntityUid uid, PhotoCameraComponent component, BoundUIClosedEvent args)
     {
-        if (component.User == null)
+        if (!component.OpenUsers.Remove(args.Actor))
             return;
 
-        RemComp<PhotoCameraUserComponent>(component.User.Value);
-        component.User = null;
+        DecrementOpenCameraCount(args.Actor);
+    }
+
+    private void OnCameraComponentRemove(EntityUid uid, PhotoCameraComponent component, ComponentRemove args)
+    {
+        foreach (var user in component.OpenUsers)
+        {
+            DecrementOpenCameraCount(user);
+        }
+
+        component.OpenUsers.Clear();
+    }
+
+    private void IncrementOpenCameraCount(EntityUid user)
+    {
+        if (_openCameraCounts.TryGetValue(user, out var count))
+        {
+            _openCameraCounts[user] = count + 1;
+            return;
+        }
+
+        _openCameraCounts[user] = 1;
+        EnsureComp<PhotoCameraUserComponent>(user);
+    }
+
+    private void DecrementOpenCameraCount(EntityUid user)
+    {
+        if (!_openCameraCounts.TryGetValue(user, out var count))
+            return;
+
+        if (count <= 1)
+        {
+            _openCameraCounts.Remove(user);
+            RemComp<PhotoCameraUserComponent>(user);
+            return;
+        }
+
+        _openCameraCounts[user] = count - 1;
     }
 
     private void OnTakeImageMessage(EntityUid uid, PhotoCameraComponent component, PhotoCameraTakeImageMessage message)
     {
-        if (component.User is not { } user || user != message.Actor)
+        if (!component.OpenUsers.Contains(message.Actor))
             return;
 
-        if (message.Data.Length > MAX_SIZE)
-            return;
-
-        if (!CheckPngSignature(message.Data))
+        if (!ValidatePngData(message.Data, MAX_SIZE, MAX_WIDTH, MAX_HEIGHT, MAX_PIXELS))
             return;
 
         byte[]? previewData = null;
         if (message.PreviewData is { Length: > 0 } preview &&
-            preview.Length <= MAX_PREVIEW_SIZE &&
-            CheckPngSignature(preview))
+            ValidatePngData(preview, MAX_PREVIEW_SIZE, MAX_PREVIEW_WIDTH, MAX_PREVIEW_HEIGHT, MAX_PREVIEW_PIXELS))
         {
             previewData = preview;
         }
@@ -113,11 +158,11 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
         var sanitizedEntities = SanitizeCapturedEntities(uid, component, message.CapturedEntities, sanitizedZoom);
         var photoPosition = _transform.GetMapCoordinates(uid);
 
-        if (TryTakeImage(uid, component, message.Data, previewData, sanitizedEntities, sanitizedZoom))
-            RaiseLocalEvent(new PhotoCameraTakeImageEvent(uid, user, photoPosition, sanitizedZoom));
+        if (TryTakeImage(uid, component, message.Actor, message.Data, previewData, sanitizedEntities, sanitizedZoom))
+            RaiseLocalEvent(new PhotoCameraTakeImageEvent(uid, message.Actor, photoPosition, sanitizedZoom));
     }
 
-    private void UpdateCameraInterface(EntityUid uid, PhotoCameraComponent component, EntityUid? player = null)
+    private void UpdateCameraInterface(EntityUid uid, PhotoCameraComponent component)
     {
         bool hasPaper = _material.CanChangeMaterialAmount(uid, component.CardMaterial, -component.CardCost);
 
@@ -130,7 +175,7 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
         if (TryComp<MaterialStorageComponent>(uid, out var storage))
             Dirty(uid, storage);
 
-        UpdateCameraInterface(uid, component, component.User);
+        UpdateCameraInterface(uid, component);
     }
 
     private void OnCameraInteractUsing(EntityUid uid, PhotoCameraComponent component, InteractUsingEvent args)
@@ -156,7 +201,7 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
             return;
         }
 
-        UpdateCameraInterface(uid, component, component.User);
+        UpdateCameraInterface(uid, component);
     }
 
     private void OnPhotoCardInteractUsing(EntityUid uid, PhotoCardComponent component, InteractUsingEvent args)
@@ -168,12 +213,12 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
         TryPromptPhotoCustomization(args.User, uid);
     }
 
-    private bool TryTakeImage(EntityUid uid, PhotoCameraComponent component, byte[] imageData, byte[]? previewData, IReadOnlyList<EntityUid> capturedEntities, float zoom)
+    private bool TryTakeImage(EntityUid uid, PhotoCameraComponent component, EntityUid user, byte[] imageData, byte[]? previewData, IReadOnlyList<EntityUid> capturedEntities, float zoom)
     {
         if (_delay.IsDelayed(uid))
             return false;
 
-        var printCard = PrintCard(uid, component, imageData, previewData, capturedEntities, zoom);
+        var printCard = PrintCard(uid, component, user, imageData, previewData, capturedEntities, zoom);
 
         if (printCard)
         {
@@ -186,12 +231,11 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
         return printCard;
     }
 
-    private bool PrintCard(EntityUid uid, PhotoCameraComponent component, byte[] imageData, byte[]? previewData, IReadOnlyList<EntityUid> capturedEntities, float zoom)
+    private bool PrintCard(EntityUid uid, PhotoCameraComponent component, EntityUid user, byte[] imageData, byte[]? previewData, IReadOnlyList<EntityUid> capturedEntities, float zoom)
     {
         if (!_material.TryChangeMaterialAmount(uid, component.CardMaterial, -component.CardCost))
         {
-            if (component.User != null)
-                _popup.PopupEntity(Loc.GetString("photo-camera-no-paper"), uid, component.User.Value);
+            _popup.PopupEntity(Loc.GetString("photo-camera-no-paper"), uid, user);
 
             return false;
         }
@@ -200,8 +244,7 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
         _transform.SetMapCoordinates(card, _transform.GetMapCoordinates(uid));
 
         PhotoCaptureMetadata? metadata = null;
-        if (component.User is { } user)
-            metadata = BuildPhotoMetadata(user, capturedEntities, component.ViewBox, zoom);
+        metadata = BuildPhotoMetadata(user, capturedEntities, component.ViewBox, zoom);
 
         if (TryComp<PhotoCardComponent>(card, out var photo))
         {
@@ -220,13 +263,10 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
             UpdatePhotoCardExamineDescription(card, photo);
         }
 
-        if (component.User != null)
-        {
-            _hands.TryPickupAnyHand(component.User.Value, card);
-            TryPromptPhotoCustomization(component.User.Value, card);
-        }
+        _hands.TryPickupAnyHand(user, card);
+        TryPromptPhotoCustomization(user, card);
 
-        UpdateCameraInterface(uid, component, component.User);
+        UpdateCameraInterface(uid, component);
 
         return true;
     }
@@ -244,6 +284,33 @@ public sealed partial class PhotoSystem : SharedPhotoSystem
         if (data.Length < 8) return false;
         return data[0] == 0x89 && data[1] == 0x50 && data[2] == 0x4E && data[3] == 0x47 &&
                 data[4] == 0x0D && data[5] == 0x0A && data[6] == 0x1A && data[7] == 0x0A;
+    }
+
+    private static bool ValidatePngData(byte[] data, int maxSize, int maxWidth, int maxHeight, int maxPixels)
+    {
+        if (data.Length == 0 || data.Length > maxSize)
+            return false;
+
+        if (!CheckPngSignature(data))
+            return false;
+
+        try
+        {
+            using var stream = new MemoryStream(data, writable: false);
+            using var image = Image.Load<Rgba32>(stream);
+
+            if (image.Width <= 0 || image.Height <= 0)
+                return false;
+
+            if (image.Width > maxWidth || image.Height > maxHeight)
+                return false;
+
+            return (long) image.Width * image.Height <= maxPixels;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private PhotoCaptureMetadata BuildPhotoMetadata(EntityUid photographer, IReadOnlyList<EntityUid> capturedEntities, Vector2 viewBox, float zoom)

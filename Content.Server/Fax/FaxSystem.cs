@@ -878,23 +878,6 @@ public sealed class FaxSystem : EntitySystem
 
             paper.EditingDisabled = printout.Locked;
         }
-        else if (printout.PhotoSourceEntityUid.HasValue && TryComp<PhotoCardComponent>(printout.PhotoSourceEntityUid, out var photo))
-        {
-            var newPhoto = EnsureComp<PhotoCardComponent>(printed);
-            newPhoto.ImageData = photo.ImageData;
-            newPhoto.PreviewData = photo.PreviewData;
-            newPhoto.CustomName = photo.CustomName;
-            newPhoto.CustomDescription = photo.CustomDescription;
-            newPhoto.Caption = photo.Caption;
-
-            var sourceDescription = MetaData(printout.PhotoSourceEntityUid.Value).EntityDescription;
-            if (!string.IsNullOrWhiteSpace(sourceDescription))
-                _metaData.SetEntityDescription(printed, sourceDescription);
-
-            if (TryComp<AppearanceComponent>(printed, out var appearance))
-                _appearanceSystem.SetData(printed, PhotoCardVisuals.PreviewImage, newPhoto.PreviewData ?? Array.Empty<byte>(), appearance);
-        }
-
         _metaData.SetEntityName(printed, printout.Name);
 
         if (printout.Label is { } label)

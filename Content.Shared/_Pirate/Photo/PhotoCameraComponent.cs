@@ -31,7 +31,7 @@ public sealed partial class PhotoCameraComponent : Component
     public int CardCost = 100;
 
     [ViewVariables]
-    public EntityUid? User;
+    public HashSet<EntityUid> OpenUsers = new();
 }
 
 [Serializable, NetSerializable]
