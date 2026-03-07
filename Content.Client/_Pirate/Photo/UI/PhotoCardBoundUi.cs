@@ -1,6 +1,7 @@
-// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+// SPDX-FileCopyrightText: 2026 Corvax Team Contributors
+// SPDX-FileCopyrightText: 2026 CyberLanos <cyber.lanos00@gmail.com>
 //
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 
 using Content.Shared._Pirate.Photo;
 using Robust.Client.UserInterface;
@@ -38,3 +39,5 @@ public sealed class PhotoCardBoundUserInterface : BoundUserInterface
     }
 
 }
+
+

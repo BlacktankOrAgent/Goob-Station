@@ -1,3 +1,10 @@
+<!--
+SPDX-FileCopyrightText: 2026 Corvax Team Contributors
+SPDX-FileCopyrightText: 2026 CyberLanos <cyber.lanos00@gmail.com>
+
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <photo:PhotoCardWindow xmlns="https://spacestation14.io"
     xmlns:photo="clr-namespace:Content.Client._Pirate.Photo.UI"
     MouseFilter="Stop" Resizable="False" MinSize="150 150"
@@ -26,3 +33,5 @@
         </PanelContainer>
     </BoxContainer>
 </photo:PhotoCardWindow>
+
+

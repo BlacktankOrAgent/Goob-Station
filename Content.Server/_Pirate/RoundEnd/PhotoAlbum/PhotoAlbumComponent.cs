@@ -1,6 +1,7 @@
-// SPDX-FileCopyrightText: 2026 Space Station 14 Contributors
+// SPDX-FileCopyrightText: 2026 Corvax Team Contributors
+// SPDX-FileCopyrightText: 2026 CyberLanos <cyber.lanos00@gmail.com>
 //
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-only
 
 using Robust.Shared.Audio;
 
@@ -36,3 +37,5 @@ public sealed partial class PhotoAlbumComponent : Component
     [DataField]
     public SoundSpecifier? SignSound { get; private set; } = new SoundCollectionSpecifier("PaperScribbles", AudioParams.Default.WithVariation(0.1f));
 }
+
+
