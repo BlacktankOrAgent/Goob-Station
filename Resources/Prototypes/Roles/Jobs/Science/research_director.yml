@@ -169,12 +169,13 @@
   icon: "JobIconResearchDirector"
   supervisors: job-supervisors-captain
   #canBeAntag: false
+  whitelisted: true # Pirate
   antagAdvantage: 75 # Goobstation
   guides: # goobstation
   - Science
   - Command
-  - ResearchDirector SOP
-  - Science SOP
+  - ResearchDirectorSOP
+  - ScienceSOP
   goobcoins: 40 #Goob content
   access:
   - Research
