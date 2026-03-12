@@ -310,6 +310,7 @@
                            VerticalAlignment="Center"
                            StyleClasses="LabelSubText"
                            ModulateSelfOverride="#9aa2b8"
+                           Margin="0 0 0 8"
                            VerticalExpand="True" />
                     <ScrollContainer Name="GalleryPreviewScroll"
                                      VerticalExpand="True"

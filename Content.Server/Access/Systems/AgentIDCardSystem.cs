@@ -216,9 +216,9 @@ namespace Content.Server.Access.Systems
                     }
                 }
 
-                foreach (var (fileName, photo) in _nanoChat.GetStoredPhotos((args.Target.Value, targetNanoChat)))
+                foreach (var (_, photo) in _nanoChat.GetStoredPhotos((args.Target.Value, targetNanoChat)))
                 {
-                    _nanoChat.TryStorePhoto((uid, agentNanoChat), CloneNanoChatPhoto(fileName, photo));
+                    _nanoChat.TryStorePhoto((uid, agentNanoChat), CloneNanoChatPhoto(photo));
                 }
 
                 _nanoChat.SetCurrentChat((uid, agentNanoChat), _nanoChat.GetCurrentChat((args.Target.Value, targetNanoChat)));
@@ -285,15 +285,15 @@ namespace Content.Server.Access.Systems
         }
 
         #region Pirate: preserve nano chat gallery state when copying agent IDs
-        private static NanoChatPhotoData CloneNanoChatPhoto(string fileName, NanoChatPhotoData photo)
+        private static NanoChatPhotoData CloneNanoChatPhoto(NanoChatPhotoData photo)
         {
             return new NanoChatPhotoData(
-                fileName,
+                photo.FileName,
                 photo.ImageData is null ? null : [.. photo.ImageData],
                 photo.PreviewData is null ? null : [.. photo.PreviewData],
                 photo.Caption,
                 photo.Description,
-                [.. photo.NamesSeen]);
+                photo.NamesSeen is null ? System.Array.Empty<string>() : [.. photo.NamesSeen]);
         }
         #endregion
 
