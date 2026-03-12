@@ -750,7 +750,7 @@ public sealed partial class NanoChatUiFragmentPirate : BoxContainer
         _pendingChat = null;
         _currentChat = state.CurrentChat;
         if (_viewMode == NanoChatViewMode.GalleryPick && _currentChat == null)
-            _viewMode = NanoChatViewMode.Chat;
+            SetViewMode(NanoChatViewMode.Chat);
 
         UpdateCurrentChat();
         UpdateChatList(state.Recipients);

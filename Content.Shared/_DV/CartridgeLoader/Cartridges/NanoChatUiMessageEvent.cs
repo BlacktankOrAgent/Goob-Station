@@ -12,6 +12,7 @@
 
 using Content.Shared.CartridgeLoader;
 using Robust.Shared.Serialization;
+using System.Linq;
 
 namespace Content.Shared._DV.CartridgeLoader.Cartridges;
 
@@ -136,7 +137,8 @@ public struct NanoChatPhotoData
     public byte[]? PreviewData;
     public string? Caption;
     public string? Description;
-    public List<string> NamesSeen;
+    #region Pirate: immutable nano chat photo metadata
+    public IReadOnlyList<string> NamesSeen;
 
     public NanoChatPhotoData(
         string fileName,
@@ -144,15 +146,16 @@ public struct NanoChatPhotoData
         byte[]? previewData = null,
         string? caption = null,
         string? description = null,
-        List<string>? namesSeen = null)
+        IReadOnlyList<string>? namesSeen = null)
     {
         FileName = fileName;
         ImageData = imageData;
         PreviewData = previewData;
         Caption = caption;
         Description = description;
-        NamesSeen = namesSeen ?? new List<string>();
+        NamesSeen = namesSeen?.ToArray() ?? [];
     }
+    #endregion
 }
 
 [Serializable, NetSerializable, DataRecord]

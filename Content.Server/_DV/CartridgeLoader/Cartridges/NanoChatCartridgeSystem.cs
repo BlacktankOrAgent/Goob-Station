@@ -218,7 +218,7 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
     {
         if (!args.CanInteract ||
             !args.CanAccess ||
-            !TryGetUploadablePhoto(args.Using, out _))
+            !TryGetUploadablePhoto(args.Using, out _, out _))
             return;
 
         var user = args.User; // Pirate: photo upload alt verb
@@ -240,37 +240,36 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
         }
 
         if (args.Cancelled ||
-            args.Used is not { } photoUid ||
-            !TryComp<PhotoCardComponent>(photoUid, out var photoCard) ||
-            !GetCardEntity(ent, out var card) ||
-            !TryCreateStoredPhoto(photoCard, out var storedPhoto))
+            args.CardUid == EntityUid.Invalid ||
+            args.Photo.ImageData is not { Length: > 0 } ||
+            !TryComp<NanoChatCardComponent>(args.CardUid, out var cardComp))
         {
             ShowPhotoActionError(ent.Owner, args.User, "nano-chat-photo-upload-failed");
             args.Handled = true;
             return;
         }
 
-        _nanoChat.StorePhoto((card, card.Comp), storedPhoto);
-        UpdateUIForCard(card);
-        ShowPhotoActionSuccess(card.Comp.PdaUid ?? card.Owner, args.User, "nano-chat-photo-uploaded", PhotoScanSuccessSound); // Pirate: nano chat photo scan sound
+        _nanoChat.StorePhoto((args.CardUid, cardComp), args.Photo); // Pirate: use frozen card uid from do-after payload
+        UpdateUIForCard(args.CardUid);
+        ShowPhotoActionSuccess(cardComp.PdaUid ?? args.CardUid, args.User, "nano-chat-photo-uploaded", PhotoScanSuccessSound); // Pirate: nano chat photo scan sound
         args.Handled = true;
     }
 
     private void TryStartPhotoUpload(EntityUid pdaUid, EntityUid user, EntityUid? usedUid)
     {
-        if (!TryGetUploadablePhoto(usedUid, out var photoUid))
+        if (!TryGetUploadablePhoto(usedUid, out var photoUid, out var storedPhoto))
         {
             ShowPhotoActionError(pdaUid, user, "nano-chat-photo-upload-failed");
             return;
         }
 
-        if (!GetCardEntity(pdaUid, out _))
+        if (!GetCardEntity(pdaUid, out var card))
         {
             ShowPhotoActionError(pdaUid, user, "nano-chat-photo-upload-failed");
             return;
         }
 
-        var doAfter = new DoAfterArgs(EntityManager, user, PhotoUploadDelay, new PdaPhotoUploadDoAfterEvent(), pdaUid, target: pdaUid, used: photoUid)
+        var doAfter = new DoAfterArgs(EntityManager, user, PhotoUploadDelay, new PdaPhotoUploadDoAfterEvent(card.Owner, storedPhoto), pdaUid, target: pdaUid, used: photoUid)
         {
             BreakOnMove = true,
             BreakOnDamage = true,
@@ -283,12 +282,13 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
         ShowPhotoActionError(pdaUid, user, "nano-chat-photo-upload-failed");
     }
 
-    private bool TryGetUploadablePhoto(EntityUid? usedUid, out EntityUid photoUid)
+    private bool TryGetUploadablePhoto(EntityUid? usedUid, out EntityUid photoUid, out NanoChatPhotoData storedPhoto)
     {
         photoUid = EntityUid.Invalid;
+        storedPhoto = default;
         if (usedUid is not { } uid ||
             !TryComp<PhotoCardComponent>(uid, out var photoCard) ||
-            !TryCreateStoredPhoto(photoCard, out _))
+            !TryCreateStoredPhoto(photoCard, out storedPhoto))
         {
             return false;
         }
@@ -304,7 +304,7 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
         if (!args.CanInteract ||
             !args.CanAccess ||
             !_fax.CanQueueNanoChatPhotoPrint(ent.Owner, ent.Comp) ||
-            !TryGetPrintableGalleryPhoto(args.Using, out _))
+            !TryGetPrintableGalleryPhoto(args.Using, out _, out _))
         {
             return;
         }
@@ -326,9 +326,9 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
             return;
 
         if (args.Cancelled ||
-            args.Used is not { } pdaUid ||
-            !TryGetPrintableGalleryPhoto(pdaUid, out var storedPhoto) ||
-            !_fax.TryQueueNanoChatPhotoPrint(ent.Owner, args.User, storedPhoto, ent.Comp))
+            args.CardUid == EntityUid.Invalid ||
+            args.Photo.ImageData is not { Length: > 0 } ||
+            !_fax.TryQueueNanoChatPhotoPrint(ent.Owner, args.User, args.Photo, ent.Comp))
         {
             ShowPhotoActionError(ent.Owner, args.User, "nano-chat-photo-print-failed");
             args.Handled = true;
@@ -341,7 +341,7 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
 
     private void TryStartPhotoPrintToFax(EntityUid faxUid, EntityUid user, EntityUid? usedUid)
     {
-        if (!TryGetPrintableGalleryPhoto(usedUid, out _) ||
+        if (!TryGetPrintableGalleryPhoto(usedUid, out var cardUid, out var storedPhoto) ||
             !TryComp<FaxMachineComponent>(faxUid, out var fax) ||
             !_fax.CanQueueNanoChatPhotoPrint(faxUid, fax))
         {
@@ -349,7 +349,7 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
             return;
         }
 
-        var doAfter = new DoAfterArgs(EntityManager, user, PhotoUploadDelay, new PdaPhotoPrintToFaxDoAfterEvent(), faxUid, target: faxUid, used: usedUid)
+        var doAfter = new DoAfterArgs(EntityManager, user, PhotoUploadDelay, new PdaPhotoPrintToFaxDoAfterEvent(cardUid, storedPhoto), faxUid, target: faxUid, used: usedUid)
         {
             BreakOnMove = true,
             BreakOnDamage = true,
@@ -362,8 +362,9 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
         ShowPhotoActionError(faxUid, user, "nano-chat-photo-print-failed");
     }
 
-    private bool TryGetPrintableGalleryPhoto(EntityUid? pdaUid, out NanoChatPhotoData storedPhoto)
+    private bool TryGetPrintableGalleryPhoto(EntityUid? pdaUid, out EntityUid cardUid, out NanoChatPhotoData storedPhoto)
     {
+        cardUid = EntityUid.Invalid;
         storedPhoto = default;
         string? selectedPhotoFileName = null;
         if (pdaUid is not { } uid ||
@@ -375,6 +376,7 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
             return false;
         }
 
+        cardUid = card.Owner;
         return true;
     }
     #endregion
@@ -1031,7 +1033,7 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
         {
             recipients = card.Recipients;
             messages = card.Messages;
-            photos = card.Photos;
+            photos = BuildUiPhotos(card.Photos); // Pirate: strip full image payloads from gallery UI state
             currentChat = card.CurrentChat;
             ownNumber = card.Number ?? 0;
             maxRecipients = card.MaxRecipients;
@@ -1050,4 +1052,23 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
             listNumber);
         _cartridge.UpdateCartridgeUiState(loader, state);
     }
+
+    #region Pirate: strip full image payloads from gallery UI state
+    private static Dictionary<string, NanoChatPhotoData> BuildUiPhotos(Dictionary<string, NanoChatPhotoData> photos)
+    {
+        var uiPhotos = new Dictionary<string, NanoChatPhotoData>(photos.Count);
+        foreach (var (fileName, photo) in photos)
+        {
+            uiPhotos[fileName] = new NanoChatPhotoData(
+                fileName,
+                null,
+                photo.PreviewData,
+                photo.Caption,
+                photo.Description,
+                photo.NamesSeen);
+        }
+
+        return uiPhotos;
+    }
+    #endregion
 }

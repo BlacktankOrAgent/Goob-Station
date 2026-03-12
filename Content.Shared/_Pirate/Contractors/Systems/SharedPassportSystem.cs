@@ -1,5 +1,6 @@
 using Content.Shared._Pirate.Contractors.Components;
 using Content.Shared._Pirate.Contractors.Prototypes;
+using Content.Shared._Pirate;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
 using Content.Shared.Examine;

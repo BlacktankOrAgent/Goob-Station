@@ -22,6 +22,9 @@ namespace Content.Shared._DV.NanoChat;
 public abstract class SharedNanoChatSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
+    #region Pirate: nano chat gallery limits
+    public const int MaxPhotos = 50;
+    #endregion
 
     public override void Initialize()
     {
@@ -300,6 +303,11 @@ public abstract class SharedNanoChatSystem : EntitySystem
     {
         if (!Resolve(card, ref card.Comp) || string.IsNullOrWhiteSpace(photo.FileName))
             return;
+
+        #region Pirate: nano chat gallery limits
+        if (!card.Comp.Photos.ContainsKey(photo.FileName) && card.Comp.Photos.Count >= MaxPhotos)
+            return;
+        #endregion
 
         card.Comp.Photos[photo.FileName] = photo;
         Dirty(card);

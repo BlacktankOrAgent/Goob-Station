@@ -320,7 +320,7 @@
                                      VerticalExpand="False"
                                      HorizontalAlignment="Center"
                                      Stretch="Scale"
-                                     MaxSize="640 4096"
+                                     MaxSize="640 768"
                                      Visible="False"
                                      Margin="0 0 0 6" />
                     </ScrollContainer>
