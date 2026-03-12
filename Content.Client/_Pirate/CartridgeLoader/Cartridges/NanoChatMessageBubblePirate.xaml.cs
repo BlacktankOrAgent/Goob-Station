@@ -48,7 +48,7 @@ public sealed partial class NanoChatMessageBubblePirate : BoxContainer
         // Set message content
         var hasText = !string.IsNullOrWhiteSpace(message.Content);
         MessageText.Visible = hasText;
-        MessageText.Text = hasText ? FormattedMessage.EscapeText(message.Content) : string.Empty;
+        MessageText.Text = hasText ? message.Content : string.Empty;
 
         var hasPhoto = message.Photo != null;
         PhotoNameLabel.Visible = hasPhoto;

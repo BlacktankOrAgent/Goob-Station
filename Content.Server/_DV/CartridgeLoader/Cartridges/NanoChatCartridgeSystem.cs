@@ -1045,7 +1045,7 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
         if (ent.Comp.Card != null && TryComp<NanoChatCardComponent>(ent.Comp.Card, out var card))
         {
             recipients = card.Recipients;
-            messages = card.Messages;
+            messages = BuildUiMessages(card.Messages); // Pirate: strip full image payloads from message UI state
             photos = BuildUiPhotos(card.Photos); // Pirate: strip full image payloads from gallery UI state
             currentChat = card.CurrentChat;
             ownNumber = card.Number ?? 0;
@@ -1082,6 +1082,42 @@ public sealed class NanoChatCartridgeSystem : EntitySystem
         }
 
         return uiPhotos;
+    }
+
+    private static Dictionary<uint, List<NanoChatMessage>> BuildUiMessages(Dictionary<uint, List<NanoChatMessage>> messages)
+    {
+        var uiMessages = new Dictionary<uint, List<NanoChatMessage>>(messages.Count);
+        foreach (var (recipientNumber, messageList) in messages)
+        {
+            var uiMessageList = new List<NanoChatMessage>(messageList.Count);
+            foreach (var message in messageList)
+            {
+                if (message.Photo is not { } photo)
+                {
+                    uiMessageList.Add(message);
+                    continue;
+                }
+
+                var uiPhoto = new NanoChatPhotoData(
+                    photo.FileName,
+                    null,
+                    photo.PreviewData,
+                    photo.Caption,
+                    photo.Description,
+                    photo.NamesSeen);
+                uiMessageList.Add(new NanoChatMessage(
+                    message.Id,
+                    message.Timestamp,
+                    message.Content,
+                    message.SenderId,
+                    message.DeliveryFailed,
+                    uiPhoto));
+            }
+
+            uiMessages[recipientNumber] = uiMessageList;
+        }
+
+        return uiMessages;
     }
     #endregion
 }
