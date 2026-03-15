@@ -137,19 +137,46 @@
   requirements:
     - !type:RoleTimeRequirement
       role: JobSecurityOfficer
-      time: 36000 #10 hrs
+      time: 36000 #10 hrs # Pirate
+    #- !type:RoleTimeRequirement # Pirate remove - Warden doesn't have to know medicine
+    #  role: JobBrigmedic
+    #  time: 18000 #5 hrs
     - !type:DepartmentTimeRequirement
       department: Security
-      time: 90000 #25 hrs
+      time: 90000 #25 hrs # Pirate
+    - !type:TraitsRequirement # Pirate
+      inverted: true
+      traits:
+      - Foreigner
+      - ForeignerLight
+      - DeafTrait
+      - MovementImpaired
+      - Blindness
+      - Narcolepsy
+      - Muted
+      - WheelchairBound # Pirate end
     #- !type:SpeciesRequirement # Pirate remove requirement
     #  inverted: true
     #  species:
     #  - Felinid
+    # Pirate contractor start
+    - !type:CharacterEmployerRequirement
+      employers:
+      - NanoTrasen
+      - ZavodskoiInterstellar
+      - PMCG
+    # Pirate contractor end
   weight: 5
   startingGear: WardenGear
   icon: "JobIconWarden"
   supervisors: job-supervisors-hos
   canBeAntag: false
+  guides: # goobstation
+  - SpaceLaw
+  - LegalSOP
+  - Security
+  - WardenSOP
+  - KravMaga
   goobcoins: 35 #Goob content
   access:
   - Security
@@ -170,7 +197,7 @@
 - type: startingGear
   id: WardenGear
   equipment:
-    eyes: ClothingEyesGlassesSecurity
+    eyes: ClothingEyesGlassesSecurityContraDetect # Goobstation
     id: WardenPDA
     ears: ClothingHeadsetAltWarden # Goobstation
 #    pocket1: WeaponPistolMk58 # PIRATE, moved to loadouts

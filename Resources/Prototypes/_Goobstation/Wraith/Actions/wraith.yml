@@ -1,0 +1,528 @@
+# This file includes all the actions for wraith.
+# Revenants, other ghost-roles should get their own directory outside the Wraith one.
+
+#   - type: ActionWraithPoints -> Removes Wraith Points once the action gets handled
+#    wpConsume: int -> Amount of Wraith Points to remove
+
+# Base Wraith Actions
+- type: entity # Unused - Requires Rework of ghost system to allow re-usable actions
+  parent: ActionToggleGhostHearing
+  id: ActionToggleGhostHearingWraith
+  components:
+  - type: Action
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: hide_chat
+    iconOn: _Goobstation/Wraith/actions.rsi/show_chat.png
+
+- type: entity
+  id: ActionHaunt
+  name: "Примаріння"
+  description: "Стаєш тілесним на 30 секунд. За цей час ти отримуєш додаткові очки примари залежно від кількості людей поблизу. Використай цю здатність знову, перебуваючи тілесним, щоб розчинитися в ефірі."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithhaunt.ogg
+    useDelay: 30
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: haunt
+  - type: InstantAction
+    event: !type:HauntEvent
+
+- type: entity
+  id: ActionWhisper
+  parent: DemonicWhisperAction
+  name: "Шепіт"
+  description: "Надсилає ефірне повідомлення живій істоті."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithwhisper2.ogg
+    useDelay: 2
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: whisper
+
+- type: entity
+  id: ActionBloodWriting
+  name: "Криваве письмо"
+  description: "Напиши моторошний знак на підлозі."
+  components:
+  - type: Action
+    useDelay: 5
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: blood_writing
+  - type: InstantAction
+    event: !type:BloodWritingEvent
+
+- type: entity
+  id: ActionAbsorbCorpse
+  name: "Поглинути труп"
+  description: "Викрадає життєву есенцію з трупа. Не можна використовувати на скелеті!"
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithsoulsucc1.ogg
+    useDelay: 45
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: absorb_corpse
+  - type: TargetAction
+    deselectOnMiss: true
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      requireAll: true
+      components:
+      - MobState
+      - HumanoidAppearance
+    blacklist:
+      components:
+      - PartialAbsorbable
+    event: !type:AbsorbCorpseEvent
+  - type: ActionWraithPoints
+    wpConsume: 20
+  - type: ActionUseDelayOnUse
+    useDelayAccumulator: 45
+
+- type: entity
+  id: ActionSpook
+  name: "Полохання"
+  description: "Спричиняє дивні, моторошні події в області навколо вас. Використайте цю здібність, щоб створити сутність — джерело цих явищ, а тоді взаємодійте з нею, щоб обрати дію."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithspook1.ogg
+    itemIconStyle: BigAction
+    useDelay: 30
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: spook
+  - type: TargetAction
+    range: 10
+  - type: WorldTargetAction
+    event: !type:SpookEvent
+  - type: ActionWraithPoints
+    wpConsume: 20
+
+- type: entity
+  id: ActionDecay
+  name: "Зотління"
+  description: "Спричиняє втрату витривалості у людини або несправність об'єкта."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithstaminadrain.ogg
+    useDelay: 60
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: decay
+  - type: TargetAction
+    deselectOnMiss: true
+  - type: EntityTargetAction
+    canTargetSelf: false
+    blacklist:
+      components:
+      - BorgChassis
+      - BibleUser
+    event: !type:DecayEvent
+  - type: ActionWraithPoints
+    wpConsume: 30
+
+- type: entity
+  id: ActionCommand
+  name: "Наказ"
+  description: "Наказує кільком об'єктам кинутися у вибрану точку."
+  components:
+  - type: Action
+    useDelay: 40
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: command
+  - type: TargetAction
+    range: 10
+  - type: EntityTargetAction
+    canTargetSelf: false
+    blacklist:
+      components:
+      - BibleUser
+    event: !type:WraithCommandEvent
+  - type: ActionWraithPoints
+    wpConsume: 50
+
+- type: entity
+  id: ActionAnimateObject
+  parent: ActionAnimateSpell
+  name: "Оживлення об'єкта"
+  description: "Оживляє неживий об'єкт, щоб він атакував людей поруч."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithlivingobject.ogg
+    useDelay: 60
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: anim_object
+  - type: ActionWraithPoints
+    wpConsume: 200
+
+- type: entity
+  id: ActionPossessObject
+  name: "Заволодіння об'єктом"
+  description: "Вселяєшся та керуєш буденним об'єктом. Рівень переляку високий."
+  components:
+  - type: ActionWraithPoints
+    wpConsume: 300
+  - type: Action
+    itemIconStyle: BigAction
+    useDelay: 150
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: possess_object
+  - type: TargetAction
+    deselectOnMiss: true
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - Animateable # Currently on: SeatBase, TableBase, ClosetBase, BaseMachine, ConstructibleMachine, BaseComputer, BaseItem, CrateGeneric, StorageTank, GasCanister
+    blacklist:
+      components:
+      - NukeDisk
+      - GravityGenerator
+      - AnomalyGenerator
+      - TegGenerator
+      - TegCirculator
+      - XenoArtifact
+      - Ghost
+      - Spectral
+      - FadingTimedDespawn
+      - TimedDespawn
+    event: !type:PossessObjectEvent
+      toAdd:
+      - type: Animate
+      - type: MindContainer
+      - type: InputMover
+      - type: MobMover
+      - type: CombatMode
+      - type: MeleeWeapon
+        animation: Slash
+        wideAnimation: WeaponArcClaw
+        altDisarm: false
+        soundHit:
+          collection: Flesh_Stab
+        range: 1.5
+        angle: 0.0
+        damage:
+          types:
+            Slash: 20
+      - type: NpcFactionMember
+        factions:
+        - Wraith
+      - type: NoSlip
+      - type: MovementSpeedModifier
+        baseWalkSpeed: 5
+        baseSprintSpeed: 5
+      - type: MovementAlwaysTouching
+      - type: CanMoveInAir
+      - type: Damageable
+        damageContainer: ManifestedSpirit
+        damageModifierSet: ManifestedSpirit
+      - type: Destructible
+        thresholds:
+        - trigger:
+            !type:DamageTrigger
+            damage: 300 #Easily killable with holy damage so it has to be somewhat high for it to be worth the wraith risking it
+          behaviors:
+          - !type:DoActsBehavior
+            acts: ["Destruction"]
+          - !type:PlaySoundBehavior
+            sound:
+              collection: MetalBreak
+      - type: Hands
+      - type: CanEscapeInventory
+      - type: MobCollision
+      - type: LanguageSpeaker
+      - type: UniversalLanguageSpeaker
+      - type: Speech
+        speechVerb: Ghost
+      toRemove:
+      - RequireProjectileTarget
+      - BlockMovement
+      - Item
+      - MeleeRequiresWield
+
+- type: entity
+  id: ActionEvolve
+  name: "Еволюція"
+  description: "Обери форму для еволюції після поглинання щонайменше 3 душ."
+  components:
+  - type: Action
+    useDelay: 0
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: evolve
+  - type: InstantAction
+    event: !type:WraithEvolveEvent
+  - type: ActionWraithPoints
+    wpConsume: 150
+
+# Harbinger Actions
+- type: entity
+  id: ActionRaiseSkeleton
+  name: "Підняття скелета"
+  description: "Підіймає скелетоване мертве тіло або наповнює шафку нестійким кістяним слугою."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithraise1.ogg
+    useDelay: 60
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: skeleton
+  - type: TargetAction
+    range: 15
+    deselectOnMiss: true
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - EntityStorage
+      - HumanoidAppearance
+    event: !type:RaiseSkeletonEvent
+  - type: ActionWraithPoints
+    wpConsume: 100
+
+- type: entity
+  id: ActionSummonVoidPortal
+  name: "Закликати портал порожнечі"
+  description: "Закликає портал порожнечі, з якого виливаються потойбічні істоти."
+  components:
+  - type: ConfirmableAction
+    popup: wraith-portal-already
+    primeTime: 10
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithportal.ogg
+    useDelay: 180
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: open_portal
+  - type: InstantAction
+    event: !type:SummonPortalEvent
+  - type: ActionUserWhitelist
+    whitelist:
+      components:
+      - Corporeal
+    popup: wraith-must-be-corporeal
+  - type: ActionWraithPoints
+    wpConsume: 150
+
+- type: entity
+  id: ActionSummonVoidCreature
+  name: "Призов істот Порожнечі"
+  description: "Намагається прорвати завісу між світами, щоб у цей вимір увійшла менша істота Порожнечі."
+  components:
+  - type: Action
+    useDelay: 150
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: summon_creature
+  - type: InstantAction
+    event: !type:SummonVoidCreatureEvent
+  - type: ActionWraithPoints
+    wpConsume: 400
+
+- type: entity
+  id: ActionMakeRevenant
+  name: "Створити ревенанта"
+  description: "Опановуєш неушкоджений труп як могутній Ревенант! Надалі ти не зможеш поглинути цей труп. Як ревенант, ти отримуєш більше очок, але здібності ревенанта коштують значно більше очок, ніж зазвичай."
+  components:
+  - type: Action
+    useDelay: 60
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: revenant
+  - type: TargetAction
+    deselectOnMiss: true
+  - type: EntityTargetAction
+    canTargetSelf: false
+    event: !type:MakeRevenantEvent
+  - type: ActionWraithPoints
+    wpConsume: 1000
+
+# Plaguebringer Actions
+
+- type: entity
+  id: BaseCurseAction
+  parent: BaseAction
+  components:
+  - type: TargetAction
+    deselectOnMiss: true
+  - type: EntityTargetAction
+    whitelist:
+      requireAll: true
+      components:
+      - StatusEffects
+      - Body
+    canTargetSelf: false
+    event: !type:ApplyCurseActionEvent
+  - type: CurseAction # refreshes all curses when a curse is used
+  - type: ActionWraithPoints
+    wpConsume: 40
+
+
+- type: entity
+  id: ActionCurseBlindness
+  name: "Прокляття сліпоти"
+  parent: BaseCurseAction
+  description: "Накладає на живих прокляття сліпоти."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithstaminadrain.ogg
+    useDelay: 45
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: blind_curse
+  - type: EntityTargetAction
+    event: !type:ApplyCurseActionEvent
+      curse: CurseBlindness
+      popup: curse-popup-blindness
+
+- type: entity
+  id: ActionCurseWeakness
+  name: "Прокляття слабкості"
+  parent: BaseCurseAction
+  description: "Накладає на живих прокляття слабкості. Сповільнює та спричиняє запаморочення в цілі."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithstaminadrain.ogg
+    useDelay: 45
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: weak_curse
+  - type: EntityTargetAction
+    event: !type:ApplyCurseActionEvent
+      curse: CurseWeakness
+      popup: curse-popup-weakness
+      # todo: sound for target
+
+- type: entity
+  id: ActionCurseBlood
+  name: "Прокляття крові"
+  parent: BaseCurseAction
+  description: "Накладає на живих криваву пошесть."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithstaminadrain.ogg
+    useDelay: 45
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: blood_curse
+  - type: EntityTargetAction
+    event: !type:ApplyCurseActionEvent
+      curse: CurseBlood
+      popup: curse-popup-blood
+
+- type: entity
+  id: ActionCurseRot
+  name: "Прокляття гниття"
+  parent: BaseCurseAction
+  description: "Накладає на живих потойбічну пошесть."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithstaminadrain.ogg
+    useDelay: 45
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: rot_curse
+  - type: EntityTargetAction
+    event: !type:ApplyCurseActionEvent
+      curse: CurseRot
+      popup: curse-popup-rot
+
+- type: entity
+  id: ActionCurseDeath
+  name: "Прокляття смерті"
+  parent: BaseCurseAction
+  description: "Забирає душу повністю проклятої істоти!"
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithstaminadrain.ogg
+    useDelay: 45
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: death_curse
+  - type: EntityTargetAction
+    event: !type:ApplyCurseActionEvent
+      curse: CurseDeath
+      popup: curse-popup-death
+      requireAllCurses: true
+  - type: ActionWraithPoints
+    wpConsume: 80
+
+- type: entity
+  id: ActionDefile
+  name: "Осквернення"
+  description: "Створює жахливу отруту всередині продукту чи контейнера. Спершу використай на собі, щоб вибрати хімікат."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/wraithstaminadrain.ogg
+    useDelay: 50
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: wraith_poison
+  - type: TargetAction
+    deselectOnMiss: true
+  - type: EntityTargetAction
+    event: !type:DefileEvent
+  - type: ActionWraithPoints
+    wpConsume: 50
+
+- type: entity
+  id: ActionSummonPlagueRat
+  name: "Призов чумного щура"
+  description: "Намагається прорвати завісу між світами, щоб у цей вимір увійшов чумний щур."
+  components:
+  - type: Action
+    useDelay: 150
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: summon_rats
+  - type: InstantAction
+    event: !type:SummonPlagueRatEvent
+
+- type: entity
+  id: ActionSummonRotHulk
+  name: "Призов Гнилого Голіафа"
+  description: "Поглинає бруд у зоні та створює нестабільного слугу."
+  components:
+  - type: Action
+    useDelay: 90
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: summon_goo
+  - type: InstantAction
+    event: !type:SummonRotHulkEvent
+  - type: ActionWraithPoints
+    wpConsume: 120
+
+# Trickster Actions

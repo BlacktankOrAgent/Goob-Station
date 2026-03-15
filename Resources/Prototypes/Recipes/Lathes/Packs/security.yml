@@ -94,6 +94,7 @@
   - ClothingHeadHelmetInsulated # PIRATE psionic
   - ClothingHeadCage # PIRATE psionic
   - ClothingNeckBaseShockCollar # PIRATE
+  - ClothingHandsGlovesMansusBlock # PIRATE
 
 - type: latheRecipePack
   id: SecurityBoards
@@ -139,8 +140,8 @@
   - MagazineShotgunIncendiary
   - SpeedLoaderMagnumIncendiary
   - SpeedLoaderMagnumUranium
-  - MagazinePistolMindbreaker # PIRATE psionic
-  - MagazineBoxPistolMindbreaker # PIRATE psionic
+  - MagazinePistolCryptobiolin # PIRATE psionic
+  - MagazineBoxPistolCryptobiolin # PIRATE psionic
   - ShellSoulbreaker # PIRATE psionic
   - BoxShellSoulbreaker # PIRATE psionic
 
@@ -153,6 +154,7 @@
   - WeaponLaserCarbine
   - WeaponXrayCannon
   - WeaponTemperatureGun # Goobstation
+  - Terminus # Goobstation
 
 - type: latheRecipePack
   id: SecurityDisablers

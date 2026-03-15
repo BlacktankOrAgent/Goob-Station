@@ -1,0 +1,83 @@
+# SPDX-FileCopyrightText: 2025 Aidenkrz <28298836+Aidenkrz@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 AstroDogeDX <48888500+AstroDogeDX@users.noreply.github.com>
+# SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  parent: [ BasePart ]
+  abstract: true
+  id: PartFeroxiBase
+  name: "частина тіла ферокса"
+  components:
+    - type: Sprite
+      sprite: _DV/Mobs/Species/Feroxi/parts.rsi
+    - type: Damageable # Shitmed
+      damageModifierSet: Feroxi
+    - type: WoundableVisuals
+      damageOverlayGroups:
+        Brute:
+          sprite: _Shitmed/Mobs/Effects/brute_damage.rsi
+          color: "#3d909c"
+        Burn:
+          sprite: _Shitmed/Mobs/Effects/burn_damage.rsi
+
+- type: entity
+  parent: [ PartFeroxiBase, BaseChest ]
+  id: ChestFeroxi
+  name: "груди ферокса"
+
+- type: entity
+  parent: [ PartFeroxiBase, BaseGroin ]
+  id: GroinFeroxi
+  name: "пах ферокса"
+  components:
+  - type: Sprite
+    state: "groin_m"
+  - type: Icon
+    state: "groin_m"
+
+- type: entity
+  parent: [ PartFeroxiBase, BaseHead ]
+  id: HeadFeroxi
+  name: "голова ферокса"
+
+- type: entity
+  parent: [ PartFeroxiBase, BaseLeftArm ]
+  id: LeftArmFeroxi
+  name: "ліва рука ферокса"
+
+- type: entity
+  parent: [ PartFeroxiBase, BaseRightArm ]
+  id: RightArmFeroxi
+  name: "права рука ферокса"
+
+- type: entity
+  parent: [ PartFeroxiBase, BaseLeftHand ]
+  id: LeftHandFeroxi
+  name: "ліва долоня ферокса"
+
+- type: entity
+  parent: [ PartFeroxiBase, BaseRightHand ]
+  id: RightHandFeroxi
+  name: "права долоня ферокса"
+
+- type: entity
+  parent: [ PartFeroxiBase, BaseLeftLeg ]
+  id: LeftLegFeroxi
+  name: "ліва нога ферокса"
+
+- type: entity
+  parent: [ PartFeroxiBase, BaseRightLeg ]
+  id: RightLegFeroxi
+  name: "права нога ферокса"
+
+- type: entity
+  parent: [ PartFeroxiBase, BaseLeftFoot ]
+  id: LeftFootFeroxi
+  name: "ліва стопа ферокса"
+
+- type: entity
+  parent: [ PartFeroxiBase, BaseRightFoot ]
+  id: RightFootFeroxi
+  name: "права стопа ферокса"

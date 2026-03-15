@@ -29,8 +29,8 @@
 
 - type: job
   id: BlueshieldOfficer
-  name: Blueshield Officer
-  description: "Act as a bodyguard and advisor for Command and CentCom VIPs."
+  name: job-name-bso
+  description: "Виконуйте роль охоронця та радника для Командування й VIP із Центкому."
   playTimeTracker: JobBlueshieldOfficer
   requirements:
     - !type:DepartmentTimeRequirement
@@ -44,10 +44,31 @@
       time: 90000 # 25 hours
     - !type:AgeRequirement
       requiredAge: 21
+    - !type:TraitsRequirement # Pirate
+      inverted: true
+      traits:
+      - Foreigner
+      - ForeignerLight
+      - DeafTrait
+      - MovementImpaired
+      - Blindness
+      - Narcolepsy
+      - Muted
+      - WheelchairBound # Pirate end
     #- !type:SpeciesRequirement # Pirate remove requirement
     #  inverted: true
     #  species:
     #  - Felinid
+  # Pirate contractor start
+    - !type:CharacterEmployerRequirement
+      employers:
+      - NanoTrasen
+      - PMCG
+  # Pirate contractor end
+  guides:
+  - BlueshieldOfficerSOP
+  - Command
+  - Succession
   goobcoins: 45
   weight: 20
   startingGear: BlueshieldOfficerGear
@@ -55,6 +76,7 @@
   joinNotifyCrew: true
   supervisors: job-supervisors-ntr-centcom
   canBeAntag: false
+  whitelisted: true # Pirate
   access:
   - Security
   - Brig
@@ -78,9 +100,6 @@
       - type: CommandStaff
       - type: Condemned
         soulOwnedNotDevil: true
-  - !type:AddObjectiveSpecial
-    objectives:
-    - BlueshieldRandomCommandAliveObjective
 
 - type: startingGear
   id: BlueshieldOfficerGear
@@ -94,7 +113,7 @@
   storage:
     back:
     - Flash
-    - ClothingMaskGasSecurity
+    - ClothingBSOMaskGasSwat
     - CombatKnife
 
 - type: chameleonOutfit

@@ -9,7 +9,7 @@
 
 - type: entity
   id: BulletClownshot
-  name: clownshot
+  name: "клоуншот"
   parent: BaseBullet
   categories: [ HideSpawnMenu ]
   components:
@@ -50,7 +50,7 @@
 
 - type: entity
   id: BulletPulse
-  name: pulse
+  name: "імпульс"
   parent: BaseBullet
   categories: [ HideSpawnMenu ]
   components:
@@ -87,7 +87,7 @@
 
 - type: entity
   id: BulletDetain
-  name: detain
+  name: "затримати"
   parent: BaseBullet
   categories: [ HideSpawnMenu ]
   components:
@@ -124,7 +124,7 @@
 
 - type: entity
   id: BulletExecute
-  name: execute
+  name: "стратити"
   parent: BaseBullet
   categories: [ HideSpawnMenu ]
   components:
@@ -159,7 +159,7 @@
 
 - type: entity
   id: BulletHotshot
-  name: hotshot
+  name: "гарячий постріл"
   parent: BaseBullet
   categories: [ HideSpawnMenu ]
   components:
@@ -192,11 +192,11 @@
         Blunt: 2
         Heat: 2
   - type: IgniteOnCollide
-    fireStacks: 3
+    fireStacks: 2
 
 - type: entity
   id: BulletSleepshot
-  name: sleepshot
+  name: "сонний постріл"
   parent: BaseBullet
   categories: [ HideSpawnMenu ]
   components:
@@ -241,12 +241,12 @@
       ammo:
         reagents:
         - ReagentId: Haloperidol
-          Quantity: 2
+          Quantity: 1.5
   - type: BlurOnCollide
 
 - type: entity
   id: BulletBigshot
-  name: bigshot
+  name: "великий постріл"
   parent: BaseBullet
   categories: [ HideSpawnMenu ]
   components:

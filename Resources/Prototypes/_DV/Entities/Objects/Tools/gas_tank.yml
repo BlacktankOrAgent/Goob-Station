@@ -1,0 +1,52 @@
+- type: entity
+  parent: OxygenTank
+  id: WaterVaporTank
+  name: "балон з водяною парою"
+  description: "Стандартний циліндричний газовий балон для водяної пари. Може містити 5 літрів газу."
+  components:
+  - type: Sprite
+    sprite: _DV/Objects/Tanks/water_vapor.rsi
+  - type: Item
+    sprite: _DV/Objects/Tanks/water_vapor.rsi
+  - type: Clothing
+    sprite: _DV/Objects/Tanks/water_vapor.rsi
+
+- type: entity
+  parent: EmergencyOxygenTank
+  id: EmergencyWaterVaporTank
+  name: "аварійний балон з водяною парою"
+  description: "Легкопортативний балон для надзвичайних ситуацій. Містить дуже мало водяної пари, призначений лише для виживання. Може містити 0.66 літра газу."
+  components:
+  - type: Sprite
+    sprite: _DV/Objects/Tanks/emergency_water_vapor.rsi
+  - type: Item
+    sprite: _DV/Objects/Tanks/emergency_water_vapor.rsi
+  - type: Clothing
+    sprite: _DV/Objects/Tanks/emergency_water_vapor.rsi
+
+- type: entity
+  parent: ExtendedEmergencyOxygenTank
+  id: ExtendedEmergencyWaterVaporTank
+  name: "розширений аварійний балон з водяною парою"
+  description: "Аварійний балон збільшеної місткості. Технічно призначений для тривалого використання. Може містити 1.5 літра газу."
+  components:
+  - type: Sprite
+    sprite: _DV/Objects/Tanks/emergency_extended_water_vapor.rsi
+  - type: Item
+    sprite: _DV/Objects/Tanks/emergency_extended_water_vapor.rsi
+  - type: Clothing
+    sprite: _DV/Objects/Tanks/emergency_extended_water_vapor.rsi
+
+- type: entity
+  parent: DoubleEmergencyOxygenTank
+  id: DoubleEmergencyWaterVaporTank
+  name: "подвійний аварійний балон з водяною парою"
+  description: "Високоякісний двобалонний контейнер аварійного життєзабезпечення. Містить прийнятну кількість водяної пари для свого невеликого розміру. Може містити 2.5 літра газу."
+  components:
+  - type: Sprite
+    sprite: _DV/Objects/Tanks/emergency_double_water_vapor.rsi
+  - type: Item
+    sprite: _DV/Objects/Tanks/emergency_double_water_vapor.rsi
+  - type: Clothing
+    sprite: _DV/Objects/Tanks/emergency_double_water_vapor.rsi
+

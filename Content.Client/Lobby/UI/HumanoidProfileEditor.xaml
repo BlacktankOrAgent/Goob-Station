@@ -82,6 +82,24 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                                                    ToolTip="{Loc 'humanoid-profile-editor-guidebook-button-tooltip'}"/>
                                     <OptionButton Name="SpeciesButton" HorizontalAlignment="Right" />
                                 </BoxContainer>
+                                <!-- start Pirate: port EE contractors -->
+                                <!-- Nationality -->
+                                <BoxContainer HorizontalExpand="True">
+                                    <Label Text="{Loc 'humanoid-profile-editor-nationality-label'}" />
+                                    <Control HorizontalExpand="True"/>
+                                    <TextureButton Name="NationalityInfoButton" Scale="0.3 0.3" VerticalAlignment="Center"
+                                                   ToolTip="{Loc 'humanoid-profile-editor-guidebook-button-tooltip'}"/>
+                                    <OptionButton Name="NationalityButton" HorizontalAlignment="Right" />
+                                </BoxContainer>
+                                <!-- Employer -->
+                                <BoxContainer HorizontalExpand="True">
+                                    <Label Text="{Loc 'humanoid-profile-editor-employer-label'}" />
+                                    <Control HorizontalExpand="True"/>
+                                    <TextureButton Name="EmployerInfoButton" Scale="0.3 0.3" VerticalAlignment="Center"
+                                                   ToolTip="{Loc 'humanoid-profile-editor-guidebook-button-tooltip'}"/>
+                                    <OptionButton Name="EmployerButton" HorizontalAlignment="Right" />
+                                </BoxContainer>
+                                <!-- end Pirate: port EE contractors -->
                                 <!-- Age -->
                                 <BoxContainer HorizontalExpand="True">
                                     <Label Text="{Loc 'humanoid-profile-editor-age-label'}" />
@@ -129,6 +147,14 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                                     <Label Name="WeightLabel" />
                                 </BoxContainer>
                                 <!-- end Goobstation: port EE height/width sliders -->
+                                <!-- Corvax-Frontier-Barks-Start -->
+                                <BoxContainer HorizontalExpand="True" Visible="False" Name="BarksContainer">
+                                    <Label Text="{Loc 'humanoid-profile-editor-voice-label'}" />
+                                    <Control HorizontalExpand="True"/>
+                                    <OptionButton Name="BarkVoiceButton" HorizontalAlignment="Right" />
+                                    <Button Name="BarkVoicePlayButton" Text="{Loc 'humanoid-profile-editor-voice-play'}" MaxWidth="80" />
+                                </BoxContainer>
+                                <!-- Corvax-Frontier-Barks-End -->
                             </BoxContainer>
                             <!-- Skin -->
                             <BoxContainer Margin="10" HorizontalExpand="True" Orientation="Vertical">

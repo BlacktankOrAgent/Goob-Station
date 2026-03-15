@@ -1,0 +1,19 @@
+- type: entity
+  name: "кажан"
+  parent: MobBat
+  id: MobBatVampire
+  description: "Для одних культур вони лякають, для інших — хрумкі на зуб."
+  components:
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+    - VimPilot
+    - CannotSuicide
+  - type: MindContainer
+    showExamineInfo: true
+  - type: NpcFactionMember
+    factions:
+    - PetsNT
+  - type: Alerts
+
+  

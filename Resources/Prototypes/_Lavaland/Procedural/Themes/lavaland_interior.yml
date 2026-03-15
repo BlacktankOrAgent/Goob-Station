@@ -131,11 +131,10 @@
   offset: 18,18
   tags: [LavalandInterior5x5]
 
-
 - type: entity
   id: LavalandInteriorRoomMarker
   parent: BaseRoomMarker
-  name: Lavaland interior marker
+  name: "маркер інтер'єру лаваланда"
   suffix: 5x5
   components:
   - type: RoomFill

@@ -1,0 +1,699 @@
+﻿- type: entity
+  parent: RMCPropVehicleBase
+  id: RMCPropVehicleLargeBase
+  abstract: true
+  components:
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,1.6,0.5"
+        density: 190
+        layer:
+        - MobMask
+  - type: Sprite
+    sprite: _RMC14/Structures/Vehicles/vehicles3.rsi
+    offset: 1.5, 0.5
+
+# Ambulance
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleAmbulance
+  name: "швидка допомога"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: ambulance
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleAmbulanceF
+  name: "швидка допомога"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: ambulance_f
+
+# Heavy-Loader Truck
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckBlue
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: armored_truck_blue
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckBlueF
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: armored_truck_blue_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckBlueFilled
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded
+  components:
+  - type: Sprite
+    state: armored_truck_blue_loaded
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckBlueFilledF
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded, Flipped
+  components:
+  - type: Sprite
+    state: armored_truck_blue_loaded_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckTeal
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: armored_truck_teal
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckTealF
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: armored_truck_teal_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckTealFilled
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded
+  components:
+  - type: Sprite
+    state: armored_truck_teal_loaded
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckTealFilledF
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded, Flipped
+  components:
+  - type: Sprite
+    state: armored_truck_teal_loaded_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckWhite
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: armored_truck_white
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckWhiteF
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: armored_truck_white_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckWhiteFilled
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded
+  components:
+  - type: Sprite
+    state: armored_truck_white_loaded
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckWhiteFilledF
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded, Flipped
+  components:
+  - type: Sprite
+    state: armored_truck_white_loaded_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckBlack
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: armored_truck_wy_black
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckBlackF
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: armored_truck_wy_black_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckBlackFilled
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded
+  components:
+  - type: Sprite
+    state: armored_truck_wy_black_loaded
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckBlackFilledF
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded, Flipped
+  components:
+  - type: Sprite
+    state: armored_truck_wy_black_loaded_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckWhiteWeYa
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: armored_truck_wy_white
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckWhiteWeYaF
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: armored_truck_wy_white_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckWhiteWeYaFilled
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded
+  components:
+  - type: Sprite
+    state: armored_truck_wy_white_loaded
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLoaderTruckWhiteWeYaFilledF
+  name: "важкий навантажувач-вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded, Flipped
+  components:
+  - type: Sprite
+    state: armored_truck_wy_white_loaded_f
+
+# Box Van
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanBlueGrey
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: box_van_bluegrey
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanBlueGreyF
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: box_van_bluegrey_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanMaintGrey
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: box_van_maintenanceblue
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanMaintGreyF
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: box_van_maintenanceblue_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanMaintWhite
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: box_van_maintenancewhite
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanMaintWhiteF
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: box_van_maintenancewhite_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanMining
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: box_van_mining
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanMiningF
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: box_van_mining_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanPizza
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: box_van_pizza
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanPizzaF
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: box_van_pizza_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanRed
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: box_van_red
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanRedF
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: box_van_red_f
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanWhite
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: box_van_white
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleBoxVanWhiteF
+  name: "фургон-будка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: box_van_white_f
+
+# Long Truck
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleLongTruckBlue
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: longtruck_blue
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,3.3,0.75"
+        density: 190
+        layer:
+        - MobMask
+
+- type: entity
+  parent: RMCPropVehicleLongTruckBlue
+  id: RMCPropVehicleLongTruckBlueF
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: longtruck_blue_f
+
+- type: entity
+  parent: RMCPropVehicleLongTruckBlue
+  id: RMCPropVehicleLongTruckBrown
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: longtruck_brown
+
+- type: entity
+  parent: RMCPropVehicleLongTruckBlue
+  id: RMCPropVehicleLongTruckBrownF
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: longtruck_brown_f
+
+- type: entity
+  parent: RMCPropVehicleLongTruckBlue
+  id: RMCPropVehicleLongTruckDonk
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: longtruck_donk
+
+- type: entity
+  parent: RMCPropVehicleLongTruckBlue
+  id: RMCPropVehicleLongTruckDonkF
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: longtruck_donk_f
+
+- type: entity
+  parent: RMCPropVehicleLongTruckBlue
+  id: RMCPropVehicleLongTruckMining
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: longtruck_mining
+
+- type: entity
+  parent: RMCPropVehicleLongTruckBlue
+  id: RMCPropVehicleLongTruckMiningF
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: longtruck_mining_f
+
+- type: entity
+  parent: RMCPropVehicleLongTruckBlue
+  id: RMCPropVehicleLongTruckRed
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: longtruck_red
+
+- type: entity
+  parent: RMCPropVehicleLongTruckBlue
+  id: RMCPropVehicleLongTruckRedF
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: longtruck_red_f
+
+- type: entity
+  parent: RMCPropVehicleLongTruckBlue
+  id: RMCPropVehicleLongTruckWeYaBlue
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: longtruck_wy_blue
+
+- type: entity
+  parent: RMCPropVehicleLongTruckBlue
+  id: RMCPropVehicleLongTruckWeYaBlueF
+  name: "вантажівка-дальнобій"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: longtruck_wy_blue_f
+
+# Small Truck
+
+- type: entity
+  parent: RMCPropVehicleLargeBase
+  id: RMCPropVehicleSmallTruckBlue
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: small_truck_blue
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,1.5,0.5"
+        density: 190
+        layer:
+        - MobMask
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckBlueF
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: small_truck_blue_f
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckBlueCargo
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded
+  components:
+  - type: Sprite
+    state: small_truck_blue_cargo
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckBlueCargoF
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded, Flipped
+  components:
+  - type: Sprite
+    state: small_truck_blue_cargo_f
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckBrown
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: small_truck_brown
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckBrownF
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: small_truck_brown_f
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckBrownCargo
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded
+  components:
+  - type: Sprite
+    state: small_truck_brown_cargo
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckBrownCargoF
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded, Flipped
+  components:
+  - type: Sprite
+    state: small_truck_brown_cargo_f
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckBrownCargoAlt
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded Alt
+  components:
+  - type: Sprite
+    state: small_truck_brown_cargobarrels
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckBrownCargoAltF
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Loaded Alt, Flipped
+  components:
+  - type: Sprite
+    state: small_truck_brown_cargobarrels_f
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckGarbage
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: small_truck_garbage
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckGarbageF
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: small_truck_garbage_f
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckGreen
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: small_truck_green
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckGreenF
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: small_truck_green_f
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckMedical
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: small_truck_medical
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckMedicalF
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: small_truck_medical_f
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckMining
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: small_truck_mining
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckMiningF
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: small_truck_mining_f
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckRed
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  components:
+  - type: Sprite
+    state: small_truck_red
+
+- type: entity
+  parent: RMCPropVehicleSmallTruckBlue
+  id: RMCPropVehicleSmallTruckRedF
+  name: "маленька вантажівка"
+  description: "Вона замкнена й, схоже, зламана — забудьте про водіння."
+  suffix: Flipped
+  components:
+  - type: Sprite
+    state: small_truck_red_f

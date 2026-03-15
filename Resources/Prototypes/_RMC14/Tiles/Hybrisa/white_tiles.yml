@@ -1,0 +1,21 @@
+- type: tile
+  abstract: true
+  parent: CMTileBase
+  id: RMCFloorHybrisaWhiteBase
+  name: "плитка CM стандартна біла"
+
+- type: tile
+  parent: RMCFloorHybrisaWhiteBase
+  id: RMCFloorHybrisaWhite
+  name: "біла металева плитка"
+  sprite: /Textures/_RMC14/Tiles/hybrisa/tilewhite.png
+
+- type: tile
+  parent: RMCFloorHybrisaWhite
+  id: RMCFloorHybrisaWhiteCheck
+  sprite: /Textures/_RMC14/Tiles/hybrisa/tilewhitecheck.png
+
+- type: tile
+  parent: RMCFloorHybrisaWhite
+  id: RMCFloorHybrisaWhiteFull
+  sprite: /Textures/_RMC14/Tiles/hybrisa/metalwhitefull.png

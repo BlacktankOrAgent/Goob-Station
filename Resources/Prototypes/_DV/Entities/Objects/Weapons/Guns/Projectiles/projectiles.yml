@@ -14,7 +14,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: entity #DeltaV, modified by Goobstation to work in this folder.
-  name: energy bolt
+  name: "енергетичний болт"
   id: BulletEnergyGunLaser
   parent: BaseBullet
   categories: [ HideSpawnMenu ]
@@ -48,11 +48,12 @@
     damage:
       types:
         Heat: 20 # Pirate edit
+      armorPenetration: 0.4 # Pirate edit
     soundHit:
       collection: MeatLaserImpact
 
 - type: entity #Goobstation, put here so the X-01 stuff isnt spread everywhere.
-  name: ion bolt
+  name: "іонний заряд"
   id: BulletEnergyGunIon
   parent: BaseBullet
   categories: [ HideSpawnMenu ]
@@ -91,7 +92,7 @@
       collection: MeatLaserImpact
 
 - type: entity # Goobstation, put here so the X-01 stuff isnt spread everywhere.
-  name: magnum bolt
+  name: "магнум болт"
   id: BulletEnergyGunMagnum
   parent: BaseBullet
   categories: [ HideSpawnMenu ]
@@ -126,5 +127,6 @@
       types:
         Blunt: 4
         Heat: 20
+      armorPenetration: 0.4 # Pirate edit
     soundHit:
       collection: MeatLaserImpact

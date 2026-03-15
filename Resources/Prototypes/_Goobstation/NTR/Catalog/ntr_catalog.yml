@@ -1,28 +1,44 @@
 # station
 - type: listing
+  id: NTRExecutiveCargoBingle
+  name: "Викликати вантажного бінгла"
+  description: "Після захоплення, у безжальних бінглів видаляють гострі зуби і транспортують їх через станції для допомоги з піднімання важких вантажів. Їхнє емоційне благополуччя ігнорується."
+  productEntity: SpawnPodCargoBingle
+  icon:
+    sprite: _Goobstation/Mobs/Bingle/cargo-bingle.rsi
+    state: icon
+  cost:
+    NTLoyaltyPoint: 5 # go my cargo tech without hands nor the ability to speak, only drag items.
+  categories:
+  - NTRstation
+  restockTime: 600
+  resetRestockOnPurchase: true
+  restockAfterPurchase: 600 # 10 min, cadet who doesn't know about friendly bingles vs cargo bingle:
+
+- type: listing
   id: NTRExecutiveCrateEVA
-  name: EVA crate
-  description: A crate containing 3 pairs of EVA hardsuits, to keep you and your people alive in a catastrophic situation.
+  name: "Ящик ЄВА"
+  description: "Ящик, що містить 3 пари скафандрів ЄВА, щоб зберегти вас і ваших людей живими в катастрофічній ситуації."
   productEntity: SpawnPodEvaKit
   icon:
-    sprite: Structures/Storage/Crates/command.rsi
+    sprite: Clothing/OuterClothing/Suits/eva.rsi
     state: icon
   cost:
     NTLoyaltyPoint: 5
   categories:
   - NTRstation
-  restockTime: 300 # if the station is fucked up in 5 minutes, thats unfortunate lol, 5min tho
+  restockTime: 300 # if the station is fucked up in 5 minutes, that's unfortunate lol, 5min tho
   resetRestockOnPurchase: true
   restockAfterPurchase: 900 # 15min
 
 - type: listing
   id: NTRExecutiveMindshield
-  name: Mindshield crate
-  description: A crate containing 3 mindshield implants. Corporate advises you to buy them in cargo anyway.
+  name: "Ящик з майндшилдами"
+  description: "Ящик, що містить 3 імпланти майндшилд. Корпорація радить вам все одно купувати їх у вантажному відділі."
   productEntity: SpawnPodMindshield
   icon:
-    sprite: Structures/Storage/Crates/command.rsi
-    state: icon
+    sprite: Objects/Specific/Medical/implanter.rsi
+    state: implanter0
   cost:
     NTLoyaltyPoint: 15
   categories:
@@ -31,7 +47,7 @@
   resetRestockOnPurchase: true
   restockAfterPurchase: 900 # 15min
 
-# Some things that are limited are limited for a good reason, keeping it for the yamlwarriors
+# Some things that are limited, are limited for a good reason, keeping it for the yamlwarriors
 
 #- type: listing
 #  id: NTRExecutiveSecHardsuit
@@ -55,8 +71,8 @@
   description: ntr-executive-spesos-small-desc
   productEntity: SpawnPodSpesos
   icon:
-    sprite: Structures/Storage/Crates/privatecrate_secure.rsi
-    state: icon
+    sprite: Objects/Economy/cash.rsi
+    state: cash
   cost:
     NTLoyaltyPoint: 15
   categories:
@@ -71,7 +87,7 @@
   description: ntr-executive-disk-small-desc
   productEntity: SpawnPodDisks
   icon:
-    sprite: Structures/Storage/Crates/scicrate_secure.rsi
+    sprite: Objects/Specific/Research/researchdisk.rsi
     state: icon
   cost:
     NTLoyaltyPoint: 10
@@ -87,8 +103,8 @@
   description: ntr-executive-emergency-meds-desc
   productEntity: SpawnPodEmergencyMed
   icon:
-    sprite: Structures/Storage/Crates/medicalcrate_secure.rsi
-    state: icon
+    sprite: Objects/Specific/Medical/firstaidkits.rsi
+    state: firstaid
   cost:
     NTLoyaltyPoint: 10 # woundmd ahhhh
   categories:
@@ -103,8 +119,8 @@
   description: ntr-executive-disablers-desc
   productEntity: SpawnPodDisablers
   icon:
-    sprite: Structures/Storage/Crates/command.rsi
-    state: icon
+    sprite: Objects/Weapons/Guns/Battery/disabler_smg.rsi
+    state: base
   cost:
     NTLoyaltyPoint: 10
   categories:
@@ -119,7 +135,7 @@
   description: ntr-executive-tools-small-desc
   productEntity: SpawnPodTools
   icon:
-    sprite: Structures/Storage/Crates/engicrate_secure.rsi
+    sprite: Objects/Tools/crowbar.rsi
     state: icon
   cost:
     NTLoyaltyPoint: 3
@@ -133,8 +149,8 @@
 
 - type: listing
   id: NTRExecutiveWaterCoolerGold
-  name: premium water (?) cooler
-  description: Made from the finest 24-karat hardened whiskey in the sector. Its shiny and golden, just like its insides. Comes with 500u of whiskey. Every fine executive has one of these in their room.
+  name: "преміальний кулер «з водою»"
+  description: "Виготовлений з найкращого у секторі 24-каратного загартованого віскі. Він блискучий і золотий, як і його нутрощі. Постачається з 500 од. віскі. Кожен поважний керівник має такий у своїй кімнаті."
   productEntity: SpawnPodWaterCoolerGold
   icon:
     sprite: _Goobstation/Structures/Storage/watercooler.rsi
@@ -174,7 +190,7 @@
 #    sprite: _Goobstation/Objects/Weapons/Melee/e_daggerntr.rsi
 #    state: icon
 #  cost:
-#    NTLoyaltyPoint: 20 # its a bit better than a cc pen, but still.
+#    NTLoyaltyPoint: 20 # It's a bit better than a cc pen, but still.
 #  categories:
 #  - NTRpersonal
 #  restockTime: 900 # 15 min
@@ -183,8 +199,8 @@
 
 - type: listing
   id: NTRExecutiveSingleIntern
-  name: single Intern Coin
-  description: Summons one basic intern. Interns are on your full command, order them to complete tasks instead of you doing it by yourself, or play cards with them.
+  name: "одна монета інтерна"
+  description: "Викликає одного базового інтерна."
   productEntity: SpawnPodCoin
   icon:
     sprite: Objects/Misc/coins.rsi
@@ -213,22 +229,6 @@
 #  conditions:
 #  - !type:ListingLimitedStockCondition
 #    stock: 1 # we dont want NTR to buy 3 BSDs in one shift so
-
-#- type: listing
-#  id: NTRExecutiveHardsuit
-#  name: ntr-executive-hardsuit-name
-#  description: ntr-executive-hardsuit-desc
-#  productEntity: SpawnPodHardsuit
-#  icon:
-#    sprite: _Goobstation/Clothing/OuterClothing/Hardsuits/ntr.rsi
-#    state: icon
-#  cost:
-#    NTLoyaltyPoint: 35
-#  categories:
-#  - NTRpersonal
-#  restockTime: 600 # 10 mins
-#  resetRestockOnPurchase: true
-#  restockAfterPurchase: 2400 # 40 mins, you dont want to buy 2 suits in one shift, but if you do, then wait lol
 
 - type: listing
   id: NTRExecutiveCigar
@@ -260,7 +260,7 @@
   - NTRpersonal
   restockTime: 240 # 4 mins
   resetRestockOnPurchase: true
-  restockAfterPurchase: 600 # 10 mins so that NTR couldnt die from alcohol poisoning cuz im sure they will
+  restockAfterPurchase: 600 # 10 mins so that NTR couldn't die from alcohol poisoning cuz im sure they will
 
 - type: listing
   id: NTRExecutiveGlasses
@@ -296,7 +296,7 @@
 
 # - type: listing
 #  id: NTRExecutiveDeckard
-#  name: ntr-executive-1984-name # we dont talk about this locale string name anymore
+#  name: ntr-executive-1984-name # We don't talk about this locale string name anymore.
 #  description: ntr-executive-1984-desc
 #  productEntity: SpawnPodDeckard
 #  icon:
@@ -326,12 +326,78 @@
   resetRestockOnPurchase: true
   restockAfterPurchase: 1800 #30mins, you shouldnt spam this
 
+- type: listing
+  id: NTRExecutiveCigsDeluxe
+  name: "Елітний автомат із цигарками"
+  description: "Для тих, хто знає, що раку легенів не існує, Nanotrasen зробила це — автомат, повний цигарок і дорогих запальничок для вас."
+  productEntity: SpawnPodNTRCigs
+  icon:
+    sprite: _Goobstation/Structures/Machines/cigvend.rsi
+    state: icon
+  cost:
+    NTLoyaltyPoint: 15
+  categories:
+  - NTRpersonal
+  restockTime: 0
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+- type: listing
+  id: NTRExecutiveSoap
+  name: "мило Центкому"
+  description: "Дороге мило, зроблене з нашого найкращого... кого я обманюю, це просто мило, вкрите мастилом з принтом."
+  productEntity: SpawnPodNTRSoap
+  icon:
+    sprite: _Goobstation/Objects/Fun/soap.rsi
+    state: soap_cc
+  cost:
+    NTLoyaltyPoint: 10
+  categories:
+  - NTRpersonal
+  restockTime: 0
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 2
+
+- type: listing
+  id: NTRExperimentalHardsuit
+  name: ntr-experimental-hardsuit-name
+  description: ntr-experimental-hardsuit-desc
+  productEntity: SpawnPodHardsuitExperimental
+  icon:
+    sprite: _Goobstation/Clothing/OuterClothing/Hardsuits/ntr_experimental.rsi
+    state: icon
+  cost:
+    NTLoyaltyPoint: 30
+  categories:
+  - NTRpersonal
+  restockTime: 1200 # 20 mins
+  resetRestockOnPurchase: false
+  restockAfterPurchase: 2400 # 40 mins, you don't want to buy 2 suits in one shift, but if you do, then wait lol
+
+- type: listing
+  id: NTRExecutiveMarlen
+  name: "Марлен"
+  description: "Стильна парасоля Центкому, створена \"NanoFashion\" для багатіїв центрального командування. Дивовижно міцна."
+  productEntity: SpawnPodMarlen
+  icon:
+    sprite: _Goobstation/Objects/Weapons/Melee/marlen.rsi
+    state: icon-on
+  cost:
+    NTLoyaltyPoint: 8
+  categories:
+  - NTRpersonal
+  restockTime: 60 # idk
+  resetRestockOnPurchase: true
+  restockAfterPurchase: 1800 #30min
+
 # Machine boards
 
 - type: listing
   id: NTRExecutiveFlatpack
-  name: task console flatpack # technically a flatpack but who cares lol
-  description: A normal flatpack containing a spare task console.
+  name: "плаский пакет з консоллю завдань" # technically a flatpack but who cares lol
+  description: "Звичайний плаский пакет, що містить запасну консоль завдань."
   productEntity: SpawnPodTaskFlatpack
   icon:
     sprite: Objects/Devices/flatpack.rsi
@@ -466,7 +532,7 @@
   resetRestockOnPurchase: false
   conditions:
   - !type:ListingLimitedStockCondition
-    stock: 1 # yeh more than 1 server is too much already, we dont want ntr to buy this one if the old one wasnt stolen or smth
+    stock: 1 # yeh more than 1 server is too much already, we don't want ntr to buy this one if the old one wasn't stolen or smth
 
 - type: listing
   id: NTRExecutiveComms
@@ -546,8 +612,8 @@
 # todo: add more debug stuff / and possibly make this open if emagged or something, but it was never intended for it tho.
 - type: listing
   id: NTRExecutiveDebugCodes
-  name: Nuclear codes
-  description: Stand ready for my arrival, worm.
+  name: "Ядерні коди"
+  description: "Готуйся до мого прибуття, черв'як."
   productEntity: BoxFolderNuclearCodes
   cost:
     NTLoyaltyPoint: 250
@@ -558,3 +624,19 @@
   conditions:
   - !type:ListingLimitedStockCondition
     stock: 1
+
+- type: listing
+  id: NTRExecutiveCasettePlayer
+  name: ntr-executive-cassette-name
+  description: ntr-executive-cassette-desc
+  productEntity: SpawnPodNTRCassettePlayer
+  icon:
+    sprite: _Goobstation/Objects/Fun/executive_cassette_player.rsi
+    state: icon
+  cost:
+    NTLoyaltyPoint: 3
+  categories:
+    - NTRpersonal
+  restockTime: 0
+  resetRestockOnPurchase: true
+  restockAfterPurchase: 300

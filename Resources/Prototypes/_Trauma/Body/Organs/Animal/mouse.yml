@@ -1,0 +1,20 @@
+- type: entity
+  parent: BaseAnimalOrgan
+  id: OrganMouseEggSack
+  name: "яєчний мішечок миші"
+  description: "Орган, який дозволяє мишам розмножуватися без статевого партнера. Його тканини здаються... чужими, невже це справді творіння природи?"
+  components:
+  - type: Sprite
+    sprite: _White/Mobs/Species/Xenomorph/organs.rsi
+    state: egg_sack
+    scale: 0.25,0.25 # :)
+  - type: Organ
+    slotId: egg_sack
+    onAdd:
+    - type: EggLayer
+      eggSpawn:
+      - id: MobMouse
+      hungerUsage: 20
+      eggLayAction: MouseMultiply
+      hungerRequired: true
+  - type: EggSack # only for surgery whitelist, doesn't do anything

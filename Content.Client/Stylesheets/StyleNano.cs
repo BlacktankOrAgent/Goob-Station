@@ -310,6 +310,7 @@ namespace Content.Client.Stylesheets
 
         //Background
         public const string StyleClassBackgroundBaseDark = "PanelBackgroundBaseDark";
+        public const string StyleClassBackgroundBaseLight = "PanelBackgroundBaseLight"; // Goob Station
 
         //Buttons
         public const string StyleClassCrossButtonRed = "CrossButtonRed";
@@ -757,6 +758,22 @@ namespace Content.Client.Stylesheets
                 Modulate = Color.FromHex("#eaedde"), // A light cream
             };
             paperBackground.SetPatchMargin(StyleBox.Margin.All, 16.0f);
+
+            #region Pirate: camera
+            var photoDefaultBorder = new StyleBoxFlat
+            {
+                BackgroundColor = Color.FromHex("#eaedde"),
+                BorderColor = Color.FromHex("#C0C0C0"),
+                BorderThickness = new Thickness(4),
+            };
+            photoDefaultBorder.SetContentMarginOverride(StyleBox.Margin.All, 4);
+            var photoCardFramePanel = new StyleBoxFlat
+            {
+                BackgroundColor = Color.FromHex("#FFFFFF"),
+                BorderColor = Color.FromHex("#C0C0C0"),
+                BorderThickness = new Thickness(4),
+            };
+            #endregion
 
             var contextMenuExpansionTexture = resCache.GetTexture("/Textures/Interface/VerbIcons/group.svg.192dpi.png");
             var verbMenuConfirmationTexture = resCache.GetTexture("/Textures/Interface/VerbIcons/group.svg.192dpi.png");
@@ -1753,6 +1770,10 @@ namespace Content.Client.Stylesheets
                     .Prop("panel", new StyleBoxTexture(BaseButtonOpenBoth) { Padding = default })
                     .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#1F1F23")),
 
+                Element<PanelContainer>().Class("PanelBackgroundBaseLight") // Goob Station
+                    .Prop("panel", new StyleBoxTexture(BaseButtonOpenBoth) { Padding = default })
+                    .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#2d2d39")),
+
                 Element<PanelContainer>().Class("PanelBackgroundLight")
                     .Prop("panel", new StyleBoxTexture(BaseButtonOpenBoth) { Padding = default })
                     .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#2F2F3B")),
@@ -1793,9 +1814,15 @@ namespace Content.Client.Stylesheets
                 // The default look of paper in UIs. Pages can have components which override this
                 Element<PanelContainer>().Class("PaperDefaultBorder")
                     .Prop(PanelContainer.StylePropertyPanel, paperBackground),
+                Element<PanelContainer>().Class("PhotoDefaultBorder")
+                    .Prop(PanelContainer.StylePropertyPanel, photoDefaultBorder), // Pirate: camera
                 Element<RichTextLabel>().Class("PaperWrittenText")
                     .Prop(Label.StylePropertyFont, notoSans12)
                     .Prop(Control.StylePropertyModulateSelf, Color.FromHex("#111111")),
+                Element<PanelContainer>().Class("PhotoCardFramePanel")
+                    .Prop(PanelContainer.StylePropertyPanel, photoCardFramePanel), // Pirate: camera
+                Element<Label>().Class("PhotoCardPrimaryText")
+                    .Prop(Label.StylePropertyFontColor, Color.FromHex("#111111")), // Pirate: camera
 
                 Element<RichTextLabel>().Class("LabelSubText")
                     .Prop(Label.StylePropertyFont, notoSans10)

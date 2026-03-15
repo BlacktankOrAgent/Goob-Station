@@ -1,0 +1,16 @@
+- type: entity
+  id: StasisOperatingTable
+  name: "стазисний операційний стіл"
+  parent: [ StasisBed, OperatingTable ]
+  description: "Використовується для складних медичних процедур. Значно уповільнює метаболізм пацієнта та запобігає розкладанню тіла."
+  components:
+  - type: Sprite
+    sprite: _CorvaxGoob/Structures/Machines/stasis_operation_table.rsi
+    noRot: true
+    layers:
+    - state: icon
+    - state: unlit
+      shader: unshaded
+      map: ["unlit"]
+  - type: Machine
+    board: StasisOperatingTableCircuitboard

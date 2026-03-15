@@ -15,10 +15,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: entity
-  name: Burner
+  name: "Бернер"
   parent: [BaseWeaponRifle, BaseSyndicateContraband]
   id: WeaponRifleBurner
-  description: A high caliber syndicate gun chambered in .50 caliber, capable of firing anti-materiel and high explosive rounds.
+  description: "Непристойно потужна повністю автоматична протиматеріальна гвинтівка, що шле .50 по цілях доти, доки ви спроможні її втримати на плечі. Краще вам не знати, скільки вона коштує. Живиться з магазинів .50 Anti-Materiel."
   components:
   - type: Sprite
     sprite: _Goobstation/Objects/Weapons/Guns/Rifles/burner.rsi
@@ -27,6 +27,8 @@
         map: ["enum.GunVisualLayers.Base"]
       - state: mag-0
         map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _Goobstation/Objects/Weapons/Guns/Rifles/burner.rsi
   - type: Gun
     fireRate: 3
     soundGunshot:
@@ -67,10 +69,10 @@
     - 0,0,5,2
 
 - type: entity
-  name: M-90
+  name: "M-90"
   parent: [BaseWeaponRifle, BaseSyndicateContraband]
   id: WeaponRifleM90
-  description: A revision of the M-90gl that removes the inbuilt grenade launcher. Uses .20 rifle ammo.
+  description: "Дешевша модифікація M-90GL, у якій відсутній вбудований гранатомет. Живиться з магазинів .20 Rifle."
   components:
   - type: Sprite
     sprite: _Goobstation/Objects/Weapons/Guns/Rifles/m90.rsi
@@ -113,10 +115,10 @@
     fireRate: 6
 
 - type: entity
-  name: Annie
+  name: "Енні"
   parent: [BaseCentcommContraband, BaseWeaponRifle]
   id: WeaponRifleAnnie
-  description: A beast designed to shoulder the weight of impossible missions. Uses .30 rifle ammo.
+  description: "Звір, створений витримувати тягар неможливих місій, і гордість Корпусу екстреного реагування. Живиться з магазинів .30 Rifle."
   components:
   - type: Sprite
     sprite: _Goobstation/Objects/Weapons/Guns/Rifles/annie.rsi
@@ -170,10 +172,10 @@
   - type: Appearance
 
 - type: entity
-  name: WSPR
+  name: "WSPR"
   parent: [BaseSyndicateContraband, BaseWeaponRifle]
   id: WeaponRifleWSPR
-  description: A cutting-edge rifle from Cybersun, versatile, reliable, and Syndicate-approved. Uses 9.5mm caseless magnum ammo.
+  description: "Маловідома гвинтівка від Кіберсан, створена для прихованих місій у середовищі, переповненому цілями. Приглушена, дозвукова та безгільзова — для оперативника, що не лишає слідів. Живиться з магазинів ПП 9.5mm."
   components:
   - type: Sprite
     sprite: _Goobstation/Objects/Weapons/Guns/Rifles/wspr.rsi

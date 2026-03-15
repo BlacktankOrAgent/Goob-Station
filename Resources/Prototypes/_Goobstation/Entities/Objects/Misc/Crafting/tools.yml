@@ -1,0 +1,22 @@
+- type: entity
+  abstract: true
+  parent: BaseItem
+  id: BaseWoodenHandle
+  name: "дерев'яна ручка"
+  description: "Звичайна дерев'яна ручка, яку можна використовувати для крафту."
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Objects/Misc/Crafting/wooden_handle.rsi
+    state: icon
+  - type: Construction
+    node: handle
+
+- type: entity
+  parent: BaseWoodenHandle
+  id: WoodenHandleHammer
+  name: "ручка молотка"
+  components:
+  - type: Construction
+    graph: Hammer
+
+# if you revive metal bat / forged knife add handles for them

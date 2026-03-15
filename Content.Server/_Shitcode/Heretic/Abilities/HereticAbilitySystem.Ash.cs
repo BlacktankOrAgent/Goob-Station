@@ -14,7 +14,6 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using Content.Shared.Damage;
 using Content.Shared.Heretic;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -24,9 +23,9 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
 using System.Linq;
 using System.Threading.Tasks;
-using Content.Goobstation.Shared.Body.Components;
-using Content.Goobstation.Shared.Temperature.Components;
-using Content.Goobstation.Shared.Atmos.Components;
+using Content.Goobstation.Common.Atmos;
+using Content.Goobstation.Common.Body.Components;
+using Content.Goobstation.Common.Temperature.Components;
 using Content.Shared._Shitmed.Damage;
 using Content.Shared._Shitmed.Targeting;
 
@@ -53,20 +52,20 @@ public sealed partial class HereticAbilitySystem
 
     private void OnJaunt(Entity<HereticComponent> ent, ref EventHereticAshenShift args)
     {
-        if (TryUseAbility(ent, args) && TryDoJaunt(ent))
+        if (TryUseAbility(ent, args) && TryDoJaunt(ent, args.Jaunt))
             args.Handled = true;
     }
 
     private void OnJauntGhoul(Entity<GhoulComponent> ent, ref EventHereticAshenShift args)
     {
-        if (TryUseAbility(ent, args) && TryDoJaunt(ent))
+        if (TryUseAbility(ent, args) && TryDoJaunt(ent, args.Jaunt))
             args.Handled = true;
     }
 
-    private bool TryDoJaunt(EntityUid ent)
+    private bool TryDoJaunt(EntityUid ent, string proto)
     {
         Spawn("PolymorphAshJauntAnimation", Transform(ent).Coordinates);
-        var urist = _poly.PolymorphEntity(ent, "AshJaunt");
+        var urist = _poly.PolymorphEntity(ent, proto);
         if (urist == null)
             return false;
 
@@ -81,7 +80,7 @@ public sealed partial class HereticAbilitySystem
         if (ent.Comp is not { Ascended: true, CurrentPath: "Ash" })
             _flammable.Extinguish(ent);
 
-        var lookup = GetNearbyPeople(ent, args.Range);
+        var lookup = GetNearbyPeople(ent, args.Range, ent.Comp.CurrentPath);
         var toHeal = 0f;
 
         foreach (var look in lookup)
@@ -95,8 +94,12 @@ public sealed partial class HereticAbilitySystem
 
             toHeal += args.HealAmount;
 
-            _flammable.AdjustFireStacks(look, args.FireStacks, flam, true);
-            _dmg.TryChangeDamage(look, args.Damage, true, targetPart: TargetBodyPart.All);
+            _flammable.AdjustFireStacks(look, args.FireStacks, flam, true, args.FireProtectionPenetration);
+            _dmg.TryChangeDamage(look,
+                args.Damage * _body.GetVitalBodyPartRatio(look),
+                true,
+                targetPart: TargetBodyPart.All,
+                splitDamage: SplitDamageBehavior.SplitEnsureAll);
         }
 
         args.Handled = true;
@@ -106,7 +109,7 @@ public sealed partial class HereticAbilitySystem
 
         // heals everything by base + power for each burning target
         _stam.TryTakeStamina(ent, toHeal);
-        IHateWoundMed(ent.Owner, args.ToHeal * toHeal, toHeal, toHeal);
+        IHateWoundMed(ent.Owner, AllDamage * toHeal, toHeal, toHeal, toHeal, 0, 0);
     }
 
     private void OnFlames(Entity<HereticComponent> ent, ref EventHereticFlames args)

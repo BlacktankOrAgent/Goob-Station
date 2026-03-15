@@ -159,6 +159,7 @@
     - CrowbarRed
     - ERTSecurityUndeterminedWeapon
     # - MagazineMagnum - No need
+    - PinpointerNuclear # Pirate Changes
 
 - type: startingGear
   id: ERTLeaderGearEVA
@@ -184,6 +185,7 @@
     - CrowbarRed
     - ERTSecurityUndeterminedWeapon
     # Goobstation - MagazineMagnum
+    - PinpointerNuclear # Pirate Changes
 
 - type: chameleonOutfit
   id: ERTLeaderChameleonOutfit
@@ -215,6 +217,7 @@
   - !type:AddComponentSpecial
     components:
     - type: BibleUser #Lets them heal with bibles
+    - type: CurseImmune # Goobstation - Wraith
     - type: CanEnchant #GoobStation
   - !type:AddImplantSpecial
      implants: [ MindShieldImplant, FreedomImplant, BluespaceLifelineImplant, RadioImplantCentcomm, NutrimentPumpImplant, StypticStimulatorImplant, DeathRattleImplantCentcomm ]
@@ -344,6 +347,8 @@
     - SheetPlasteel
     - SheetSteel
     - SheetGlass
+  inhand:
+    - ToolboxNTTurret
 
 - type: startingGear
   id: ERTEngineerGearEVA
@@ -373,6 +378,8 @@
     - SheetPlasteel
     - SheetSteel
     - SheetGlass
+  inhand:
+    - ToolboxNTTurret
 
 - type: chameleonOutfit
   id: ERTEngineerChameleonOutfit

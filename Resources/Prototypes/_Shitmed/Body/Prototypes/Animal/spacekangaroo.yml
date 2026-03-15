@@ -10,7 +10,7 @@
 
 - type: body
   id: SpaceKangaroo
-  name: "space kangaroo"
+  name: "космічний кенгуру"
   root: chest
   slots:
     chest:
@@ -18,8 +18,8 @@
       connections:
       - groin
       organs:
-        lungs: OrganSpaceAnimalLungs # Immunity to airloss
-        heart: OrganSpaceAnimalHeart # Immunity to pressure
+        lungs: OrganAnimalLungs
+        heart: OrganAnimalHeart
     groin:
       part: GroinAnimal
       connections:

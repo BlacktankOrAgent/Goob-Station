@@ -1,0 +1,236 @@
+- type: entity
+  id: ActionVampireOpenMutationsMenu
+  name: "Меню мутацій"
+  description: "Відкриває меню з мутаціями вампіра."
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: summonheirloom
+    useDelay: 5
+  - type: InstantAction
+    event: !type:VampireOpenMutationsMenu
+
+#- type: entity
+#  id: ActionVampireToggleFangs
+#  name: Toggle Fangs
+#  description: "Extend or retract your fangs. Walking around with your fangs out might reveal your true nature."
+#  categories: [ HideSpawnMenu ]
+#  components:
+#  - type: Action
+#    icon:
+#      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+#      state: fangs_retracted
+#    iconOn:
+#      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+#      state: fangs_extended
+#    useDelay: 5
+#    checkCanInteract: false
+#  - type: InstantAction
+#    event: !type:VampireToggleFangsEvent
+
+- type: entity
+  id: ActionVampireGlare
+  name: "Спалах"
+  description: "Випускає засліплювальний спалах з очей, приголомшуючи незахищеного смертного на 10 секунд. Вартість активації: 20 есенції. Перезарядка: 60 секунд"
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: glare
+    useDelay: 60
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Pirate/Effects/Vampire/glare.ogg
+  - type: TargetAction
+    range: 5
+  - type: EntityTargetAction
+    whitelist:
+      components:
+        - Body
+    event:
+      !type:VampireGlareEvent
+      definitionName: Glare
+
+- type: entity
+  id: ActionVampireHypnotise
+  name: "Гіпноз"
+  description: "Впитайтеся поглядом у очі смертного, змушуючи його заснути на 60 секунд. Вартість активації: 20 есенції. Затримка активації: 5 секунд. Перезарядка: 5 хвилин"
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: hypnotise
+    useDelay: 300
+    itemIconStyle: BigAction
+  - type: TargetAction
+    range: 25
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidAppearance
+    event: !type:VampireHypnotiseEvent
+      definitionName: Hypnotise
+
+- type: entity
+  id: ActionVampireScreech
+  name: "Вереск"
+  description: "Видати пронизливий крик, приголомшуючи незахищених смертних і розбиваючи крихкі предмети поблизу. Вартість активації: 20 есенції. Затримка активації: 5 секунд. Перезарядка: 5 хвилин"
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: screech
+    useDelay: 60
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Pirate/Effects/Vampire/screech_tone.ogg
+  - type: InstantAction
+    event: !type:VampireScreechEvent
+      definitionName: Screech
+
+- type: entity
+  id: ActionVampireBloodSteal
+  name: "Крадіжка крові"
+  description: "Вириває кров з усіх тіл поблизу — живих чи мертвих. Вартість активації: 20 есенції. Перезарядка: 60 секунд"
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: bloodsteal
+    useDelay: 60
+    checkCanInteract: false
+    sound: !type:SoundPathSpecifier
+      path: /Audio/Effects/demon_consume.ogg
+  - type: InstantAction
+    event: !type:VampireBloodStealEvent
+      definitionName: BloodSteal
+
+- type: entity
+  id: ActionVampireUnholyStrength
+  name: "Нечестива міць"
+  description: "Ви отримуєте +10 різальної шкоди до беззбройних атак. Працює, доки не вимкнете. Перезарядка: 60 секунд"
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: unholystrength
+    useDelay: 10
+    checkCanInteract: false
+  - type: InstantAction
+    event: !type:VampireUnholyStrengthEvent
+      definitionName: UnholyStrength
+
+- type: entity
+  id: ActionVampireSupernaturalStrength
+  name: "Надприродна міць"
+  description: "Ви можете віджимати двері голими руками, а також отримуєте +15 різальної шкоди до беззбройних атак. Працює, доки не вимкнете. Перезарядка: 60 секунд"
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: supernaturalstrength
+    useDelay: 10
+    checkCanInteract: false
+  - type: InstantAction
+    event: !type:VampireSupernaturalStrengthEvent
+      definitionName: SupernaturalStrength
+
+- type: entity
+  id: ActionVampireBatform
+  name: "Форма кажана"
+  description: "Прийміть форму кажана. Швидка, важко влучити, полюбляє фрукти. Вартість активації: 20 есенції. Перезарядка: 30 секунд"
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: batform
+    useDelay: 30
+    sound: !type:SoundPathSpecifier
+      path: /Audio/Effects/teleport_arrival.ogg
+  - type: InstantAction
+    event: !type:VampirePolymorphEvent
+      definitionName: PolymorphBat
+
+- type: entity
+  id: ActionVampireMouseform
+  name: "Форма миші"
+  description: "Прийміть форму миші. Швидка, маленька, імунна до дверей. Вартість активації: 20 есенції. Перезарядка: 30 секунд"
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: mouseform
+    useDelay: 30
+    sound: !type:SoundPathSpecifier
+      path: /Audio/Effects/teleport_arrival.ogg
+  - type: InstantAction
+    event: !type:VampirePolymorphEvent
+      definitionName: PolymorphMouse
+
+- type: entity
+  id: ActionVampireCloakOfDarkness
+  name: "Плащ темряви"
+  description: "Сховайтеся від очей смертних, стаючи невидимими під час нерухомості. Вартість активації: 30 есенції. Підтримка: 1 есенція/сек. Перезарядка: 10 секунд"
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: cloakofdarkness
+    useDelay: 10
+  - type: InstantAction
+    event: !type:VampireCloakOfDarknessEvent
+      definitionName: CloakOfDarkness
+
+- type: entity
+  id: ActionVampireSire
+  name: "Породити"
+  description: "Перетворіть смертного на вампіра. Не працює проти цілей із майндшилдом. Вартість активації: 200 есенції."
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: sire
+    useDelay: 10
+    itemIconStyle: BigAction
+  - type: TargetAction
+    range: 25
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - HumanoidAppearance
+    event: !type:VampireSireEvent
+      definitionName: Sire
+
+- type: entity
+  id: ActionVampireDarkGift
+  name: "Темний дар"
+  description: "Зцілює або оживляє наверненого вампіра. Вартість активації: 100 есенції."
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon:
+      sprite: _Pirate/Interface/Actions/actions_vampire.rsi
+      state: darkgift
+    useDelay: 0
+    itemIconStyle: BigAction
+  - type: TargetAction
+    range: 25
+  - type: EntityTargetAction
+    canTargetSelf: false
+    whitelist:
+      components:
+      - Vampire
+    event: !type:VampireDarkGiftEvent
+      definitionName: DarkGift

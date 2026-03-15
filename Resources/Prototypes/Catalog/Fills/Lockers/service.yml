@@ -68,6 +68,8 @@
     - id: DrinkShaker
     - id: ClothingEyesHudBeer
     - id: HandLabeler
+    - id: WeaponRussianRevolver # Goobstation
+    - id: MagazineBoxMagnumPractice # Goobstation
     - id: DrinkBottleBeer
       amount: !type:BinomialNumberSelector
         trials: 3
@@ -115,6 +117,7 @@
       children:
       - id: FoodCondimentPacketSalt
       - id: FoodCondimentPacketPepper
+    - id: Eftpos #Pirate banking
 
 - type: entity
   id: ClosetJanitorFilled
@@ -145,6 +148,7 @@
       - id: FlashlightLantern
       - id: Plunger
       - id: WireBrush
+    - id: Eftpos #Pirate banking
 
 - type: entity
   id: ClosetLegalFilled
@@ -192,6 +196,7 @@
     - id: ClothingUniformOveralls
     - id: ClothingHeadHatTrucker
       prob: 0.1
+    - id: Eftpos #Pirate banking
 
 - type: entity
   id: LockerBotanistLoot

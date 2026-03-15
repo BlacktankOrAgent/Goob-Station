@@ -1,0 +1,16 @@
+- type: entity
+  parent: [ClothingHandsBase, BaseSecurityContraband]
+  id: ClothingHandsGlovesMansusBlock
+  name: "телекінетичні рукавички"
+  description: "Ця дивна пара рукавичок блокує здатність їхнього власника використовувати сили Мансула. Команда жерців подбала, щоб їх неможливо було зняти без чиєїсь допомоги."
+  components:
+  - type: Sprite
+    sprite: _Pirate/Clothing/Hands/Gloves/marsulbloskgloves.rsi
+  - type: Clothing
+    sprite: _Pirate/Clothing/Hands/Gloves/marsulbloskgloves.rsi
+    stripDelay: 10
+    equipDelay: 5
+  - type: Fiber
+    fiberMaterial: fibers-black
+  - type: MansusBlock
+  - type: SelfUnremovableClothing

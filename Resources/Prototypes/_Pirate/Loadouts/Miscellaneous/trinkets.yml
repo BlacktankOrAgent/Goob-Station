@@ -1,3 +1,25 @@
+# Additional accessories / Додаткові аксесуари 
+- type: loadout
+  id: TrinketsClothingHeadPaperSack
+  storage:
+    back:
+    - ClothingHeadPaperSack
+
+- type: loadout
+  id: TrinketsPhotoAlbum
+  storage:
+    back:
+    - PhotoAlbumLoadoutSigned
+
+- type: loadout
+  id: TrinketsPhotoCameraFilled
+  storage:
+    back:
+    - PhotoCameraFilled
+  effects:
+  - !type:PointsCostLoadoutEffect
+    cost: 1
+
 # Toys / Іграшки
 - type: loadout
   id: PlushieEntony

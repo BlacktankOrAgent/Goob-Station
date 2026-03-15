@@ -1,0 +1,292 @@
+- type: entity
+  parent: BaseTree
+  id: FloraTree01
+  name: "дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_trees.rsi
+    state: tree01
+
+- type: entity
+  parent: BaseTree
+  id: FloraTree02
+  name: "дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_trees.rsi
+    state: tree02
+
+- type: entity
+  parent: BaseTree
+  id: FloraTree03
+  name: "дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_trees.rsi
+    state: tree03
+
+- type: entity
+  parent: BaseTree
+  id: FloraTree04
+  name: "дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_trees.rsi
+    state: tree04
+
+- type: entity
+  parent: BaseTree
+  id: FloraTree05
+  name: "дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_trees.rsi
+    state: tree05
+
+- type: entity
+  parent: BaseTree
+  id: FloraTree06
+  name: "дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_trees.rsi
+    state: tree06
+
+- type: entity
+  parent: BaseTreeSnow
+  id: FloraTreeSnow01
+  name: "засніжене дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treessnow.rsi
+    state: treesnow01
+
+- type: entity
+  parent: BaseTreeSnow
+  id: FloraTreeSnow02
+  name: "засніжене дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treessnow.rsi
+    state: treesnow02
+
+- type: entity
+  parent: BaseTreeSnow
+  id: FloraTreeSnow03
+  name: "засніжене дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treessnow.rsi
+    state: treesnow03
+
+- type: entity
+  parent: BaseTreeSnow
+  id: FloraTreeSnow04
+  name: "засніжене дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treessnow.rsi
+    state: treesnow04
+
+- type: entity
+  parent: BaseTreeSnow
+  id: FloraTreeSnow05
+  name: "засніжене дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treessnow.rsi
+    state: treesnow05
+
+- type: entity
+  parent: BaseTreeSnow
+  id: FloraTreeSnow06
+  name: "засніжене дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treessnow.rsi
+    state: treesnow06
+
+- type: entity
+  parent: BaseTreeLarge
+  id: FloraTreeLarge01
+  name: "велике дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslarge.rsi
+    state: treelarge01
+
+- type: entity
+  parent: BaseTreeLarge
+  id: FloraTreeLarge02
+  name: "велике дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslarge.rsi
+    state: treelarge02
+
+- type: entity
+  parent: BaseTreeLarge
+  id: FloraTreeLarge03
+  name: "велике дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslarge.rsi
+    state: treelarge03
+
+- type: entity
+  parent: BaseTreeLarge
+  id: FloraTreeLarge04
+  name: "велике дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslarge.rsi
+    state: treelarge04
+
+- type: entity
+  parent: BaseTreeLarge
+  id: FloraTreeLarge05
+  name: "велике дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslarge.rsi
+    state: treelarge05
+
+- type: entity
+  parent: BaseTreeLarge
+  id: FloraTreeLarge06
+  name: "велике дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslarge.rsi
+    state: treelarge06
+
+- type: entity
+  parent: BaseTreeConifer
+  id: FloraTreeConifer01
+  name: "засніжене хвойне дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treesconifer.rsi
+    state: treeconifer01
+
+- type: entity
+  parent: BaseTreeConifer
+  id: FloraTreeConifer02
+  name: "засніжене хвойне дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treesconifer.rsi
+    state: treeconifer02
+
+- type: entity
+  parent: BaseTreeConifer
+  id: FloraTreeConifer03
+  name: "засніжене хвойне дерево"
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treesconifer.rsi
+    state: treeconifer03
+
+- type: entity
+  parent: FloraTree01
+  id: ShadowTree01
+  name: "темне дерево"
+  description: "Листя шепоче про тебе."
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_shadow_trees.rsi
+    state: tree01
+
+- type: entity
+  parent: ShadowTree01
+  id: ShadowTree02
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_shadow_trees.rsi
+    state: tree02
+
+- type: entity
+  parent: ShadowTree01
+  id: ShadowTree03
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_shadow_trees.rsi
+    state: tree03
+
+- type: entity
+  parent: ShadowTree01
+  id: ShadowTree04
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_shadow_trees.rsi
+    state: tree04
+
+- type: entity
+  parent: ShadowTree01
+  id: ShadowTree05
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_shadow_trees.rsi
+    state: tree05
+
+- type: entity
+  parent: ShadowTree01
+  id: ShadowTree06
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_shadow_trees.rsi
+    state: tree06
+
+- type: entity
+  parent: BaseTree
+  id: LightTree01
+  name: "сяюче дерево"
+  description: "дивовижне дерево, сповнене дивної енергії."
+  components:
+  - type: PointLight
+    radius: 2.0
+    energy: 4.5
+    color: "#6270bb"
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslight.rsi
+    state: tree01
+
+- type: entity
+  parent: LightTree01
+  id: LightTree02
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslight.rsi
+    state: tree02
+
+- type: entity
+  parent: LightTree01
+  id: LightTree03
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslight.rsi
+    state: tree03
+
+- type: entity
+  parent: LightTree01
+  id: LightTree04
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslight.rsi
+    state: tree04
+
+- type: entity
+  parent: LightTree01
+  id: LightTree05
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslight.rsi
+    state: tree05
+
+- type: entity
+  parent: LightTree01
+  id: LightTree06
+  components:
+  - type: Sprite
+    sprite: Objects/Decoration/Flora/flora_treeslight.rsi
+    state: tree06

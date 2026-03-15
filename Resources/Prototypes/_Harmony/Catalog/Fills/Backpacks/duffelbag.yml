@@ -1,0 +1,10 @@
+- type: entity
+  parent: ClothingBackpackDuffelSyndicateBundle
+  id: ClothingBackpackDuffelSyndicateFilledHushpup
+  name: "набір Хашпап"
+  description: "Спортивна сумка з Хашпапом, четвертак включено."
+  components:
+  - type: StorageFill
+    contents:
+    - id: WeaponShotgunHushpup
+    - id: TreasureCoinIron

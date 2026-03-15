@@ -6,10 +6,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: entity
-  name: hardlight bow
+  name: "лук з твердого світла"
   parent: [BaseItem, BaseSyndicateContraband]
   id: BowHardlight
-  description: A modern bow that can fabricate hardlight arrows using an internal energy. This one is designed by the Syndicate for silent takedowns of targets.
+  description: "Цей складаний лук — розробка Donk Co. на основі DT-12 «Lawbringer» — може генерувати безліч типів стріл під потреби користувача."
   components:
   - type: Sprite
     sprite: _Goobstation/Objects/Weapons/Guns/Bow/hardlight_bow.rsi
@@ -58,6 +58,7 @@
       - ArrowExplosive
       - ArrowXray
       - ArrowBee
+      - ArrowIon
   - type: FoldingWeapon
   - type: UserInterface
     interfaces:
@@ -81,6 +82,7 @@
   - type: ItemToggleSize
     activatedSize: Huge
   - type: ItemTogglePointLight
+    toggleableVisualsColorModulatesLights: true
   - type: ComponentToggler
     components:
     - type: DisarmMalus

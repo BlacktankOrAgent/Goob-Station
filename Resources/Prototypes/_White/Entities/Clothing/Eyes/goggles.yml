@@ -9,62 +9,35 @@
 - type: entity
   parent: ClothingEyesBase
   id: ClothingEyesNightVisionGoggles
-  name: night vision goggles
-  description: Now you can see in the dark!
+  name: "окуляри нічного бачення"
+  description: "Тепер ви можете бачити в темряві!"
   components:
   - type: Sprite
     sprite: _White/Clothing/Eyes/Goggles/nightvision.rsi
   - type: Clothing
     sprite: _White/Clothing/Eyes/Goggles/nightvision.rsi
-  - type: NightVision
-    flashDurationMultiplier: 2
-    isEquipment: true
-  - type: IdentityBlocker
-  - type: ClothingGrantComponent
-    component:
-    - type: FlashVulnerable
-
-- type: entity
-  parent: [ClothingEyesBase,BaseSyndicateContraband]
-  id: ClothingEyesNightVisionGogglesSyndie
-  name: syndicate night vision goggles
-  description: A high-tech pair of night vision goggles. Has medical analysis technology.
-  components:
-  - type: Sprite
-    sprite: _White/Clothing/Eyes/Goggles/snightvision.rsi
-  - type: Clothing
-    sprite: _White/Clothing/Eyes/Goggles/snightvision.rsi
   - type: NightVision
     flashDurationMultiplier: 2
     isEquipment: true
   - type: IdentityBlocker
     coverage: EYES
-  - type: ShowHealthBars
-    damageContainers:
-    - Biological
-  - type: ClothingGrantComponent
-    component:
-    - type: FlashVulnerable
 
 - type: entity
-  parent: [ClothingEyesBase,BaseSyndicateContraband]
-  name: syndicate night vision goggles
-  description: A high-tech pair of night vision goggles. Has medical analysis technology.
+  parent: [ClothingEyesNightVisionGoggles, ShowMedicalIcons, BaseSyndicateContraband]
+  id: ClothingEyesNightVisionGogglesSyndie
+  name: "окуляри нічного бачення синдикату"
+  description: "Високотехнологічні окуляри нічного бачення. Мають технологію медичного аналізу."
+  components:
+  - type: Sprite
+    sprite: _White/Clothing/Eyes/Goggles/snightvision.rsi
+  - type: Clothing
+    sprite: _White/Clothing/Eyes/Goggles/snightvision.rsi
+
+- type: entity
+  parent: ClothingEyesNightVisionGogglesSyndie
   id: ClothingEyesNightVisionGogglesNukie
   suffix: "NukeOps"
   components:
-  - type: Sprite
-    sprite: _White/Clothing/Eyes/Goggles/snightvision.rsi
-  - type: Clothing
-    sprite: _White/Clothing/Eyes/Goggles/snightvision.rsi
-  - type: NightVision
-    flashDurationMultiplier: 2
-    isEquipment: true
-  - type: IdentityBlocker
-    coverage: EYES
-  - type: ShowHealthBars
-    damageContainers:
-    - Biological
   - type: ShowSyndicateIcons
 
 # Thermal Vision Goggles
@@ -72,8 +45,8 @@
 - type: entity
   parent: ClothingEyesBase
   id: ClothingEyesThermalVisionGoggles
-  name: thermal vision goggles
-  description: Now you can see everyone!
+  name: "тепловізійні окуляри"
+  description: "Тепер ви можете бачити всіх!"
   components:
   - type: Sprite
     sprite: _White/Clothing/Eyes/Goggles/thermal.rsi
@@ -86,15 +59,12 @@
     toggleAction: PulseThermalVision
   - type: IdentityBlocker
     coverage: EYES
-  - type: ClothingGrantComponent
-    component:
-    - type: FlashVulnerable
 
 - type: entity
   parent: [ClothingEyesBase, BaseSyndicateContraband]
   id: ClothingEyesThermalVisionGogglesSyndie
-  name: thermal vision goggles
-  description: A high-tech pair of thermal goggles.
+  name: "тепловізійні окуляри"
+  description: "Високотехнологічні тепловізійні окуляри."
   components:
   - type: Sprite
     sprite: _White/Clothing/Eyes/Goggles/sthermals.rsi
@@ -106,27 +76,19 @@
     toggleAction: ToggleThermalVision
   - type: IdentityBlocker
     coverage: EYES
-  - type: ClothingGrantComponent
-    component:
-    - type: FlashVulnerable
+  - type: ChameleonClothing #Goobstation start
+    slot: [eyes]
+    default: ClothingEyesThermalVisionGogglesSyndie  
+  - type: UserInterface
+    interfaces:
+      enum.ChameleonUiKey.Key:
+        type: ChameleonBoundUserInterface #Goobstation end
 
 - type: entity
-  parent: [ClothingEyesBase, BaseSyndicateContraband]
+  parent: ClothingEyesThermalVisionGogglesSyndie
   id: ClothingEyesThermalVisionGogglesNukie
-  name: thermal vision goggles
-  description: A high-tech pair of thermal goggles.
   suffix: "NukeOps"
   components:
   - type: ShowSyndicateIcons
   - type: ShowJobIcons
   - type: ShowMindShieldIcons
-  - type: Sprite
-    sprite: _White/Clothing/Eyes/Goggles/sthermals.rsi
-  - type: Clothing
-    sprite: _White/Clothing/Eyes/Goggles/sthermals.rsi
-  - type: ThermalVision
-    flashDurationMultiplier: 2
-    isEquipment: true
-    toggleAction: ToggleThermalVision
-  - type: IdentityBlocker
-    coverage: EYES

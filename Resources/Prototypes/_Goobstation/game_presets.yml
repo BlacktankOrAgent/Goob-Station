@@ -45,7 +45,6 @@
     - BasicStationEventScheduler
     - MeteorSwarmScheduler
     - BasicRoundstartVariation
-    - LavalandStormScheduler # Lavaland Change
     - PsionicEventsScheduler # Pirate
 
 - type: gamePreset
@@ -62,7 +61,6 @@
     - BasicStationEventScheduler
     - MeteorSwarmScheduler
     - BasicRoundstartVariation
-    - LavalandStormScheduler # Lavaland Change
     - PsionicEventsScheduler # Pirate
 
 - type: gamePreset
@@ -80,7 +78,6 @@
     - BasicStationEventScheduler
     - MeteorSwarmScheduler
     - BasicRoundstartVariation
-    - LavalandStormScheduler # Lavaland Change
     - PsionicEventsScheduler # Pirate
 
 - type: gamePreset
@@ -97,7 +94,6 @@
     - BasicStationEventScheduler
     - MeteorSwarmScheduler
     - BasicRoundstartVariation
-    - LavalandStormScheduler # Lavaland Change
     - PsionicEventsScheduler # Pirate
 
 - type: gamePreset
@@ -114,7 +110,6 @@
     - CalmTraitor
     - BasicStationEventScheduler
     - MeteorSwarmScheduler
-    - LavalandStormScheduler # Lavaland Change
     - PsionicEventsScheduler # Pirate
 
 - type: gamePreset
@@ -132,15 +127,14 @@
     - MeteorSwarmScheduler
     - BasicRoundstartVariation
     - BasicRoundstartVariation
-    - LavalandStormScheduler # Lavaland Change
     - PsionicEventsScheduler # Pirate
 
 - type: gamePreset
   id: Blob
   alias:
   - blab
-  name: blob-title
-  description: blob-description
+  name: "крапля"
+  description: "опис краплі"
   showInVote: false
   rules:
   - BlobGameMode
@@ -148,7 +142,6 @@
   - AntagStationEventScheduler
   - BasicRoundstartVariation
   - SubGamemodesRule
-  - LavalandStormScheduler # Lavaland Change
   - PsionicEventsScheduler # Pirate
 
 - type: gamePreset
@@ -165,7 +158,6 @@
     - MeteorSwarmScheduler
     - SpaceTrafficControlEventScheduler
     - BasicRoundstartVariation
-    - LavalandStormScheduler
     - PsionicEventsScheduler # Pirate
 
 - type: gamePreset
@@ -179,7 +171,6 @@
   minPlayers: 5
   rules:
     - CalmDynamic
-    - LavalandStormScheduler
     - PsionicEventsScheduler # Pirate
     - SubGamemodesRule
     - RareIonStormScheduler
@@ -192,11 +183,10 @@
     - combatdynamic
   name: guide-title
   description: guide-description
-  showInVote: false
+  showInVote: true # Pirate, i think this can be better that secret idk
   minPlayers: 25
   rules:
     - CombatDynamic
-    - LavalandStormScheduler
     - PsionicEventsScheduler # Pirate
     - SubGamemodesRule
     - IonStormScheduler
@@ -213,7 +203,6 @@
   showInVote: true
   rules:
     - SecretPlusLow
-    - LavalandStormScheduler
     - PsionicEventsScheduler # Pirate
 
 - type: gamePreset
@@ -227,7 +216,6 @@
   showInVote: true
   rules:
     - SecretPlusMid
-    - LavalandStormScheduler
     - PsionicEventsScheduler # Pirate
 
 - type: gamePreset
@@ -242,7 +230,6 @@
   showInVote: false # 1984
   rules:
     - SecretPlusAdmeme
-    - LavalandStormScheduler
     - PsionicEventsScheduler # Pirate
 
 - type: gamePreset
@@ -257,20 +244,34 @@
   minPlayers: 100 # Pirate
   rules:
     - SecretPlusRampingMid
-    - LavalandStormScheduler
     - PsionicEventsScheduler # Pirate
 
-# survival+ but it has roundstart abductors and maybe thieves
 - type: gamePreset
-  id: Abductors
+  id: Xenomorphs
   alias:
-  - ayylmao
-  name: abductors-title
-  description: abductors-description
+  - ayyliens
+  name: "ксеноморфи"
+  description: "опис ксеноморфів"
   showInVote: false
-  minPlayers: 20
+  minPlayers: 1
   rules:
-  - DuoAbductorRoundstart
+  - XenomorphsInfestationRoundstart
   - SubGamemodesRule
   - SecretPlusRampingMid
-  - LavalandStormScheduler
+
+- type: gamePreset
+  id: OopsAllThieves
+  alias:
+    - oopsallthieves
+    - allthieves
+    - thieves
+  name: oops-all-thieves-title
+  description: oops-all-thieves-description
+  showInVote: false
+  rules:
+  - OopsAllThieves
+  - TraitorSubGamemodesRule
+  - BasicStationEventScheduler
+  - MeteorSwarmScheduler
+  - SpaceTrafficControlEventScheduler
+  - BasicRoundstartVariation

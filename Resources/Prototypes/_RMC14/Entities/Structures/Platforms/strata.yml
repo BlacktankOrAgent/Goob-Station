@@ -1,0 +1,118 @@
+# Sorokyne Strata
+
+- type: entity
+  parent: CMPlatform
+  id: RMCPlatformStrata
+  name: "піднятий металевий край"
+  description: "Підвищений рівень металу, який часто використовують для піднесення ділянок над іншими. Ймовірно, на нього можна забратися."
+  components:
+  - type: Sprite
+    state: strata_metalplatform
+
+- type: entity
+  parent: CMPlatformBroken
+  id: RMCPlatformStrataBroken
+  components:
+  - type: Sprite
+    state: strata_metalplatform_broken
+
+- type: entity
+  parent: RMCPlatformStrata
+  id: RMCPlatformStrataStair
+  components:
+  - type: Sprite
+    state: strata_metalplatform_stair
+
+- type: entity
+  parent: RMCPlatformStrata
+  id: RMCPlatformStrataStairAlt
+  components:
+  - type: Sprite
+    state: strata_metalplatform_stair_alt
+
+- type: entity
+  parent: RMCPlatformCornerSmall
+  id: RMCPlatformStrataCornerSmall
+  name: "піднятий металевий кут"
+  description: "Підвищений рівень металу, який часто використовують для піднесення ділянок над іншими. Це кут."
+  components:
+  - type: Sprite
+    state: strata_metalplatform_deco
+
+- type: entity
+  parent: CMPlatform
+  id: RMCPlatformStrataTwo
+  name: "піднятий металевий край"
+  description: "Підвищений рівень металу, який часто використовують для піднесення ділянок над іншими. Ймовірно, на нього можна забратися."
+  components:
+  - type: Sprite
+    state: strata_metalplatform2
+
+- type: entity
+  parent: CMPlatformBroken
+  id: RMCPlatformStrata2Broken
+  components:
+  - type: Sprite
+    state: strata_metalplatform2_broken
+
+- type: entity
+  parent: RMCPlatformCornerSmall
+  id: RMCPlatformStrataTwoCornerSmall
+  name: "піднятий металевий кут"
+  description: "Підвищений рівень металу, який часто використовують для піднесення ділянок над іншими. Це кут."
+  components:
+  - type: Sprite
+    state: strata_metalplatform_deco2
+
+- type: entity
+  parent: CMPlatform
+  id: RMCPlatformStrataThree
+  name: "піднятий металевий край"
+  description: "Підвищений рівень металу, який часто використовують для піднесення ділянок над іншими. Ймовірно, на нього можна забратися."
+  components:
+  - type: Sprite
+    state: strata_metalplatform3
+
+- type: entity
+  parent: CMPlatformBroken
+  id: RMCPlatformStrata3Broken
+  components:
+  - type: Sprite
+    state: strata_metalplatform3_broken
+
+- type: entity
+  parent: RMCPlatformCornerSmall
+  id: RMCPlatformStrataThreeCornerSmall
+  name: "піднятий металевий кут"
+  description: "Підвищений рівень металу, який часто використовують для піднесення ділянок над іншими. Це кут."
+  components:
+  - type: Sprite
+    state: strata_metalplatform_deco3
+
+# Sorokyne Rock
+- type: entity
+  parent: CMPlatform
+  id: RMCPlatformStrataRock
+  name: "крижана скельна кромка"
+  description: "Суцільний шмат безлюдних скель і льоду. Схоже, що на неї можна забратися з певними труднощами."
+  components:
+  - type: Sprite
+    state: strata_rock_platform
+
+- type: entity
+  parent: CMPlatformBroken
+  id: RMCPlatformStrataRockBroken
+  name: "зруйнована крижана скельна кромка"
+  description: "Суцільний шмат безлюдних скель і льоду. Схоже, що на неї можна забратися з певними труднощами. Вона була зруйнована."
+  components:
+  - type: Sprite
+    state: strata_rock_platform_broken
+
+- type: entity
+  parent: RMCPlatformCornerSmall
+  id: RMCPlatformStrataRockCornerSmall
+  name: "крижаний скельний кут"
+  description: "Суцільний шмат безлюдних скель і льоду."
+  components:
+  - type: Sprite
+    state: strata_rock_platform_deco

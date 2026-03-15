@@ -1,0 +1,210 @@
+- type: diseaseSpread
+  id: Debug
+  name: "Дебаг"
+
+- type: entity
+  abstract: true
+  id: DiseaseBehaviorDebug
+  parent: DiseaseBehaviorBase
+  components:
+  - type: DiseaseEffect
+
+- type: entity
+  id: DiseaseBehaviorTurboCancer
+  parent: DiseaseBehaviorDebug
+  name: "турборак"
+  description: "Протягом нетривалого часу завдає генетичної та тупої шкоди."
+  components:
+  - type: DiseaseEffect
+    complexity: 1000
+  - type: DiseaseReagentEffect
+    effects:
+    - !type:HealthChange
+      scaleByQuantity: false
+      damage:
+        types:
+          Cellular: 50
+          Blunt: 50
+
+- type: entity
+  id: DiseaseBehaviorSpreadDebug
+  parent: DiseaseBehaviorDebug
+  name: "дебаг-поширення"
+  description: "Чума."
+  components:
+  - type: DiseaseEffect
+    complexity: 1000
+  - type: DiseasePeriodicCondition
+    delayMin: 1
+    delayMax: 2
+  - type: DiseaseVomitEffect
+    severityScale: false
+    progressScale: false
+    timeScale: false
+  - type: DiseaseSpreadEffect
+    arc: 180
+    range: 4
+
+- type: entity
+  id: DiseaseBehaviorForceSpreadDebug
+  parent: DiseaseBehaviorDebug
+  name: "омега-поширення"
+  description: "Світи згниють." # [x] sufficiently edgy description
+  components:
+  - type: DiseaseEffect
+    complexity: 1000
+  - type: DiseaseChanceCondition # mostly for performance concerns
+    chance: 1
+    timeScale: false
+  - type: DiseaseForceSpreadEffect
+    range: 1.5
+    chance: 1
+    severityScale: false
+    spreadParams:
+      chance: 1
+      power: 1
+      spreadType: Debug
+
+- type: entity
+  id: DiseaseBehaviorTurboBlunt
+  parent: DiseaseBehaviorBase
+  name: "отрута"
+  description: "Завдає багато тупої шкоди з часом."
+  components:
+  - type: DiseaseEffect
+    complexity: 1000
+  - type: DiseaseReagentEffect
+    effects:
+    - !type:HealthChange
+      scaleByQuantity: false
+      damage:
+        types:
+          Blunt: 50
+
+- type: entity
+  id: DiseaseBehaviorDeconstructFloor
+  parent: DiseaseBehaviorBase
+  name: "підважування плиток"
+  description: "Розбирає підлогу."
+  components:
+  - type: DiseaseEffect
+    complexity: 80
+  - type: DiseaseChanceCondition
+    chance: 1
+  - type: DiseasePryTileEffect
+    range: 2
+
+- type: entity
+  id: DiseaseTurboCancer
+  parent: DiseaseBase
+  name: "турбо-рак"
+  description: "Завдає інфікованому багато генетичної шкоди. Краще підготуйте похорон."
+  components:
+  - type: Disease
+    infectionRate: 0.1
+    affectsDead: true
+    canGainImmunity: false
+    genotype: 42069
+    effects:
+      DiseaseBehaviorTurboCancer: 1
+      DiseaseBehaviorFightImmunity: 1
+      DiseaseBehaviorSpreadDebug: 1
+
+- type: entity
+  id: DiseaseTheRot
+  parent: DiseaseBase
+  name: "гниль"
+  description: "Якщо ви це читаєте, ви накликали гнів богів."
+  components:
+  - type: Disease
+    infectionRate: 0.003
+    immunityGainRate: 0
+    mutationRate: 0
+    affectsDead: true
+    canGainImmunity: false
+    genotype: 9001
+    effects:
+      DiseaseBehaviorTurboBlunt: 0.5
+      DiseaseBehaviorFightImmunity: 1
+      DiseaseBehaviorForceSpreadDebug: 0.5
+      DiseaseBehaviorDeconstructFloor: 0.25
+
+- type: entity
+  id: MeleeDebugInfectTurboCancer
+  parent: MeleeDebugGib
+  name: "палиця турбораку"
+  description: "Потрібен ковток Чорнобиля?"
+  components:
+  - type: Tag
+    tags:
+      - Debug
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+  - type: DiseaseOnHit
+    disease: DiseaseTurboCancer
+
+- type: entity
+  id: MeleeDebugInfectTheRot
+  parent: MeleeDebugGib
+  name: "палиця гнили"
+  description: "Знищує все. Ні, справді."
+  components:
+  - type: Tag
+    tags:
+      - Debug
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+  - type: DiseaseOnHit
+    disease: DiseaseTheRot
+
+- type: entity
+  id: MeleeDebugInfectFlu
+  parent: MeleeDebugGib
+  name: "палиця грипу"
+  description: "Нагороджує вас грипом. А люди ще дивуються, звідки він береться."
+  components:
+  - type: Tag
+    tags:
+      - Debug
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+  - type: DiseaseOnHit
+    disease: DiseaseFlu
+
+- type: entity
+  id: MeleeDebugInfectGravitosisA
+  parent: MeleeDebugGib
+  name: "палиця гравітозису"
+  description: "Нагороджує вас гравітозисом А."
+  components:
+  - type: Tag
+    tags:
+      - Debug
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+  - type: DiseaseOnHit
+    disease: DiseaseGravitosisA
+
+- type: entity
+  id: MeleeDebugInfectGunemia
+  parent: MeleeDebugGib
+  name: "палиця гунемії"
+  description: "Нагороджує вас гунемією."
+  components:
+  - type: Tag
+    tags:
+      - Debug
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 5
+  - type: DiseaseOnHit
+    disease: DiseaseGunemia

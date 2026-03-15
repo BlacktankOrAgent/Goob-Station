@@ -1,0 +1,11 @@
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleVampire
+  name: "Роль вампіра"
+  components:
+  - type: MindRole
+    antagPrototype: Vampire
+    exclusiveAntag: true
+    roleType: SoloAntagonist
+    subtype: vampire-roundend-name
+  - type: VampireRole

@@ -27,7 +27,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
 - type: entity
-  name: gondola
+  name: "гондола"
   parent:
     - MobRespirator
     - MobAtmosStandard
@@ -35,7 +35,7 @@
     - MobBloodstream
     - MobFlammable
   id: MobGondola
-  description: Having no hands he embodies the Taoist principle of wu-wei (non-action) while his smiling facial expression shows his utter and complete acceptance of the world as it is.
+  description: "Не маючи рук, він втілює даоський принцип у-вей (недіяння), а його усміхнений вираз обличчя демонструє його повне і абсолютне прийняття світу таким, яким він є."
   components:
   - type: Hunger
     thresholds:
@@ -151,10 +151,10 @@
   - type: Perishable
 
 - type: entity
-  name: syndiroach
+  name: "синді-тарган"
   id: MobMothSyndy
   parent: MobMothroach
-  description: Explosive moth.
+  description: "Вибуховий мофф."
   components:
   - type: Sprite
     sprite: _Goobstation/Mobs/Animals/syndiroach.rsi
@@ -191,11 +191,11 @@
     - TauCetiBasic # Needs to understand your nukie ops.
 
 - type: entity
-  name: syndie bee
+  name: "синді бі"
   suffix: Angry, syndicate
   parent: [ MobAngryBee ]
   id: MobSyndieAngryBee
-  description: How nice a bee. Oh no, it looks angry and wants my pizza.
+  description: "Яка гарна бджілка. О ні, вона виглядає сердитою і хоче мою піцу."
   components:
   - type: NpcFactionMember
     factions:
@@ -222,10 +222,10 @@
         3
 
 - type: entity
-  name: lootbug
+  name: "лутбаг"
   id: MobLootbug
   parent: SimpleSpaceMobBase
-  description: It eats metal, maybe it's eaten something of value?
+  description: "Він їсть метал, можливо, він з'їв щось цінне?"
   components:
   - type: Sprite
     drawdepth: SmallMobs
@@ -315,10 +315,10 @@
     price: 500
 
 - type: entity
-  name: space carp
+  name: "космічний короп"
   id: MobCarpSentient
   parent: [ SimpleSpaceMobBase, FlyingMobBase, MobCombat ]
-  description: It's a space carp. Used to be a person.
+  description: "Це космічний короп. Раніше був людиною."
   components:
   - type: InputMover
   - type: MobMover
@@ -416,10 +416,10 @@
 
 
 - type: entity
-  name: strange mouse
+  name: "дивна миша"
   parent: MobMouse
   id: MobMouseSentient
-  description: Squeak! Used to be a person!
+  description: "Піск! Раніше була людиною!"
   components:
   - type: MobThresholds
     thresholds:
@@ -443,10 +443,10 @@
         Piercing: 5
 
 - type: entity
-  name: homunculus
+  name: "гомункул"
   id: MobHomunculus
   parent: SimpleMobBase
-  description: What a wretched beast...
+  description: "Яке жалюгідне створіння..."
   components:
   - type: Sprite
     drawdepth: SmallMobs
@@ -518,7 +518,7 @@
 - type: entity
   parent: MobMouse
   id: MouseMenace
-  name: menace
+  name: "загроза"
   components:
   - type: EnchantFill
     enchants:
@@ -527,10 +527,10 @@
       EnchantSharpness: 5 # hit hard ye
 
 - type: entity
-  name: Clown Ian
+  name: "Клоун Ієн"
   parent: MobCorgiIan
   id: MobCorgiIanClown
-  description: Honkmother's favorite corgi.
+  description: "Улюблений коргі Хонкматері."
   components:
     - type: Sprite
       drawdepth: Mobs
@@ -569,23 +569,26 @@
       - FootstepSound
 
 - type: entity
-  name: brullbar
+  name: "брулбар"
   id: MobBrullbar
   parent: [ SimpleSpaceMobBase, MobCombat ]
-  description: It's like a bear, but not as huggable.
+  description: "Схожий на ведмедя, але не такий придатний для обіймів."
   components:
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 4
+    baseSprintSpeed: 4
   - type: HTN
     rootTask:
       task: SimpleHostileCompound
   - type: SpamEmitSound
-    minInterval: 15
-    maxInterval: 45
+    minInterval: 5
+    maxInterval: 15
     sound:
-      path: /Audio/_Goobstation/Animals/Meatzone_Howl.ogg
+      path: /Audio/_Goobstation/Wraith/Mobs/brullbar/brullbar_roar.ogg
       params:
-          volume: -5
+          volume: 1
           maxDistance: 20
-          variation: 0.05
+          variation: 0.01
   - type: NpcFactionMember
     factions:
     - SimpleHostile
@@ -617,10 +620,10 @@
   - type: Fauna # Lavaland Change
 
 - type: entity
-  name: brullbar king
+  name: "король брулбарів"
   id: MobBrullbarKing
   parent: MobBrullbar
-  description: Looks mean, is mean. You better run.
+  description: "Виглядає злим, і є злим. Тобі краще тікати."
   components:
   - type: Sprite
     drawdepth: Mobs
@@ -650,10 +653,10 @@
       prob: 0.2
 
 - type: entity
-  name: bear
+  name: "ведмідь"
   id: MobBearGoon
   parent: [ SimpleSpaceMobBase, MobCombat ]
-  description: Why are you staring? Never seen a bear before?
+  description: "Чого витріщився? Ніколи не бачив ведмедя?"
   components:
   - type: HTN
     rootTask:
@@ -675,7 +678,7 @@
         Base: beardead
   - type: MovementSpeedModifier
     baseWalkSpeed : 4
-    baseSprintSpeed : 7
+    baseSprintSpeed : 4
   - type: MobThresholds
     thresholds:
       0: Alive
@@ -689,10 +692,10 @@
   - type: Fauna # Lavaland Change
 
 - type: entity
-  name: white wolf
+  name: "білий вовк"
   parent: [ SimpleMobBase, MobCombat ]
   id: MobWhiteWolf
-  description: Don't try to pet this one.
+  description: "Не намагайтеся погладити цього."
   components:
     - type: HTN
       rootTask:
@@ -714,7 +717,7 @@
           Base: wolfdead
     - type: MovementSpeedModifier
       baseWalkSpeed : 3
-      baseSprintSpeed : 6
+      baseSprintSpeed : 5
     - type: MobThresholds
       thresholds:
         0: Alive
@@ -737,13 +740,13 @@
       - Dog
       understands:
       - Dog
-
+      - TauCetiBasic
 
 - type: entity
-  name: horse
+  name: "кінь"
   parent: [SimpleMobBase, StripableInventoryBase]
   id: MobHorse
-  description: Very foul creature. For those that feel like punching.
+  description: "Дуже мерзенне створіння. Для тих, хто любить помахати кулаками."
   components:
   - type: MovementSpeedModifier
     baseSprintSpeed: 5.5
@@ -820,3 +823,108 @@
       280: 0.6
       260: 0.4
 
+- type: entity
+  parent: SimpleMobBase
+  id: MobClownGoblin
+  name: "клоун-гоблін"
+  description: "Маленька ходяча клоунська маска та черевики. Так і хочеться натиснути їм на носа й гуднути!"
+  components:
+  - type: WaddleAnimation
+  - type: Hunger
+    baseDecayRate: 0
+  - type: Thirst
+    baseDecayRate: 0
+  - type: GhostTakeoverAvailable
+  - type: GhostRole
+    makeSentient: true
+    allowSpeech: true
+    allowMovement: true
+    name: ghost-role-information-clown-goblin-name
+    description: ghost-role-information-clown-goblin-description
+    rules: ghost-role-information-freeagent-rules
+    mindRoles:
+    - MindRoleGhostRoleFreeAgent
+    raffle:
+      settings: default
+  - type: Speech
+    speechSounds: BikeHorn
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _Goobstation/Mobs/Animals/clown_goblin.rsi
+    state: goblin
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      150: Dead
+  - type: Physics
+  - type: HTN
+    rootTask:
+      task: MouseCompound
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          ClothingShoesClown:
+            min: 1
+            max: 1
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          ClothingMaskClown:
+            min: 1
+            max: 1
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.2
+        density: 100
+        mask:
+        - SmallMobMask
+        layer:
+        - SmallMobLayer
+  - type: MovementSpeedModifier
+    baseWalkSpeed : 3.5
+    baseSprintSpeed : 5
+  - type: Appearance
+  - type: Tag
+    tags:
+    - CannotSuicide
+    - FootstepSound
+  - type: Respirator
+    damage:
+      types:
+        Asphyxiation: 0.25
+    damageRecovery:
+      types:
+        Asphyxiation: -0.25
+  - type: Barotrauma
+    damage:
+      types:
+        Blunt: 0.1
+  - type: Bloodstream
+    bloodMaxVolume: 50
+    bloodReagent: Honk
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: FootstepClown
+  - type: CombatMode
+  - type: MeleeWeapon
+    attackRate: 2
+    damage:
+      types:
+        Blunt: 0.5
+    soundHit:
+      collection: BikeHorn
+    animation: WeaponArcFist
+  - type: Vocal
+    sounds:
+      Male: ClownGoblin
+      Female: ClownGoblin
+      Unsexed: ClownGoblin

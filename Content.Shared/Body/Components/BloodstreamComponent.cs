@@ -78,7 +78,7 @@ public sealed partial class BloodstreamComponent : Component
     /// What percentage of current blood is necessary to avoid dealing blood loss damage?
     /// </summary>
     [DataField, AutoNetworkedField]
-    public float BloodlossThreshold = 0.9f;
+    public float BloodlossThreshold = 0.8f; // Pirate default 80%
 
     /// <summary>
     /// The base bloodloss damage to be incurred if below <see cref="BloodlossThreshold"/>
@@ -209,10 +209,12 @@ public sealed partial class BloodstreamComponent : Component
     /// </summary>
     [DataField]
     public ProtoId<AlertPrototype> BleedingAlert = "Bleed";
-
+    //Pirate from now on
     /// <summary>
-    /// Goobstation - Prevents this entity from absorbing reagents from smoke/foam.
+    ///     How much hunger/thirst is used to regenerate one unit of blood. Set to zero to disable.
+    ///     The actual thirst/hunger rate will scale with <see cref="BloodRefreshAmount"/>.
     /// </summary>
+    /// <remarks>Those will have no effect if the entity has no hunger/thirst components.</remarks>
     [DataField]
-    public bool SmokeImmune;
+    public float BloodRegenerationHunger = 1f, BloodRegenerationThirst = 1f;
 }

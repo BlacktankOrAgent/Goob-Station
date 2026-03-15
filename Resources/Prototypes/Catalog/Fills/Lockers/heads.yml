@@ -173,6 +173,9 @@
     - id: ClothingHandsKnuckleDustersQM # Goobstation - ROCK THAT MF!!
     - id: PrinterDocFlatpack  # Pirate document printer
     - id: SalvageJobBoardComputerCircuitboard # Goobstation - This doesn't really have a use right now but it's there incase it ever gets use again
+    - id: CargoMegaphone # goob - loudspeaker
+    - id: SlotMachineHighRollerFlatPack # Goob - gambling
+    - id: Eftpos #Pirate banking
 
 - type: entity
   id: LockerQuarterMasterFilled
@@ -192,7 +195,8 @@
     - id: CaptainIDCard
     - id: CigarGoldCase
       prob: 0.25
-    - id: ClothingBeltSheathFilled
+    #- id: ClothingBeltSheathFilled # Pirate sabres
+    - id: CaptainUndeterminedSabre # Pirate sabres
     - id: ClothingHeadsetAltCommand
     - id: ClothingOuterArmorCaptainCarapace
     - id: CommsComputerCircuitboard
@@ -298,7 +302,10 @@
     - id: WeaponDisabler
     - id: ClothingEyesHudCommand
     - id: ServiceTechFabCircuitboard # Goobstation - Service Techfab
+    - id: CommandMegaphone # goob - loudspeakers
     - id: PrinterDocFlatpack  # Pirate document printer
+    - id: Eftpos #Pirate banking
+    - id: WalletCartridge #Pirate banking
 
 - type: entity
   id: LockerHeadOfPersonnelFilled
@@ -332,6 +339,8 @@
     - id: RubberStampCE
     - id: MetalFoamGrenade
     # Goobstation V
+    - id: SupermatterComputerCircuitboard
+    - id: BaseHandheldStationMapSupermatterCe
     - id: BaseHandheldStationMapPowerCe
     - id: EngineeringTechFabCircuitboard
     - id: CartridgeRocketSingularityBuster
@@ -400,6 +409,7 @@
     - id: MedkitFilled
     - id: RubberStampCMO
     # Goobstation Start
+    - id: ChemistryHotplateFlatPack
     - id: CloningpodFlatpack
     - id: MedicalScannerFlatpack
     - id: ComputerCloningConsoleFlatpack
@@ -412,6 +422,9 @@
     - id: ClothingBackpackDuffelSurgeryFilled
     # Shitmed
     - id: MedicalBiofabricatorFlatpack
+    # Virology
+    - id: DiseaseDiagnoserFlatPack
+    - id: VaccinatorFlatPack
     # Goobstation End
     - id: PrinterDocFlatpack  # Pirate document printer
     - id: ClothingHandsGlovesCombatNitrile #Pirate
@@ -474,6 +487,7 @@
       prob: 0.15 # GoobStation - RD needs cigs for uhh... science...
     - id: ScienceTechFabCircuitboard # Goobstation - Science Techfab
     - id: ClothingBeltGeminiHoloProjector # Goobstation - Who better to do science with than yourself?
+    - id: XenobiologyBountyComputerCircuitboard # Goobstation
     - id: MMI # Goobstation
     - id: PrinterDocFlatpack  # Pirate document printer
     - id: ClothingEyesGlassesEpistemics
@@ -533,7 +547,7 @@
     - id: ClothingOuterCoatHoSTrench
     - id: ClothingShoesBootsJack
     - id: DoorRemoteSecurity
-    - id: HoloprojectorSecurity
+    #- id: HoloprojectorSecurity Goob, you have one in the belt
     - id: RubberStampHos
     - id: SecurityTechFabCircuitboard
     #- id: WeaponDisabler # Goobstation (Disablers in belts)
@@ -594,4 +608,5 @@
     - id: SpaceCash1000
     - id: BeachBall
     - id: BikeHorn
-
+    - id: FoodMango #Goobstation
+      prob: 0.65

@@ -1,10 +1,10 @@
 - type: entity
   parent: [SimpleSpaceMobBase,FlyingMobBase]
   id: BaseMobShadowlingAscendant
-  name: shadowling ascendant
+  name: "вознесений тіньовик"
   suffix: ""
   categories: [HideSpawnMenu]
-  description: A shadowling ascendant. If you're seeing this, you're probably dead.
+  description: "Вознесений тіньовик. Якщо ви це бачите, ви, ймовірно, мертві."
   components:
   - type: Bloodstream
     bloodMaxVolume: 650
@@ -28,6 +28,7 @@
     baseSprintSpeed: 5
     baseWeightlessModifier: 1.5
   - type: Insulated
+  - type: ZombieImmune # Goobstation
   - type: StepTriggerImmune
   - type: Clickable
   - type: Physics
@@ -50,7 +51,9 @@
     deactivateSound: null
   - type: PressureImmunity
   - type: BreathingImmunity
+  - type: SpecialLowTempImmunity
   - type: ThermalVision
+    thermalShader: null
     color: "#BF40BF"
     activateSound: null
     deactivateSound: null
@@ -85,13 +88,18 @@
         Base: asc_dead
   - type: NameIdentifier
     identifier: 1
+  - type: CollectiveMind # goob edit
+    defaultChannel: Shadowmind
+    channels:
+    - Shadowmind
+  - type: CurseImmune
 
 - type: entity
   parent: [BaseMobShadowlingAscendant]
   id: BaseMobShadowlingAscendantAdminSpawn
-  name: shadowling ascendant
+  name: "вознесений тіньовик"
   suffix: ""
-  description: A shadowling ascendant. If you're seeing this, you're probably dead.
+  description: "Вознесений тіньовик. Якщо ви це бачите, ви, ймовірно, мертві."
   components:
   - type: ShadowlingVeil
   - type: ShadowlingIcyVeins

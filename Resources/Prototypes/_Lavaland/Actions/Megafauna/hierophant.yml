@@ -1,0 +1,77 @@
+# Entity Shape Attacks
+- type: entity
+  id: ActionBaseHierophant
+  parent: BaseAction
+  name: "дія ієрофанта"
+  abstract: true
+  components:
+  - type: Action
+    priority: -21
+    useDelay: 2
+    icon:
+      sprite: _Lavaland/Objects/Weapons/hierophant_club.rsi
+      state: icon
+    itemIconStyle: NoItem
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+
+- type: entity
+  id: ActionHierophantBox
+  parent: ActionBaseHierophant
+  name: "Розширюваний квадрат"
+  description: "Створює розширюваний квадрат у цільовій точці."
+  components:
+  - type: AngerDelayAction
+    minDelay: 1.5
+    maxDelay: 4.0
+    inverse: true
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: HierophantShapeBoxExpanding
+
+- type: entity
+  id: ActionHierophantCrosses
+  parent: ActionBaseHierophant
+  name: "Послідовність хрестів"
+  description: "Створює послідовність хрестів у цільовій точці."
+  components:
+  - type: AngerDelayAction
+    minDelay: 1.5
+    maxDelay: 4.0
+    inverse: true
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: HierophantShapeCrossSequence
+      attachToTarget: true
+
+- type: entity
+  id: ActionHierophantChasers
+  parent: ActionBaseHierophant
+  name: "Створити переслідувачів"
+  description: "Створює переслідувачів ієрофанта, які рухаються по клітинках у бік цілі."
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: AngerDelayAction
+    minDelay: 7.0
+    maxDelay: 20.0
+    inverse: true
+  - type: EntityTargetAction # Without a target it's pretty much useless?
+  - type: WorldTargetAction
+    event: !type:SpawnEntityActionEvent
+      spawn: LavalandHierophantChaser
+      spawnAtUser: true
+
+- type: entity
+  id: ActionHierophantBlink
+  parent: ActionBaseHierophant
+  name: "Блінк"
+  description: "Телепортує вас у вибрану точку."
+  components:
+  - type: AngerDelayAction
+    minDelay: 3.0
+    maxDelay: 10.0
+    inverse: true
+  - type: WorldTargetAction
+    event: !type:MegafaunaBlinkActionEvent

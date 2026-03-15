@@ -37,6 +37,7 @@
             Janitor: [ 2, 2 ]
             Chaplain: [ 2, 2 ]
             Librarian: [ 1, 1 ]
+            RadioHost: [ 1, 1 ]
           #engineering
             AtmosphericTechnician: [ 1, 2 ]
             StationEngineer: [ 2, 3 ]
@@ -47,6 +48,7 @@
             Psychologist: [ 1, 1 ]
             MedicalDoctor: [ 3, 3 ]
             MedicalIntern: [ 2, 2 ]
+            Virologist: [ 1, 1 ]
           #science
             ForensicMantis: [ 1, 1 ]
             Scientist: [ 4, 4 ]

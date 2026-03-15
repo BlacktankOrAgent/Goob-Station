@@ -1,0 +1,27 @@
+- type: entity
+  parent: BaseItem
+  id: DartMonkeyCube
+  name: "куб дротикової мавпи"
+  description: "Стиснений куб, який при використанні створює стаціонарну мавпу, що стріляє дротиками по кульках."
+  components: 
+  - type: Sprite
+    sprite: _Goobstation/Objects/Fun/Monkey_Turrets/dartmonkey.rsi
+    state: cube
+  - type: Item
+    size: Tiny
+  - type: SpawnItemsOnUse
+    items:
+    - id: MonkeyTurretDartBase
+      path: /Audio/Effects/unwrap.ogg
+   
+    
+- type: entity
+  id: CrateDartMonkey
+  parent: CratePlastic
+  name: "ящик з дротиковою мавпою"
+  description: "Ящик, що містить сильно стиснену дротикову мавпу. Ідеально для лускання кульок, тільки не ставте запитань про етику цього..."
+  components:
+  - type: StorageFill
+    contents:
+    - id: DartMonkeyCube
+      amount: 1

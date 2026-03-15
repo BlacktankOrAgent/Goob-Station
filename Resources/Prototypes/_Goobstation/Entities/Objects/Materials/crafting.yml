@@ -1,0 +1,97 @@
+# Hex nut
+- type: entity
+  parent: PartBase
+  id: MaterialHexNut
+  name: "сталева шестигранна гайка"
+  description: "Грубо вигнута гайка, зроблена зі сталі."
+  suffix: Full
+  components:
+  - type: PhysicalComposition
+    materialComposition:
+      Steel: 10
+  - type: Stack
+    stackType: HexNut
+    count: 10
+    baseLayer: base
+    layerStates:
+    - hex_1
+    - hex_1 # todo
+    - hex_1
+  - type: UserInterface
+    interfaces:
+      enum.StackCustomSplitUiKey.Key:
+        type: StackCustomSplitBoundUserInterface
+  - type: Sprite
+    sprite: _Goobstation/Objects/Materials/materials.rsi
+    state: hex_1
+    layers:
+    - state: hex_1
+      map: ["base"]
+  - type: Item
+    size: Small
+    heldPrefix: hex
+  - type: Construction
+    graph: HexNutDouble
+    node: stack
+  - type: Appearance
+  - type: StaticPrice
+    price: 0
+  - type: StackPrice
+    price: 5
+
+- type: entity
+  id: MaterialHexNutSingle
+  parent: MaterialHexNut
+  suffix: Single
+  components:
+  - type: Stack
+    count: 1
+
+# Screw
+- type: entity
+  parent: PartBase
+  id: MaterialScrew
+  name: "сталевий гвинт"
+  description: "Цей гвинт справді іржавий, ви б не хотіли ним порізатися..."
+  suffix: Full
+  components:
+  - type: PhysicalComposition
+    materialComposition:
+      Steel: 10
+  - type: Stack
+    stackType: Screw
+    count: 10
+    baseLayer: base
+    layerStates:
+    - screw_1
+    - screw_1 # todo
+    - screw_1
+  - type: UserInterface
+    interfaces:
+      enum.StackCustomSplitUiKey.Key:
+        type: StackCustomSplitBoundUserInterface
+  - type: Sprite
+    sprite: _Goobstation/Objects/Materials/materials.rsi
+    state: screw_1
+    layers:
+    - state: screw_1
+      map: ["base"]
+  - type: Item
+    size: Small
+    heldPrefix: screw
+  - type: Construction
+    graph: ScrewDouble
+    node: stack
+  - type: Appearance
+  - type: StaticPrice
+    price: 0
+  - type: StackPrice
+    price: 5
+
+- type: entity
+  parent: MaterialScrew
+  id: MaterialScrewSingle
+  suffix: Single
+  components:
+  - type: Stack
+    count: 1

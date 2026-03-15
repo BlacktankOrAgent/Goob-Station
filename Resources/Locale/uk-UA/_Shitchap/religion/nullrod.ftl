@@ -16,3 +16,6 @@ alternate-pray-start = {$user} починає шепотіти до {$item}...
 nullrod-spelldenial-popup = СИЛА БОЖА ЗМУШУЄ ТЕБЕ!
 
 nullrod-bulwark-untrained-usage-popup = Ви не можете витримати вагу власних гріхів, не кажучи вже про цей шматок сталі.
+nullrod-spear-untrained-usage-popup = НЕСПРАВНІСТЬ.
+nullrod-dragontail-untrained-usage-popup = Хвіст вихляється з-під контролю та вдаряє вас!
+nullrod-chainsword-untrained-usage-popup = ВІН не прийняв вас.

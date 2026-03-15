@@ -1,0 +1,111 @@
+- type: entity
+  id: ActionFlipLights
+  name: "Перемикання вимикачів світла"
+  description: "Увімкнені перемикачі вимикаються, а вимкнені — вмикаються."
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Wraith/UI/spook.rsi
+    state: flip
+  - type: Action
+    useDelay: 60
+    icon:
+      sprite: _Goobstation/Wraith/UI/spook.rsi
+      state: flip
+  - type: InstantAction
+    event: !type:FlipLightsEvent
+
+- type: entity
+  id: ActionBurnLights
+  name: "Випалювання ламп"
+  description: "Ламає до чотирьох світлових трубок і ламп у зоні, створюючи іскри, що можуть підпалити займисті матеріали."
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Wraith/UI/spook.rsi
+    state: burn
+  - type: Action
+    useDelay: 60
+    icon:
+      sprite: _Goobstation/Wraith/UI/spook.rsi
+      state: burn
+  - type: InstantAction
+    event: !type:BurnLightsEvent
+
+- type: entity
+  id: ActionOpenDoors
+  name: "Відкриття дверей, шафок і ящиків"
+  description: "Випадковим чином відкриває та закриває кілька дверей, шафок і ящиків у районі."
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Wraith/UI/spook.rsi
+    state: open
+  - type: Action
+    useDelay: 60
+    icon:
+      sprite: _Goobstation/Wraith/UI/spook.rsi
+      state: open
+  - type: InstantAction
+    event: !type:OpenDoorsSpookEvent
+
+- type: entity
+  id: ActionCreateSmoke
+  name: "Створення диму"
+  description: "Створює кілька хмар диму поруч, які можуть повністю приховати поле зору людей. Хмари тримаються приблизно хвилину."
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Wraith/UI/spook.rsi
+    state: smoke
+  - type: Action
+    useDelay: 60
+    icon:
+      sprite: _Goobstation/Wraith/UI/spook.rsi
+      state: smoke
+  - type: InstantAction
+    event: !type:CreateSmokeSpookEvent
+
+- type: entity
+  id: ActionCreateEctoplasm
+  name: "Створення ектоплазми"
+  description: "Створює кілька грудок ектоплазми в зоні."
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Wraith/UI/spook.rsi
+    state: ectoplasm
+  - type: Action
+    useDelay: 60
+    icon:
+      sprite: _Goobstation/Wraith/UI/spook.rsi
+      state: ectoplasm
+  - type: InstantAction
+    event: !type:CreateEctoplasmEvent
+
+- type: entity
+  id: ActionSapApc
+  name: "Висмоктування APC"
+  description: "Висмоктує трохи енергії з APC району. Чим вищий твій показник відновлення ОП, тим більше енергії висмоктується. Не може виснажувати кілька APC."
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Wraith/UI/spook.rsi
+    state: apc
+  - type: Action
+    useDelay: 60
+    icon:
+      sprite: _Goobstation/Wraith/UI/spook.rsi
+      state: apc
+  - type: InstantAction
+    event: !type:SapApcEvent
+
+- type: entity
+  id: ActionSpookRandom
+  name: "Випадкове"
+  description: "Виконує одну випадкову дію."
+  components:
+  - type: Sprite
+    sprite: _Goobstation/Wraith/UI/spook.rsi
+    state: random
+  - type: Action
+    useDelay: 60
+    icon:
+      sprite: _Goobstation/Wraith/UI/spook.rsi
+      state: random
+  - type: InstantAction
+    event: !type:RandomSpookEvent

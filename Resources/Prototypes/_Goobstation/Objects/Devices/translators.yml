@@ -1,0 +1,16 @@
+- type: entity
+  id: YowKriolTranslator
+  parent: [ TranslatorPoweredBase ]
+  name: "Перекладач йоу-кріолу"
+  description: "Перекладає мовлення між йоу-кріолом та Основною. Та ні, та, ні — як справжній землянин!"
+  components:
+  - type: HandheldTranslator
+    spoken:
+    - TauCetiBasic
+    - YowKriol
+    understood:
+    - YowKriol
+    - TauCetiBasic
+    requires:
+    - TauCetiBasic
+    - YowKriol

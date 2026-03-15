@@ -160,6 +160,7 @@
     - id: GasLeak
     - id: GreytideVirus
     - id: IonStorm # its calm like 90% of the time smh
+    - id: JobDistributionError
     - id: KudzuGrowth
     - id: MassHallucinations
     - id: MimicVendorRule
@@ -176,14 +177,15 @@
     - id: MothroachSpawn # DeltaV
     - id: DerelictCyborgSyndicateSpawn # Goobstation - usually calm
     - id: MalignRiftSpawn # DeltaV
-    - id: FloorGoblinSpawn # Goobstation
-    - id: HellGooseSpawn # Goobstation
+    - id: FloorGoblinMidRound # Goobstation
+    - id: ClownGoblinMigration # Goobstation - New Midrounds
+    - id: SantaClausSpawn # Goobstation, remove after new year
 
 - type: entityTable
   id: BasicAntagEventsTable
   table: !type:AllSelector # we need to pass a list of rules, since rules have further restrictions to consider via StationEventComp
     children:
-#    - id: ClosetSkeleton # REMOVED BY PIRATES
+    - id: ClosetSkeleton
     - id: DragonSpawn
     - id: KingRatMigration
     - id: NinjaSpawn
@@ -199,6 +201,16 @@
     - id: BingleSpawn #Goobstation - Bingle
     - id: SlaughterDemonMidround # Goobstation - Slaughter Demon
     - id: XenomorphsInfestation # WD EDIT
+    - id: GreyTideAntagMidround # Goobstation - New Midrounds
+    - id: SingulothKnightsMidround # Goobstation - New Midrounds
+    - id: DarkLordMidround # Goobstation - New Midrounds
+    - id: MimeAssassinMidround # Goobstation - New Midrounds
+    - id: DarkPriestMidround # Goobstation - New Midrounds
+    - id: VoxRaidersMidround # Goobstation - New Midrounds
+    - id: TunnelClownMidround # Goobstation
+    #- id: WraithMidround # Goobstation - Wraith
+    #TODO when midrounds are "reviewed" by the chudmins add them back
+    #TODO When Slasher is Ready - id: SlasherSpawn # Goobstation - The Slasher
 
 - type: entity
   id: BaseStationEvent
@@ -307,7 +319,7 @@
   components:
   - type: StationEvent
     startAnnouncement: station-event-bureaucratic-error-announcement
-    minimumPlayers: 25
+    minimumPlayers: 30 # Pirate - was 25
     weight: 3
     duration: 1
     eventType: Neutral # Goobstation
@@ -333,20 +345,20 @@
     chaosScore: 30
   - type: ClericalErrorRule
 
-#- type: entity # REMOVED BY PIRATES
-#  parent: BaseGameRule
-#  id: ClosetSkeleton
-#  components:
-#  - type: StationEvent
-#    weight: 5
-#    duration: 1
-#    minimumPlayers: 10
-#    eventType: Chaotic # Goobstation
-#  # Goobstation
-#  - type: GameRule
-#    chaosScore: 60
-#  - type: RandomEntityStorageSpawnRule
-#    prototype: MobSkeletonCloset
+- type: entity
+  parent: BaseGameRule
+  id: ClosetSkeleton
+  components:
+  - type: StationEvent
+    weight: 5
+    duration: 1
+    minimumPlayers: 10
+    eventType: Chaotic # Goobstation
+  # Goobstation
+  - type: GameRule
+    chaosScore: 60
+  - type: RandomEntityStorageSpawnRule
+    prototype: MobSkeletonCloset
 
 - type: entity
   parent: BaseGameRule
@@ -354,7 +366,7 @@
   components:
   - type: StationEvent
     weight: 2 # Goobstation - was 3
-    earliestStart: 45
+    earliestStart: 30 # Goobstation was 45
     #recorruenceDelay: 20 # Goobstation - no longer needed
     maxOccurrences: 1 # Goobstation
     minimumPlayers: 50
@@ -419,6 +431,7 @@
     - Diona
     - Abductor
     - Harpy
+    - Plasmaman # EE
     # Goobstation end
   - type: AntagObjectives
     objectives:
@@ -483,7 +496,7 @@
 
   - type: AntagObjectives
     objectives:
-    - ParadoxCloneKillObjective
+    - ParadoxCloneFriendObjective
     - ParadoxCloneLivingObjective
   - type: AntagRandomSpawn # TODO: improve spawning so they only start in maints
   - type: AntagSelection
@@ -709,9 +722,7 @@
   - type: VentCrittersRule
     table: !type:GroupSelector # DeltaV: EntityTable instead of spawn entries
       children:
-      - id: MobAdultSlimesBlueAngry
-      - id: MobAdultSlimesGreenAngry
-      - id: MobAdultSlimesYellowAngry
+      - id: XenobioSlimeBabySpawner # goob edit - nuke wizden slimes in favor of xenobio
 
 - type: entity
   id: SnakeSpawn
@@ -870,9 +881,6 @@
       - type: NpcFactionMember
         factions:
         - Syndicate
-      - type: AutoImplant
-        implants:
-        - DeathAcidifierImplant # Goobstation
       mindRoles:
       - MindRoleNukeops
   - type: AntagLoadProfileRule # Goobstation

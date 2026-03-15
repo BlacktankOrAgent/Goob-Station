@@ -1,0 +1,203 @@
+# Used for Skeleton Commander.
+- type: entity
+  id: ActionRally
+  name: "Збір"
+  description: "Підсилює всіх навколишніх створінь, аби допомогти тобі в бою."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/Mobs/ghostbreath.ogg
+    useDelay: 60
+    icon:
+      sprite: _Goobstation/Wraith/Mobs/actions.rsi
+      state: rally
+  - type: InstantAction
+    event: !type:RallyEvent
+
+- type: entity
+  id: ActionSummonLesserSkeleton
+  name: "Призов меншого скелета"
+  description: "Матеріалізує скелета з Порожнечі, щоб допомогти тобі."
+  components:
+  - type: Action
+    itemIconStyle: BigAction
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/Mobs/ghostbreath.ogg
+    useDelay: 30
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: skeleton
+  - type: TargetAction
+    range: 2
+  - type: WorldTargetAction
+    event: !type:WorldSpawnSpellEvent
+      prototypes:
+      - id: MobSkeletonGoonLesser
+        amount: 1
+      offset: 0, 1
+
+# Used for Void Piker.
+- type: entity
+  id: ActionTentacleHook
+  name: "Щупальцевий гак"
+  description: "Запускає щупальце в ціль і притягує її до тебе"
+  components:
+  - type: Action
+    useDelay: 30
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Misc/Hastur/tentacle_hit.ogg
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/Mobs/actions.rsi
+      state: hook
+  - type: TargetAction
+    range: 15
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - Body
+    canTargetSelf: false
+    event: !type:TentacleHookEvent
+
+- type: entity
+  id: ActionShuffle
+  name: "Стиск"
+  description: "Стискає тебе, щоб скасувати оглушення, прослизнути крізь двері та втекти від нападників."
+  components:
+  - type: Action
+    useDelay: 50
+    icon:
+      sprite: _Goobstation/Wraith/Mobs/actions.rsi
+      state: shuffle
+  - type: InstantAction
+    event: !type:SpikerShuffleEvent
+
+- type: entity
+  id: ActionLash
+  name: "Шаленство"
+  description: "Впадаєш у криваве шаленство, накидаючись на ціль і розриваючи її на шмаття."
+  components:
+  - type: Action
+    useDelay: 50
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/Mobs/actions.rsi
+      state: lash
+  - type: TargetAction
+    range: 2
+  - type: EntityTargetAction
+    canTargetSelf: false
+    event: !type:SpikerLashEvent
+
+# Used for Void Hound.
+
+- type: entity
+  id: ActionRushdown
+  name: "Ривок"
+  description: "Стрибаєш уперед і збиваєш тих, хто на шляху."
+  components:
+  - type: Action
+    useDelay: 40
+    icon:
+      sprite: _Goobstation/Wraith/Mobs/actions.rsi
+      state: pounce
+  - type: InstantAction
+    event: !type:RushdownEvent
+
+- type: entity
+  id: ActionCloak
+  name: "Маскування"
+  description: "Пірнаєш у Порожнечу й на короткий час стаєш важкопомітним."
+  components:
+  - type: Action
+    useDelay: 40
+    icon:
+      sprite: _Goobstation/Wraith/Mobs/actions.rsi
+      state: cloak
+  - type: InstantAction
+    event: !type:CloakEvent
+
+# Used for Diseased Rat, and its variants.
+
+- type: entity
+  id: ActionEatFilth
+  name: "Пожирання бруду"
+  description: "З'їдаєш трохи бруду, трохи зцілюючись і повільно зростаючи."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Heretic/eatfood.ogg #Why is this generic eating sound stored in the heretic folder?
+    useDelay: 2
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/Mobs/actions.rsi
+      state: eatfilth
+  - type: TargetAction
+    deselectOnMiss: true
+  - type: EntityTargetAction
+    canTargetSelf: false
+    event: !type:EatFilthEvent
+
+- type: entity
+  id: ActionRatBite
+  name: "Укус"
+  description: "Кусаєш живу істоту, завдаючи трохи шкоди й вводячи їй щурячу отруту."
+  components:
+  - type: Action
+    sound: !type:SoundPathSpecifier
+      path: /Audio/_Goobstation/Wraith/Attack/handcuffs.ogg
+    useDelay: 5
+    itemIconStyle: BigAction
+    icon:
+      sprite: _Goobstation/Wraith/Mobs/actions.rsi
+      state: ratbite
+  - type: TargetAction
+    deselectOnMiss: true
+  - type: EntityTargetAction
+    whitelist:
+      components:
+      - Body
+    canTargetSelf: false
+    event: !type:RatBiteEvent
+
+- type: entity
+  id: ActionRatDen
+  name: "Створити щуряче кубло"
+  description: "Створює твоє щуряче гніздо, зцілює тебе в радіусі дії й викликає кількох маленьких хворих мишей."
+  components:
+  - type: Action
+    itemIconStyle: BigAction
+    useDelay: 40
+    icon:
+      sprite: _Goobstation/Wraith/Mobs/actions.rsi
+      state: ratden
+  - type: TargetAction
+    range: 2
+  - type: WorldTargetAction
+    event: !type:SummonRatDenEvent
+
+- type: entity
+  id: ActionRatSlam
+  name: "Таран"
+  description: "Врізаєшся в об'єкт. Під час зіткнення випромінює потужну ударну хвилю."
+  components:
+  - type: Action
+    useDelay: 40
+    icon:
+      sprite: _Goobstation/Wraith/Mobs/actions.rsi
+      state: ratrush
+  - type: InstantAction
+    event: !type:RushdownEvent
+
+# Used for summon void creature ghost entity
+- type: entity
+  id: ActionChooseVoidCreature
+  name: "Вибір бійця"
+  description: "Обери одну з трьох істот Порожнечі, щоб з'явитися."
+  components:
+  - type: Action
+    icon:
+      sprite: _Goobstation/Wraith/actions.rsi
+      state: summon_creature
+  - type: InstantAction
+    event: !type:ChooseVoidCreatureEvent

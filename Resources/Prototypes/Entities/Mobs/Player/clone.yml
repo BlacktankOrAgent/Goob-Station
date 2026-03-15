@@ -31,7 +31,7 @@
   - BibleUser
   - CommandStaff
   - Clumsy
-  - MindShield
+  # - MindShield # goob edit - it's an implant. why?
   - MimePowers
   - SpaceNinja
   - Thieving
@@ -76,6 +76,12 @@
   - LanguageKnowledge
   - ForeignerTrait
   # Einstein Engines - Language end
+  # Pirate start
+  - Lightweight
+  - LightStep
+  - Vampirism
+  - BloodDeficiency
+  # Pirate end
   blacklist:
     components:
     - AttachedClothing # helmets, which are part of the suit
@@ -106,7 +112,7 @@
 
 - type: entity
   id: RandomCloneSpawner
-  name: Random Clone
+  name: "Спавнер випадкового клона"
   suffix: Non-Antag
   components:
   - type: Sprite

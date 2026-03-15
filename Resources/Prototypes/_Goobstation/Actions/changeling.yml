@@ -34,14 +34,15 @@
 # SPDX-FileCopyrightText: 2025 thebiggestbruh <marcus2008stoke@gmail.com>
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
-# abilities
+
+## abilities
 
 # starting
 - type: entity
   parent: BaseAction
   id: ActionEvolutionMenu
-  name: Open evolution menu
-  description: Opens the evolution menu.
+  name: "Відкрити меню еволюції"
+  description: "Відкриває меню еволюції."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -52,14 +53,15 @@
   - type: InstantAction
     event: !type:OpenEvolutionMenuEvent {}
   - type: ChangelingAction
+    useOnFire: true
     useInLesserForm: true
     useInLastResort: true
 
 - type: entity
   parent: BaseAction
   id: ActionAbsorbDNA
-  name: Absorb DNA
-  description: Absorb the target's DNA, husking them in the process. Costs 25 chemicals.
+  name: "Поглинати ДНК"
+  description: "Поглинаєте ДНК цілі, вилущуючи її в процесі. Коштує 25 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -74,17 +76,19 @@
     whitelist:
       components:
       - Body
-    canTargetSelf: false    
+    canTargetSelf: false
     event: !type:AbsorbDNAEvent {}
   - type: ChangelingAction
-    chemicalCost: 25
     useInLesserForm: true
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 25
 
 - type: entity
   parent: BaseAction
   id: ActionStingExtractDNA
-  name: Extract DNA sting
-  description: Steal your target's genetic information. Costs 25 chemicals.
+  name: "жало екстракції ДНК"
+  description: "Викрадаєте генетичну інформацію вашої цілі. Коштує 25 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -102,14 +106,16 @@
     canTargetSelf: false
     event: !type:StingExtractDNAEvent {}
   - type: ChangelingAction
-    chemicalCost: 25
     useInLesserForm: true
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 25
 
 - type: entity
   parent: BaseAction
   id: ActionChangelingTransformCycle
-  name: Cycle DNA
-  description: Cycle your available DNA.
+  name: "Прокрутити ДНК"
+  description: "Прокрутити вашї доступні ДНК."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -121,13 +127,14 @@
   - type: InstantAction
     event: !type:ChangelingTransformCycleEvent {}
   - type: ChangelingAction
+    useOnFire: true
     useInLesserForm: true
 
 - type: entity
   parent: BaseAction
   id: ActionChangelingTransform
-  name: Transform
-  description: Transform into another humanoid. Doesn't come with clothes. Costs 5 chemicals.
+  name: "Перетворитися"
+  description: "Перетворитися на іншого гуманоїда. Одяг не додається. Коштує 5 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -140,14 +147,16 @@
   - type: InstantAction
     event: !type:ChangelingTransformEvent {}
   - type: ChangelingAction
-    chemicalCost: 5
     useInLesserForm: true
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 5
 
 - type: entity
   parent: BaseAction
   id: ActionEnterStasis
-  name: Enter regenerative stasis
-  description: Fake your death and start regenerating. Cost free.
+  name: "Увійти в регенеративний стазис"
+  description: "Імітуйте свою смерть і почніть регенерувати. Безкоштовно."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -160,14 +169,15 @@
   - type: InstantAction
     event: !type:EnterStasisEvent {}
   - type: ChangelingAction
+    useOnFire: true
     useInLesserForm: true
     useInLastResort: true
 
 - type: entity
   parent: BaseAction
   id: ActionExitStasis
-  name: Exit stasis
-  description: Rise from the dead with full health. Costs 30 chemicals.
+  name: "Вийти зі стазису"
+  description: "Повстаньте з мертвих з повним здоров'ям. Вартість 30 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -180,16 +190,19 @@
   - type: InstantAction
     event: !type:ExitStasisEvent {}
   - type: ChangelingAction
-    chemicalCost: 30
+    useOnFire: true
     useInLesserForm: true
     useInLastResort: true
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 30
 
 # combat
 - type: entity
   parent: BaseAction
   id: ActionToggleArmblade
-  name: Toggle Arm Blade
-  description: Reform one of your arms into a strong blade, composed of bone and flesh. Retract on secondary use. Costs 15 chemicals.
+  name: "Ручне Лезо"
+  description: "Перетворіть одну з ваших рук на міцне лезо, що складається з кісток і плоті. Втягується при повторному використанні. Коштує 15 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -201,13 +214,15 @@
   - type: InstantAction
     event: !type:ToggleArmbladeEvent {}
   - type: ChangelingAction
-    chemicalCost: 15
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 15
 
 - type: entity
   parent: BaseAction
   id: ActionToggleHammer
-  name: Toggle Arm Hammer
-  description: Reform one of your arms into a strong hammer, composed of bone and flesh. Retract on secondary use. Costs 15 chemicals.
+  name: "Молоток з перекидним важелем"
+  description: "Перетворіть одну з ваших рук на міцний молот, що складається з кісток і плоті. Втягується при вторинному використанні. Коштує 15 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -219,13 +234,15 @@
   - type: InstantAction
     event: !type:ToggleArmHammerEvent {}
   - type: ChangelingAction
-    chemicalCost: 15
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 15
 
 - type: entity
   parent: BaseAction
   id: ActionToggleClaw
-  name: Toggle Arm Claw
-  description: Reform one of your arms into a strong claw, composed of bone and flesh. Retract on secondary use. Costs 15 chemicals.
+  name: "Кіготь перекидного важеля"
+  description: "Перетворіть одну з ваших рук на міцний кіготь, що складається з кістки та плоті. Втягується при вторинному використанні. Коштує 15 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -237,13 +254,15 @@
   - type: InstantAction
     event: !type:ToggleArmClawEvent {}
   - type: ChangelingAction
-    chemicalCost: 15
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 15
 
 - type: entity
   parent: BaseAction
   id: ActionToggleDartGun
-  name: Toggle Dart Gun
-  description: Reform one of your arms into a dart gun, composed of bone and flesh. Retract on secondary use. Costs 15 chemicals.
+  name: "Рушниця з перекидним дротиком"
+  description: "Переробіть одну з ваших рук на рушницю для дротиків, що складається з кісток і плоті. Втягується при вторинному використанні. Коштує 15 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -255,13 +274,15 @@
   - type: InstantAction
     event: !type:ToggleDartGunEvent {}
   - type: ChangelingAction
-    chemicalCost: 15
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 15
 
 - type: entity
   parent: BaseAction
   id: ActionCreateBoneShard
-  name: Form Bone Shard
-  description: Break off shards of your bone and shape them into a throwing star. Costs 15 chemicals.
+  name: "Сформувати Кістковий Осколок"
+  description: "Відламайте уламки своєї кістки і сформуйте з них метальну зірку. Коштує 15 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -273,13 +294,15 @@
   - type: InstantAction
     event: !type:CreateBoneShardEvent {}
   - type: ChangelingAction
-    chemicalCost: 15
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 15
 
 - type: entity
   parent: BaseAction
   id: ActionToggleChitinousArmor
-  name: Toggle Armor
-  description: Inflate your body into an all-consuming chitinous mass of armor. Costs 25 chemicals.
+  name: "Перемкнути Броню"
+  description: "Надуває ваше тіло у всепоглинаючу масу хітину. Коштує 25 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -291,14 +314,16 @@
   - type: InstantAction
     event: !type:ToggleChitinousArmorEvent {}
   - type: ChangelingAction
-    chemicalCost: 25
     requireAbsorbed: 2
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 25
 
 - type: entity
   parent: BaseAction
   id: ActionToggleOrganicShield
-  name: Form Shield
-  description: Reform one of your arms into a large, fleshy shield. Costs 20 chemicals.
+  name: "Сформувати Щит"
+  description: "Перетворіть одну з ваших рук на великий, м'ясистий щит. Коштує 20 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -310,14 +335,16 @@
   - type: InstantAction
     event: !type:ToggleOrganicShieldEvent {}
   - type: ChangelingAction
-    chemicalCost: 20
     requireAbsorbed: 1
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 20
 
 - type: entity
   parent: BaseAction
   id: ActionShriekDissonant
-  name: Dissonant Shriek
-  description: Emit an EMP blast, with just your voice. Costs 30 chemicals.
+  name: "Дисонуючий Крик"
+  description: "Випромінюйте електромагнітний вибух, використовуючи лише голос. Коштує 30 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -330,19 +357,22 @@
   - type: InstantAction
     event: !type:ShriekDissonantEvent {}
   - type: ChangelingAction
-    chemicalCost: 30
+    useOnFire: true
     useInLesserForm: true
     requireAbsorbed: 1
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 30
 
 - type: entity
   parent: BaseAction
   id: ActionShriekResonant
-  name: Resonant Shriek
-  description: Disorient people and break lights, with just your voice. Costs 30 chemicals.
+  name: "Резонансний Крик"
+  description: "Дезорієнтуйте людей і розбивайте світло одним лише голосом. Коштує 30 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
-    useDelay: 10
+    useDelay: 15 #Do not make spammable
     itemIconStyle: NoItem
     checkCanInteract: false
     icon:
@@ -351,15 +381,18 @@
   - type: InstantAction
     event: !type:ShriekResonantEvent {}
   - type: ChangelingAction
-    chemicalCost: 30
+    useOnFire: true
     useInLesserForm: true
     requireAbsorbed: 1
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 30
 
 - type: entity
   parent: BaseAction
   id: ActionToggleStrainedMuscles
-  name: Strain Muscles
-  description: Move at extremely fast speeds. Deals stamina damage.
+  name: "Напружити М'язи"
+  description: "Пересуватися з надзвичайно високою швидкістю. Завдає шкоди витривалості."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -372,15 +405,15 @@
   - type: InstantAction
     event: !type:ToggleStrainedMusclesEvent {}
   - type: ChangelingAction
-    chemicalCost: 0
+    useOnFire: true
     useInLesserForm: true
 
 # stings
 - type: entity
   parent: BaseAction
   id: ActionStingBlind
-  name: Blind Sting
-  description: Silently sting your target, blinding them for a short time and rendering them near sighted. Costs 25 chemicals.
+  name: "Осліплююче Жало"
+  description: "Безшумно жалить ціль, засліплюючи її на короткий час і роблячи її короткозорою. Коштує 25 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -398,17 +431,19 @@
     canTargetSelf: false
     event: !type:StingReagentEvent {}
   - type: ChangelingAction
-    chemicalCost: 20
     useInLesserForm: true
   - type: ChangelingReagentSting
     configuration: StingBlind
     dartGunAmmo: StingBlind
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 25
 
 - type: entity
   parent: BaseAction
   id: ActionStingCryo
-  name: Cryogenic Sting
-  description: Silently sting your target, constantly slowing and freezing them. Costs 25 chemicals.
+  name: "Кріогенне Жало"
+  description: "Безшумно жалить вашу ціль, постійно сповільнюючи і заморожуючи її. Коштує 25 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -426,17 +461,19 @@
     canTargetSelf: false
     event: !type:StingReagentEvent {}
   - type: ChangelingAction
-    chemicalCost: 20
     useInLesserForm: true
   - type: ChangelingReagentSting
     configuration: StingCryo
     dartGunAmmo: StingCryo
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 25
 
 - type: entity
   parent: BaseAction
   id: ActionStingLethargic
-  name: Lethargic Sting
-  description: Silently inject a cocktail of anesthetics into the target. Costs 30 chemicals.
+  name: "Летаргічне жало"
+  description: "Тихо введіть коктейль анестетиків у ціль. Вартість 30 одиниць хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -454,17 +491,19 @@
     canTargetSelf: false
     event: !type:StingReagentEvent {}
   - type: ChangelingAction
-    chemicalCost: 30
     useInLesserForm: true
   - type: ChangelingReagentSting
     configuration: StingLethargic
     dartGunAmmo: StingLethargic
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 30
 
 - type: entity
   parent: BaseAction
   id: ActionStingMute
-  name: Mute Sting
-  description: Silently sting your target, completely silencing them for a short time. Costs 25 chemicals.
+  name: "Мовчазне Жало"
+  description: "Безшумно жалить вашу ціль, повністю примушуючи її замовкнути на короткий час. Коштує 25 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -482,17 +521,19 @@
     canTargetSelf: false
     event: !type:StingReagentEvent {}
   - type: ChangelingAction
-    chemicalCost: 20
     useInLesserForm: true
   - type: ChangelingReagentSting
     configuration: StingMute
     dartGunAmmo: StingMute
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 25
 
 - type: entity
   parent: BaseAction
   id: ActionStingFakeArmblade
-  name: Fake Armblade Sting
-  description: Silently sting your target, making them grow a dull armblade for a short time. Costs 30 chemicals.
+  name: "Фальшиве лезо-рука"
+  description: "Тихо вжальте свою ціль, змусивши її на короткий час виростити тупе лезо-руку. Вартість 30 одиниць хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -510,14 +551,16 @@
     canTargetSelf: false
     event: !type:StingFakeArmbladeEvent {}
   - type: ChangelingAction
-    chemicalCost: 30
     useInLesserForm: true
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 30
 
 - type: entity
   parent: BaseAction
   id: ActionStingTransform
-  name: Transformation Sting
-  description: Silently sting your target, transforming them into a person of your choosing. Costs 75 chemicals.
+  name: "Трансформаційне Жало"
+  description: "Безшумно жалить вашу ціль, перетворюючи її на людину за вашим вибором. Коштує 75 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -535,14 +578,16 @@
     canTargetSelf: false
     event: !type:StingTransformEvent {}
   - type: ChangelingAction
-    chemicalCost: 75
     useInLesserForm: true
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 75
 
 - type: entity
   parent: BaseAction
   id: ActionLayEgg
-  name: Lay Egg
-  description: Plant an egg in a dead corpse which will mature into a new form for us.
+  name: "Нести Яйце"
+  description: "Посади яйце в мертве тіло, яке визріє в нову для нас форму."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -559,19 +604,18 @@
     canTargetSelf: false
     event: !type:StingLayEggsEvent {}
   - type: ChangelingAction
-    chemicalCost: 0
     useInLastResort: true
 
 # utility
 - type: entity
   parent: BaseAction
   id: ActionAnatomicPanacea
-  name: Anatomic Panacea
-  description: Cure yourself of diseases, disabilities, radiation, toxins, drunkedness and brain damage. Costs 30 chemicals.
+  name: "Анатомічна Панацея"
+  description: "Вилікуйте себе від хвороб, інвалідності, радіації, токсинів, пияцтва та пошкоджень мозку. Коштує 30 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
-    useDelay: 20
+    useDelay: 5
     checkCanInteract: false
     checkConsciousness: false
     itemIconStyle: NoItem
@@ -581,14 +625,16 @@
   - type: InstantAction
     event: !type:ActionAnatomicPanaceaEvent {}
   - type: ChangelingAction
-    chemicalCost: 30
     useInLesserForm: true
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 30
 
 - type: entity
   parent: BaseAction
   id: ActionAugmentedEyesight
-  name: Augmented Eyesight
-  description: Toggle thermal vision.
+  name: "Розширений Зір"
+  description: "Увімкнути теплове бачення."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -600,12 +646,16 @@
       state: augmented_eyesight
   - type: InstantAction
     event: !type:ToggleThermalVisionEvent {}
+  - type: ChangelingAction
+    useOnFire: true
+    useInLesserForm: true
+    useInLastResort: true
 
 - type: entity
   parent: BaseAction
   id: ActionBiodegrade
-  name: Biodegrade
-  description: Vomit a caustic substance onto any restraints, or someone's face. Costs 30 chemicals.
+  name: "Біологічне розкладання"
+  description: "Виплюнути їдку речовину на будь-які обмежувачі або на чиєсь обличчя. Коштує 30 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -619,13 +669,16 @@
   - type: InstantAction
     event: !type:ActionBiodegradeEvent {}
   - type: ChangelingAction
-    chemicalCost: 30
+    useOnFire: true
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 30
 
 - type: entity
   parent: BaseAction
   id: ActionChameleonSkin
-  name: Chameleon Skin
-  description: Slowly blend in with the environment. Costs 25 chemicals.
+  name: "Шкіра Хамелеона"
+  description: "Повільно зливається з навколишнім середовищем. Коштує 25 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -639,13 +692,15 @@
   - type: InstantAction
     event: !type:ActionChameleonSkinEvent {}
   - type: ChangelingAction
-    chemicalCost: 20
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 25
 
 - type: entity
   parent: BaseAction
-  id: ActionVoidAdapt
-  name: Toggle Void Adaption
-  description: Adapt to the harsh environment of space, removing the need for oxygen or a suit. Cost free.
+  id: ActionAdrenalineReserves
+  name: "Резерви адреналіну"
+  description: "Вивільніть потужний адреналін зі своїх залоз. Вартість 30 одиниць хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -655,44 +710,25 @@
     itemIconStyle: NoItem
     icon:
       sprite: _Goobstation/Changeling/changeling_abilities.rsi
-      state: void_adaptation
-  - type: InstantAction
-    event: !type:ActionVoidAdaptEvent {}
-  - type: ChangelingAction
-    chemicalCost: 0
-    useInLesserForm: true
-    requireAbsorbed: 2
-
-- type: entity
-  parent: BaseAction
-  id: ActionAdrenalineReserves
-  name: Adrenaline Reserves
-  description: Release powerful adrenaline from your glands. Costs 30 chemicals.
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: Action
-    useDelay: 5
-    checkCanInteract: false
-    checkConsciousness: false
-    itemIconStyle: NoItem
-    icon:
-      sprite: _Goobstation/Changeling/changeling_abilities.rsi
       state: epinephrine_overdose
   - type: InstantAction
     event: !type:ActionAdrenalineReservesEvent {}
   - type: ChangelingAction
-    chemicalCost: 30
+    useOnFire: true
     useInLesserForm: true
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 30
 
 - type: entity
   parent: BaseAction
   id: ActionFleshmend
-  name: Fleshmend
-  description: Rapidly heal yourself. Costs 35 chemicals.
+  name: "Латати Шкіру"
+  description: "Швидко вилікувати себе. Коштує 35 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
-    useDelay: 10
+    useDelay: 15 #it lasts 10 seconds
     checkCanInteract: false
     checkConsciousness: false
     itemIconStyle: NoItem
@@ -702,14 +738,16 @@
   - type: InstantAction
     event: !type:ActionFleshmendEvent {}
   - type: ChangelingAction
-    chemicalCost: 35
     useInLesserForm: true
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 35
 
 - type: entity
   parent: BaseAction
   id: ActionLastResort
-  name: Last Resort
-  description: Abandon your current body and escape in the form of a headslug. Costs 20 chemicals.
+  name: "Остання Надія"
+  description: "Покиньте своє поточне тіло і втечіть у вигляді хедслега. Коштує 20 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -724,15 +762,18 @@
   - type: InstantAction
     event: !type:ActionLastResortEvent {}
   - type: ChangelingAction
-    chemicalCost: 20
+    useOnFire: true
     useInLesserForm: true
     requireAbsorbed: 1
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 20
 
 - type: entity
   parent: BaseAction
   id: ActionToggleLesserForm
-  name: Lesser Form
-  description: Abandon your current form and transform into a monkey. Costs 20 chemicals.
+  name: "Менша Форма"
+  description: "Відмовтеся від своєї поточної форми і перетворіться на мавпу. Коштує 20 хімікатів."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -745,13 +786,15 @@
   - type: InstantAction
     event: !type:ActionLesserFormEvent {}
   - type: ChangelingAction
-    chemicalCost: 20
+  - type: InternalResourcesAction
+    resourceProto: ChangelingChemicals
+    useAmount: 20
 
 - type: entity
   parent: BaseAction
   id: ActionHivemindAccess
-  name: Hivemind Access
-  description: Tune your chemical receptors for hivemind communication.
+  name: "Доступ до Колективного Розуму"
+  description: "Налаштуйте свої хімічні рецептори на спілкування з людським розумом."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -764,14 +807,14 @@
   - type: InstantAction
     event: !type:ActionHivemindAccessEvent {}
   - type: ChangelingAction
-    chemicalCost: 0
+    useOnFire: true
     useInLesserForm: true
 
 - type: entity
   parent: BaseAction
   id: ActionAbsorbBiomatter
-  name: Absorb Biomatter
-  description: Absorb a food item to regain some chemicals.
+  name: "Поглинання біомаси"
+  description: "Поглинайте їжу, щоб відновити деякі хімічні речовини."
   categories: [ HideSpawnMenu ]
   components:
   - type: Action
@@ -788,6 +831,5 @@
     canTargetSelf: false
     event: !type:AbsorbBiomatterEvent {}
   - type: ChangelingAction
-    chemicalCost: 0
     useInLesserForm: true
     useInLastResort: true

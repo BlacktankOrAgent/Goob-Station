@@ -1,0 +1,146 @@
+- type: entity
+  id: ActionSlasherSummonMachete
+  name: "Закликати мачете"
+  description: "Закликає закріплене мачете до твоєї активної руки або створює нове, якщо ти його втратив."
+  components:
+  - type: Action
+    raiseOnUser: true
+    useDelay: 20
+    itemIconStyle: BigAction
+    icon: { sprite: _Goobstation/Actions/slashericons.rsi, state: SummonMachete }
+  - type: InstantAction
+    event: !type:SlasherSummonMacheteEvent
+
+- type: entity
+  id: ActionSlasherSummonMeatSpike
+  name: "Кривавий шип"
+  description: "Створює під тобою жахливий кривавий кривавий шип, щоб упіймати твоїх жертв."
+  components:
+  - type: Action
+    raiseOnUser: true
+    useDelay: 15
+    checkCanInteract: false
+    itemIconStyle: BigAction
+    icon: { sprite: _Goobstation/Actions/slashericons.rsi, state: Meatspike }
+  - type: InstantAction
+    event: !type:SlasherSummonMeatSpikeEvent
+
+- type: entity
+  id: ActionSlasherIncorporealize
+  name: "Ставати нематеріальним"
+  description: "Робить тебе нематеріальним, дає змогу проходити крізь стіни та бути повністю невидимим, але без можливості взаємодіяти зі світом. Можна використовувати лише тоді, коли тебе ніхто не бачить."
+  components:
+  - type: Action
+    raiseOnUser: true
+    useDelay: 1
+    itemIconStyle: BigAction
+    icon: { sprite: _Goobstation/Actions/slashericons.rsi, state: Incorporealize }
+  - type: InstantAction
+    event: !type:SlasherIncorporealizeEvent
+
+- type: entity
+  id: ActionSlasherCorporealize
+  name: "Ставати матеріальним"
+  description: "Матеріалізує твою сутність із нематеріального стану. Можна використовувати лише, коли ти нематеріальний."
+  components:
+  - type: Action
+    raiseOnUser: true
+    useDelay: 1
+    itemIconStyle: BigAction
+    icon: { sprite: _Goobstation/Actions/slashericons.rsi, state: Corporealize }
+  - type: InstantAction
+    event: !type:SlasherCorporealizeEvent
+
+- type: entity
+  id: ActionSlasherBloodTrail
+  name: "Кривавий слід"
+  description: "Ти починаєш лишати за собою кривавий слід під дивну музику. Лячно!"
+  components:
+  - type: Action
+    raiseOnUser: true
+    useDelay: 1
+    checkCanInteract: false
+    itemIconStyle: BigAction
+    icon: { sprite: _Goobstation/Actions/slashericons.rsi, state: BloodTrail }
+  - type: InstantAction
+    event: !type:ToggleBloodTrailEvent
+
+- type: entity
+  id: ActionSlasherPossession
+  name: "Оволодіння"
+  description: "Використай це на людині, щоб поступово здобути над нею контроль, отримавши тимчасове керування її тілом на 45 секунд. Після завершення обидва тіла повертаються на свої місця."
+  components:
+  - type: Action
+    raiseOnUser: true
+    useDelay: 180
+    checkCanInteract: false
+    itemIconStyle: BigAction
+    icon: { sprite: _Goobstation/Actions/slashericons.rsi, state: Possession }
+  - type: TargetAction
+    range: 3.5
+    interactOnMiss: false
+  - type: EntityTargetAction
+    canTargetSelf: false
+    event: !type:SlasherPossessionEvent
+
+- type: entity
+  id: ActionSlasherRegenerate
+  name: "Регенерація"
+  description: "Швидко відновлює твою сутність, повертаючи все втрачене здоров'я, загоюючи рани та знімаючи всі оглушення. Потребує перезарядки шляхом викрадення душі після кожного використання."
+  components:
+  - type: Action
+    raiseOnUser: true
+    useDelay: 75
+    checkCanInteract: false
+    checkConsciousness: false
+    itemIconStyle: BigAction
+    icon: { sprite: _Goobstation/Actions/slashericons.rsi, state: Regenerate }
+  - type: InstantAction
+    event: !type:SlasherRegenerateEvent
+
+- type: entity
+  id: ActionSlasherStaggerArea
+  name: "Темна аура"
+  description: "Ти випромінюєш темну ауру на всіх у радіусі, тимчасово сповільнюючи їх."
+  components:
+  - type: Action
+    raiseOnUser: true
+    useDelay: 20
+    checkCanInteract: false
+    itemIconStyle: BigAction
+    icon: { sprite: _Goobstation/Actions/slashericons.rsi, state: StaggerArea }
+  - type: InstantAction
+    event: !type:SlasherStaggerAreaEvent
+
+- type: entity
+  id: ActionSlasherMassacre
+  name: "Різанина"
+  description: "Запускає жорстокий ланцюг атак. Чим більше ударів поспіль ти завдаси, тим більшу шкоду нанесеш. Після тринадцятого удару ти відтинаєш цілі голову."
+  components:
+  - type: Action
+    raiseOnUser: true
+    useDelay: 20
+    checkCanInteract: false
+    itemIconStyle: BigAction
+    icon: { sprite: _Goobstation/Actions/slashericons.rsi, state: SummonMachete }
+  - type: InstantAction
+    event: !type:SlasherMassacreEvent
+
+- type: entity
+  id: ActionSlasherSoulSteal
+  name: "Крадіжка душі"
+  description: "Висмоктує душу жертви. Потрібно застосовувати до знерухомленої живої цілі або трупа, щоб викрасти її душу, посиливши мачете та збільшивши запас життєвої сили."
+  components:
+  - type: Action
+    raiseOnUser: true
+    useDelay: 2
+    checkCanInteract: false
+    itemIconStyle: BigAction
+    icon: { sprite: _Goobstation/Actions/slashericons.rsi, state: SoulSteal }
+  - type: TargetAction
+    range: 2.5
+    interactOnMiss: false
+  - type: EntityTargetAction
+    canTargetSelf: false
+    event: !type:SlasherSoulStealEvent
+

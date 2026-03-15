@@ -1,0 +1,276 @@
+#
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanSecurityOfficerSuit
+  name: "офіцер СБ в костюмі"
+  components:
+  - type: Loadout
+    prototypes: [ SecurityOfficerSuit ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanSecurityOfficerModSuit
+  name: "офіцер СБ з модкостюмом"
+  components:
+  - type: Loadout
+    prototypes: [ SecurityOfficerModSuit ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanHosModSuit
+  name: "ГСБ з модкостюмом"
+  components:
+  - type: Loadout
+    prototypes: [ SecurityHoSModSuit ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanHoSSuit
+  name: "ГСБ в костюмі"
+  components:
+  - type: Loadout
+    prototypes: [ SecurityHoSSuit ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanWardenSuit
+  name: "смотритель в костюмі"
+  components:
+  - type: Loadout
+    prototypes: [ SecurityWardenSuit ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanBrigmedicSuit
+  name: "бригмедик в костюмі"
+  components:
+  - type: Loadout
+    prototypes: [ SecurityBrigmedicSuit ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanSecurityOfficerBulletproofArmorHelmet
+  name: "офіцер СБ з бронежилетом"
+  components:
+  - type: Loadout
+    prototypes: [ SecurityOfficerBulletproofArmorHelmet ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanSecurityOfficerRiotArmorHelmet
+  name: "офіцер СБ з протиударною бронею"
+  components:
+  - type: Loadout
+    prototypes: [ SecurityOfficerRiotArmorHelmet ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanSecurityOfficerReflectiveArmorHelmet
+  name: "офіцер СБ з відбивною бронею"
+  components:
+  - type: Loadout
+    prototypes: [ SecurityOfficerReflectiveArmorHelmet ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanSecurityOfficerBasicArmorHelmet
+  name: "офіцер СБ з базовою бронею"
+  components:
+  - type: Loadout
+    prototypes: [ SecurityOfficerGearDebug ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanHos
+  name: "глава служби безпеки"
+  components:
+  - type: Loadout
+    prototypes: [ HoSGearDebug ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanBrigmedic
+  name: "бригмедик"
+  components:
+  - type: Loadout
+    prototypes: [ BrigmedicGearDebug ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHumanSecurityBase
+  id: MobHumanWarden
+  name: "смотритель"
+  components:
+  - type: Loadout
+    prototypes: [ WardenGearDebug ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+
+- type: entity
+  categories: [ ]
+  parent: MobHuman
+  id: MobHumanSecurityBase
+  name: "базовий охоронець"
+  suffix: DEBUG
+  components:
+  - type: Loadout
+    prototypes: [ SecurityOfficerGearDebug ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+  - type: AutoImplant
+    implants:
+    - MindShieldImplant
+
+- type: entity
+  categories: [  ]
+  parent: MobHuman
+  id: MobHumanBSOBase
+  name: "базовий офіцер синього щита"
+  suffix: DEBUG
+  components:
+  - type: Loadout
+    prototypes: [ BlueShieldOfficerGearDebug ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+  - type: AutoImplant
+    implants:
+    - MindShieldImplant
+    #adding bluespace implanter would be stupid
+
+- type: entity
+  categories: [ ]
+  parent: MobHuman
+  id: MobHumanBSOSuit
+  name: "офіцер синього щита"
+  suffix: DEBUG
+  components:
+  - type: Loadout
+    prototypes: [ BlueShieldOfficerGearSuit ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+  - type: AutoImplant
+    implants:
+    - MindShieldImplant
+    #adding bluespace implanter would be stupid
+
+- type: entity
+  categories: [ ]
+  parent: MobHuman
+  id: MobHumanBSOModSuit
+  name: "офіцер синього щита"
+  suffix: DEBUG
+  components:
+  - type: Loadout
+    prototypes: [ BlueShieldOfficerGearModSuit ]
+    roleLoadout: [ RoleSurvivalSecurity ]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirst
+    - NamesLast
+    nameFormat: name-format-standard
+  - type: AutoImplant
+    implants:
+    - MindShieldImplant
+    #adding bluespace implanter would be stupid

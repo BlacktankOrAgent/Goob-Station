@@ -1,0 +1,26 @@
+- type: entity
+  name: "Робастний ящик для інструментів"
+  parent: [ToolboxBase, BaseSyndicateContraband]
+  id: Toolboxrobust
+  description: "Робастний ящик для інструментів, що передавався з покоління в покоління гриферів; лише тримаючи його в руках, ви відчуваєте себе робастнішим, ніж будь-коли."
+  components:
+  - type: MeleeWeapon
+    heavyStaminaCost: 0
+    damage:
+      types:
+        Blunt: 35
+    soundHit:
+      path: "/Audio/Weapons/smash.ogg"
+  - type: Sprite
+    sprite: Objects/Tools/Toolboxes/toolbox_red.rsi
+    state: icon
+  - type: Item
+    sprite: Objects/Tools/Toolboxes/toolbox_red.rsi
+  - type: Execution
+    doAfterDuration: 4.0
+  - type: Unremoveable
+
+- type: entity
+  name: "молот Синґулота"
+  parent: SingularityHammer
+  id: SingulothsHammer

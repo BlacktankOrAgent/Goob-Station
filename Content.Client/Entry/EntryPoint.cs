@@ -272,7 +272,7 @@ namespace Content.Client.Entry
             _configManager.SetCVar("interface.resolutionAutoScaleMinimum", 0.5f);
 
 #if FULL_RELEASE
-           _configManager.SetCVar(CVars.NetPredictLagBias, 0.2f); // Pirate
+            _configManager.SetCVar(CVars.NetPredictLagBias, 0.1f); // Pirate
 #endif
         }
 
