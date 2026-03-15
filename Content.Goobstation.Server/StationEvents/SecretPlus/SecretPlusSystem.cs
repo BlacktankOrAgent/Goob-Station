@@ -97,11 +97,14 @@ public sealed class SecretPlusSystem : GameRuleSystem<SecretPlusComponent>
 
     protected override void Added(EntityUid uid, SecretPlusComponent scheduler, GameRuleComponent gameRule, GameRuleAddedEvent args)
     {
-        var totalPlayers = GetTotalPlayerCount(_playerManager.Sessions);
-        // set up starting chaos score
+        // Pirate start
+        var readyPlayers = GameTicker.ReadyPlayerCount();
         scheduler.ChaosScore =
-            -_random.NextFloat(scheduler.MinStartingChaos * totalPlayers, scheduler.MaxStartingChaos * totalPlayers) *
+            -_random.NextFloat(scheduler.MinStartingChaos * readyPlayers, scheduler.MaxStartingChaos * readyPlayers) *
             _roundstartChaosScoreMultiplier;
+
+        LogMessage($"Initial chaos score: {scheduler.ChaosScore} (based on {readyPlayers} ready players)");
+        // Pirate end
 
         // roll midroundchaos generation variation
         var roll = _random.NextFloat();
@@ -239,7 +242,7 @@ public sealed class SecretPlusSystem : GameRuleSystem<SecretPlusComponent>
         var primaryWeightList = _prototypeManager.Index(scheduler.Comp.PrimaryAntagsWeightTable);
         var weightList = _prototypeManager.Index(scheduler.Comp.RoundStartAntagsWeightTable);
 
-        var count = GetTotalPlayerCount(_playerManager.Sessions);
+        var count = GameTicker.ReadyPlayerCount(); // Pirate edit
 
         LogMessage($"Trying to run roundstart rules, total player count: {count}", false);
 
