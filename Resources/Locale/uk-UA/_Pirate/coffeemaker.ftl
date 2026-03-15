@@ -89,14 +89,14 @@ ent-CoffeePackPirate = пачка арабіки
 ent-CoffeePackRobustaPirate = пачка робусти
     .desc = Пакування із сухими зернами робусти.
 
-ent-CoffeeCartridgePirate = картридж для кавоварки — Caffe Generico
+ent-CoffeeCartridgePirate = картридж для кавоварки — Caffè Generico
     .desc = Звичайний картридж із кавою для кавоварки Modello 3.
-ent-CoffeeCartridgeFancyPirate = картридж для кавоварки — Caffe Fantasioso
+ent-CoffeeCartridgeFancyPirate = картридж для кавоварки — Caffè Fantasioso
     .desc = Вишуканий картридж із кавою для системи Modello 3.
-ent-CoffeeCartridgeDecafPirate = картридж для кавоварки — Caffe Decaffeinato
+ent-CoffeeCartridgeDecafPirate = картридж для кавоварки — Caffè Decaffeinato
     .desc = Безкофеїновий картридж для кавоварки Modello 3.
-ent-CoffeeCartridgeBootlegPirate = картридж для кавоварки — Botany blend
-    .desc = Кустарний картридж. Працює, але гарантію анульовано.
+ent-CoffeeCartridgeBootlegPirate = картридж для кавоварки — Botany Blend
+    .desc = Кустарній картридж. Працює, але гарантію анульовано.
 ent-BlankCoffeeCartridgePirate = порожній картридж для кави
     .desc = Порожній картридж, готовий до наповнення.
 
