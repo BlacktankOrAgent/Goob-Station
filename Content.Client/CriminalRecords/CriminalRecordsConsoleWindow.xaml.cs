@@ -1043,13 +1043,13 @@ public sealed partial class CriminalRecordsConsoleWindow : FancyWindow
     private string GetPortraitTextureCacheKey(uint recordKey, byte[] imageData)
     {
         var signature = 17;
-        var sampleLength = Math.Min(imageData.Length, 32);
-        for (var i = 0; i < sampleLength; i++)
+        for (var i = 0; i < imageData.Length; i++)
         {
             signature = unchecked(signature * 31 + imageData[i]);
         }
 
         return $"criminal-record-portrait-{recordKey}-{imageData.Length}-{signature}";
+    }
     }
 
     private void EnsureGeneratedPortraitImage(uint recordKey, HumanoidCharacterProfile? profileSnapshot, string? jobPrototype)
