@@ -33,7 +33,7 @@ using System.Diagnostics.CodeAnalysis;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Security.Components;
 using System.Linq;
-// Pirate: security record identity editor
+#region Pirate: records photos
 using Content.Shared.Customization.Systems;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Prototypes;
@@ -42,12 +42,13 @@ using Content.Shared.Roles;
 using Content.Shared._Pirate.Contractors.Prototypes;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Audio; // Pirate: cameras (photo in records)
-using Robust.Shared.Audio.Systems; // Pirate: cameras (photo in records)
-using Robust.Shared.Timing; // Pirate: cameras (photo in records)
-using Content.Server.Hands.Systems; // Pirate: cameras (photo in records)
-using Content.Shared.Hands.Components; // Pirate: cameras (photo in records)
-using Content.Server._Pirate.Photo; // Pirate: cameras (photo in records)
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
+using Robust.Shared.Timing;
+using Content.Server.Hands.Systems;
+using Content.Shared.Hands.Components;
+using Content.Server._Pirate.Photo;
+#endregion
 
 namespace Content.Server.CriminalRecords.Systems;
 
@@ -63,19 +64,15 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
     [Dependency] private readonly StationRecordsSystem _records = default!;
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    #region Pirate: security record identity editor
+    #region Pirate: records photos
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    #endregion
-    [Dependency] private readonly SharedAudioSystem _audio = default!; // Pirate: cameras (photo in records)
-    [Dependency] private readonly HandsSystem _hands = default!; // Pirate: cameras (photo in records)
-    [Dependency] private readonly PhotoSystem _photoSystem = default!; // Pirate: cameras (photo in records)
-    #region Pirate: cameras (photo in records)
+    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly HandsSystem _hands = default!;
+    [Dependency] private readonly PhotoSystem _photoSystem = default!;
     private readonly HashSet<EntityUid> _activePortraitPrintJobs = new();
     private static readonly SoundSpecifier PortraitPrintSound = new SoundPathSpecifier("/Audio/Machines/printer.ogg");
     private static readonly SoundSpecifier PortraitUploadSound = new SoundPathSpecifier("/Audio/_Pirate/Machines/terminal_prompt_confirm.ogg");
     private static readonly TimeSpan PortraitPrintDelay = TimeSpan.FromSeconds(2.3f);
-    #endregion
-    #region Pirate: security record identity editor
     private static readonly IReadOnlyDictionary<string, TimeSpan> EmptyPlayTimes = new Dictionary<string, TimeSpan>();
     #endregion
 
@@ -83,7 +80,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
     {
         SubscribeLocalEvent<CriminalRecordsConsoleComponent, RecordModifiedEvent>(UpdateUserInterface);
         SubscribeLocalEvent<CriminalRecordsConsoleComponent, AfterGeneralRecordCreatedEvent>(UpdateUserInterface);
-        #region Pirate: security record identity editor
+        #region Pirate: records photos
         SubscribeLocalEvent<CriminalRecordsConsoleComponent, RecordRemovedEvent>(OnRecordRemoved);
         #endregion
 
@@ -92,17 +89,15 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
             subs.Event<BoundUIOpenedEvent>(UpdateUserInterface);
             subs.Event<SelectStationRecord>(OnKeySelected);
             subs.Event<SetStationRecordFilter>(OnFiltersChanged);
-            #region Pirate: security record identity editor
-            subs.Event<CriminalRecordCreateRecord>(OnCreateRecord);
-            subs.Event<DeleteStationRecord>(OnDeleteRecord);
             subs.Event<CriminalRecordChangeStatus>(OnChangeStatus);
             subs.Event<CriminalRecordAddHistory>(OnAddHistory);
             subs.Event<CriminalRecordDeleteHistory>(OnDeleteHistory);
             subs.Event<CriminalRecordSetStatusFilter>(OnStatusFilterPressed);
+            #region Pirate: records photos
+            subs.Event<CriminalRecordCreateRecord>(OnCreateRecord);
+            subs.Event<DeleteStationRecord>(OnDeleteRecord);
             subs.Event<CriminalRecordEditIdentity>(OnEditIdentity);
             subs.Event<CriminalRecordEditForensics>(OnEditForensics);
-            #endregion
-            #region Pirate: cameras (photo in records)
             subs.Event<CriminalRecordPrintPhoto>(OnPrintPhoto);
             subs.Event<CriminalRecordUploadPhoto>(OnUploadPhoto);
             subs.Event<CriminalRecordStoreGeneratedPhoto>(OnStoreGeneratedPhoto);
@@ -144,7 +139,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         }
     }
 
-    #region Pirate: security record identity editor
+    #region Pirate: records photos
     private void OnRecordRemoved(Entity<CriminalRecordsConsoleComponent> ent, ref RecordRemovedEvent args)
     {
         if (args.Key.OriginStation != _station.GetOwningStation(ent))
@@ -167,7 +162,6 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
             return;
         }
 
-        // Pirate: sanitize incoming record names instead of rejecting oversized input outright
         var name = msg.Name.Trim();
         if (name.Length > ent.Comp.MaxStringLength)
             name = name[..(int) ent.Comp.MaxStringLength];
@@ -175,12 +169,10 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         if (string.IsNullOrWhiteSpace(name))
             return;
 
-        // Pirate: reuse snapshot-only criminal records by visible name instead of creating duplicate keys
         var criminalMatches = GetCriminalRecordIdsByName(station, name, stationRecords);
         if (criminalMatches.Count > 1)
             return;
 
-        // Pirate: when only the criminal snapshot remains, select that record instead of creating a new general record
         if (criminalMatches.Count == 1)
         {
             ent.Comp.ActiveKey = criminalMatches[0];
@@ -198,7 +190,6 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
             if (!_records.TryGetRecord<GeneralStationRecord>(existingKey, out var generalRecord))
                 return;
 
-            // Pirate: criminal match count was zero, so this general record still needs its criminal entry created
             _records.AddRecordEntry(existingKey, CreateCriminalRecordFromGeneral(generalRecord));
             ent.Comp.ActiveKey = existingKey.Id;
             _records.Synchronize(existingKey);
@@ -298,7 +289,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
 
         var oldStatus = record.Status;
 
-        var name = record.GeneralRecordSnapshot?.Name ?? _records.RecordName(key.Value);
+        var name = record.GeneralRecordSnapshot?.Name ?? _records.RecordName(key.Value); // Pirate: records photos
         GetOfficer(mob.Value, out var officer);
 
         // when arresting someone add it to history automatically
@@ -311,16 +302,16 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         }
 
         // will probably never fail given the checks above
-        name = record.GeneralRecordSnapshot?.Name ?? _records.RecordName(key.Value);
+        name = record.GeneralRecordSnapshot?.Name ?? _records.RecordName(key.Value); // Pirate: records photos
         officer = Loc.GetString("criminal-records-console-unknown-officer");
         var jobName = "Unknown";
 
         _records.TryGetRecord<GeneralStationRecord>(key.Value, out var entry);
         if (entry != null)
             jobName = entry.JobTitle;
-        else if (_records.TryGetRecord<CriminalRecord>(key.Value, out var criminalEntry)
-                 && criminalEntry.GeneralRecordSnapshot != null)
-            jobName = criminalEntry.GeneralRecordSnapshot.JobTitle;
+        else if (_records.TryGetRecord<CriminalRecord>(key.Value, out var criminalEntry) // Pirate: records photos
+                 && criminalEntry.GeneralRecordSnapshot != null) // Pirate: records photos
+            jobName = criminalEntry.GeneralRecordSnapshot.JobTitle; // Pirate: records photos
 
         var tryGetIdentityShortInfoEvent = new TryGetIdentityShortInfoEvent(null, mob.Value);
         RaiseLocalEvent(tryGetIdentityShortInfoEvent);
@@ -409,7 +400,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         UpdateUserInterface(ent);
     }
 
-    #region Pirate: security record identity editor
+    #region Pirate: records photos
     private void OnEditIdentity(Entity<CriminalRecordsConsoleComponent> ent, ref CriminalRecordEditIdentity msg)
     {
         if (!CheckSelected(ent, msg.Actor, out _, out var key))
@@ -458,7 +449,6 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
             existingGeneral.Employer = stationRecord.Employer;
         }
 
-        // Pirate: only records that already had a generated/live portrait snapshot keep auto portrait updates.
         if (criminalRecord.PortraitProfileSnapshot != null || criminalRecord.PortraitImageData is { Length: > 0 })
             criminalRecord.PortraitProfileSnapshot = profile;
 
@@ -591,9 +581,6 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
 
         return true;
     }
-    #endregion
-
-    #region Pirate: cameras (photo in records)
     private void OnPrintPhoto(Entity<CriminalRecordsConsoleComponent> ent, ref CriminalRecordPrintPhoto msg)
     {
         if (!CheckSelected(ent, msg.Actor, out var mob, out var key))
@@ -696,9 +683,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         record.PortraitImageData = [.. preparedImageData];
         record.PortraitPreviewData = preparedPreviewData == null ? null : [.. preparedPreviewData];
 
-        #region Pirate: cameras (photo in records)
         _audio.PlayPvs(PortraitUploadSound, ent);
-        #endregion
         _records.Synchronize(key.Value);
         UpdateUserInterface(ent);
     }
@@ -780,7 +765,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         }
 
         // get the listing of records to display
-        // Pirate: general/security record decoupling
+        #region Pirate: records photos
         var listing = new Dictionary<uint, string>();
         foreach (var (recordId, criminalRecord) in _records.GetRecordsOfType<CriminalRecord>(owningStation.Value, stationRecords))
         {
@@ -791,6 +776,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
 
             listing[recordId] = effectiveRecord.Name;
         }
+        #endregion
 
         // filter the listing by the selected criminal record status
         //if NONE, dont filter by status, just show all crew
@@ -806,6 +792,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         {
             // get records to display when a crewmember is selected
             var key = new StationRecordKey(id, owningStation.Value);
+            #region Pirate: records photos
             if (_records.TryGetRecord(key, out state.CriminalRecord, stationRecords)
                 && TryGetEffectiveGeneralRecord(key, state.CriminalRecord, stationRecords) is { } stationRecord)
             {
@@ -816,6 +803,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
             {
                 console.ActiveKey = null;
             }
+            #endregion
         }
 
         // Set the Current Tab aka the filter status type for the records list
@@ -824,7 +812,7 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         _ui.SetUiState(uid, CriminalRecordsConsoleKey.Key, state);
     }
 
-    #region Pirate: general/security record decoupling
+    #region Pirate: records photos
     private CriminalRecord CreateCriminalRecordFromGeneral(GeneralStationRecord record)
     {
         var criminalRecord = new CriminalRecord
@@ -917,11 +905,11 @@ public sealed partial class CriminalRecordsConsoleSystem : SharedCriminalRecords
         // TODO use the entity's station? Not the station of the map that it happens to currently be on?
         var station = _station.GetStationInMap(xform.MapID);
 
-        if (station != null)
+        if (station != null) // Pirate: records photos
         {
-            var matches = GetCriminalRecordIdsByName(station.Value, name);
-            if (matches.Count == 1
-                && _records.TryGetRecord<CriminalRecord>(new StationRecordKey(matches[0], station.Value), out var record))
+            var matches = GetCriminalRecordIdsByName(station.Value, name); // Pirate: records photos
+            if (matches.Count == 1 // Pirate: records photos
+                && _records.TryGetRecord<CriminalRecord>(new StationRecordKey(matches[0], station.Value), out var record)) // Pirate: records photos
             {
                 if (record.Status != SecurityStatus.None)
                 {

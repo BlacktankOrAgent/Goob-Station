@@ -48,9 +48,7 @@ public sealed class GeneralStationRecordConsoleState : BoundUserInterfaceState
     public readonly Dictionary<uint, string>? RecordListing;
     public readonly StationRecordsFilter? Filter;
     public readonly bool CanDeleteEntries;
-    #region Pirate: records photos
     public readonly uint MaxStringLength; // Pirate: records photos
-    #endregion
 
     public GeneralStationRecordConsoleState(uint? key,
         GeneralStationRecord? record,

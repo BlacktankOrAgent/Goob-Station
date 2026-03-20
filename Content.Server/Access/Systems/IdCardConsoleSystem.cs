@@ -23,8 +23,6 @@
 using System.Linq;
 using Content.Server.Chat.Systems;
 using Content.Server.Containers;
-// Pirate: security record decoupling
-using Content.Server.Station.Systems;
 using Content.Server.StationRecords.Systems;
 using Content.Shared.Access.Components;
 using static Content.Shared.Access.Components.IdCardConsoleComponent;
@@ -35,7 +33,8 @@ using Content.Shared.Construction;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Damage;
 using Content.Shared.Database;
-using Content.Shared.CriminalRecords; // Pirate: general/security record decoupling
+using Content.Server.Station.Systems; // Pirate: records photos
+using Content.Shared.CriminalRecords; // Pirate: records photos
 using Content.Shared.Roles;
 using Content.Shared.StationRecords;
 using Content.Shared.Throwing;
@@ -58,7 +57,7 @@ public sealed class IdCardConsoleSystem : SharedIdCardConsoleSystem
 {
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly StationRecordsSystem _record = default!;
-    #region Pirate: security record decoupling
+    #region Pirate: records photos
     [Dependency] private readonly StationSystem _station = default!;
     #endregion
     [Dependency] private readonly UserInterfaceSystem _userInterface = default!;
@@ -196,7 +195,7 @@ public sealed class IdCardConsoleSystem : SharedIdCardConsoleSystem
             // Pirate END - Fix alt jobs screwing allowed jobs check
         }
 
-        #region Pirate: security record decoupling
+        #region Pirate: records photos
         TryLinkTargetIdToExistingRecord(uid, targetId, newFullName);
         #endregion
         UpdateStationRecord(uid, targetId, newFullName, newJobTitle, job);
@@ -299,7 +298,7 @@ public sealed class IdCardConsoleSystem : SharedIdCardConsoleSystem
             record.JobIcon = newJobProto.Icon;
         }
 
-        // Pirate: general/security record decoupling
+        #region Pirate: records photos
         if (_record.TryGetRecord<CriminalRecord>(key, out var criminalRecord))
         {
             criminalRecord.GeneralRecordSnapshot = record with { };
@@ -307,11 +306,12 @@ public sealed class IdCardConsoleSystem : SharedIdCardConsoleSystem
             if (criminalRecord.PortraitProfileSnapshot != null)
                 criminalRecord.PortraitProfileSnapshot = criminalRecord.PortraitProfileSnapshot.WithName(newFullName);
         }
+        #endregion
 
         _record.Synchronize(key);
     }
 
-    #region Pirate: security record decoupling
+    #region Pirate: records photos
     private void TryLinkTargetIdToExistingRecord(EntityUid console, EntityUid targetId, string newFullName)
     {
         if (TryComp<StationRecordKeyStorageComponent>(targetId, out var keyStorage)

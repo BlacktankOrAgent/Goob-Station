@@ -66,7 +66,7 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
             if (_isPopulating)
                 return;
 
-            if (!HasSelectedRecord()) // Pirate: avoid spurious null deselection events
+            if (!HasSelectedRecord())
                 OnKeySelected?.Invoke(null);
             #endregion
         };
@@ -79,8 +79,8 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
             {
                 _currentFilterType = type;
                 FilterListingOfRecords(StationRecordsFiltersValue.Text); // Pirate: records photos
-                ClearCreateRecordValidation(); // Pirate: add-record validation
-                UpdateRecordActionButtons(); // Pirate: add-record validation
+                ClearCreateRecordValidation(); // Pirate: records photos
+                UpdateRecordActionButtons(); // Pirate: records photos
             }
         };
 
@@ -89,7 +89,7 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
         StationRecordsFiltersValue.OnTextChanged += _ =>
         {
             ResetDeleteConfirmation();
-            ClearCreateRecordValidation(); // Pirate: add-record validation
+            ClearCreateRecordValidation();
             UpdateRecordActionButtons();
         };
 
@@ -120,7 +120,7 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
         var previousSelectedKey = _selectedKey; // Pirate: records photos
         _maxLength = state.MaxStringLength; // Pirate: records photos
         _canManageRecords = state.CanDeleteEntries; // Pirate: records photos
-        StationRecordsFiltersValue.IsValid = null; // Pirate: add-record sanitization
+        StationRecordsFiltersValue.IsValid = null; // Pirate: records photos
 
         if (state.Filter != null)
         {
@@ -215,19 +215,19 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
         return Loc.GetString($"general-station-record-{type.ToString().ToLower()}-filter");
     }
 
-    #region
+    #region Pirate: records photos
     private void UpdateRecordActionButtons()
     {
         if (_deleteConfirmationKey != _selectedKey)
             ResetDeleteConfirmation();
 
-        // Pirate: allow creating records from any filter input after sanitizing the entered text
+        // Pirate: records photos
         AddRecordButton.Disabled = !CanCreateRecordFromSearch();
-        AddRecordButton.ToolTip = Loc.GetString("general-station-record-console-add-record"); // Pirate: add-record sanitization
+        AddRecordButton.ToolTip = Loc.GetString("general-station-record-console-add-record"); // Pirate: records photos
         DeleteRecordButton.Disabled = !_canManageRecords || _selectedKey == null;
         DeleteRecordButton.ToolTip = _deleteConfirmationPending
             ? Loc.GetString("general-station-record-console-confirm-delete")
-            : Loc.GetString("general-station-record-console-delete-record"); // Pirate: localize general console delete tooltip
+            : Loc.GetString("general-station-record-console-delete-record"); // Pirate: records photos
 
         if (_deleteConfirmationPending)
         {
@@ -242,17 +242,16 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
 
     private void CreateRecordFromSearch()
     {
-        // Pirate: sanitize any current filter input into a record name and clamp it to the configured maximum
+        // Pirate: records photos
         var name = SanitizeRecordName(StationRecordsFiltersValue.Text);
         if (string.IsNullOrWhiteSpace(name))
             return;
 
-        ClearCreateRecordValidation(); // Pirate: add-record sanitization
+        ClearCreateRecordValidation(); // Pirate: records photos
         ResetDeleteConfirmation();
         OnCreateRecord?.Invoke(name);
     }
 
-    #region Pirate: add-record sanitization
     private string SanitizeRecordName(string text)
     {
         var sanitized = text.Trim();
@@ -284,7 +283,6 @@ public sealed partial class GeneralStationRecordConsoleWindow : DefaultWindow
         if (RecordListing.Visible)
             RecordListingStatus.Visible = false;
     }
-    #endregion
 
     private void ResetDeleteConfirmation()
     {

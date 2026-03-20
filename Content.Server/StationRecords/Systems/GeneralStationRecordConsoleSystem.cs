@@ -74,7 +74,6 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
         if (!_stationRecords.TryGetRecord<GeneralStationRecord>(key, out var generalRecord))
             return;
 
-        // Pirate: general/security record decoupling
         if (_stationRecords.TryGetRecord<CriminalRecord>(key, out var criminalRecord))
         {
             criminalRecord.GeneralRecordSnapshot = generalRecord with { };
@@ -128,7 +127,6 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
             return;
         }
 
-        // Pirate: sanitize incoming record names instead of rejecting oversized input outright
         var name = msg.Name.Trim();
         if (name.Length > ent.Comp.MaxStringLength)
             name = name[..(int) ent.Comp.MaxStringLength];
