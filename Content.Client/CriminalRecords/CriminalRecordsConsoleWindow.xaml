@@ -7,7 +7,7 @@ SPDX-FileCopyrightText: 2025 Kyle Tyo <36606155+VerinSenpai@users.noreply.github
 SPDX-License-Identifier: AGPL-3.0-or-later
 -->
 
-<!-- Pirate: security record identity editor (window sizing +30px height) -->
+<!-- Pirate: records photos -->
 <controls:FancyWindow xmlns="https://spacestation14.io"
                        xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
                        Title="{Loc 'criminal-records-console-window-title'}"
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                               MinWidth="250"
                               Margin="0 0 10 0" />
                 <!-- Populated in constructor -->
-                <!-- Pirate: security record identity editor (record toolbar start) -->
+                <!-- Pirate: records photos -->
                 <Button Name="DeleteRecordButton"
                         MaxSize="32 32"
                         StyleClasses="OpenBoth"
@@ -48,7 +48,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                                  Stretch="KeepAspectCentered"
                                  MinSize="18 18" />
                 </Button>
-                <!-- Pirate: security record identity editor (record toolbar end) -->
                 <LineEdit Name="FilterText"
                            PlaceHolder="{Loc 'criminal-records-filter-placeholder'}"
                            HorizontalExpand="True" />
@@ -86,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                         HorizontalExpand="True"
                         Margin="5"
                         Visible="False">
-                    <!-- Pirate: cameras (photo in records) (start) -->
+                    <!-- Pirate: records photos -->
                     <BoxContainer Orientation="Horizontal"
                                   Margin="0 0 0 5"
                                   HorizontalExpand="True"
@@ -96,7 +95,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                                       MaxWidth="250"
                                       SizeFlagsStretchRatio="1"
                                       SeparationOverride="5">
-                            <!-- Pirate: cameras (photo in records) (fixed portrait frame) -->
                             <LayoutContainer Name="PersonPortraitFrame"
                                              HorizontalExpand="True"
                                              MaxHeight="240"
@@ -138,12 +136,10 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                                         SizeFlagsStretchRatio="1" />
                             </BoxContainer>
                         </BoxContainer>
-                        <!-- Pirate: security record identity editor (start) -->
                         <BoxContainer Orientation="Vertical"
                                       HorizontalExpand="True"
                                       SizeFlagsStretchRatio="1"
                                       SeparationOverride="6">
-                            <!-- Pirate: security record identity editor (right header start) -->
                             <Label Name="PersonName"
                                    StyleClasses="LabelBig" />
                             <BoxContainer Orientation="Horizontal"
@@ -155,7 +151,6 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                                              VerticalAlignment="Center" />
                                 <Label Name="PersonJob" />
                             </BoxContainer>
-                            <!-- Pirate: security record identity editor (right header end) -->
                             <BoxContainer Orientation="Horizontal"
                                           HorizontalExpand="True"
                                           SeparationOverride="8">
@@ -208,10 +203,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                                               HorizontalAlignment="Right" />
                             </BoxContainer>
                         </BoxContainer>
-                        <!-- Pirate: security record identity editor (end) -->
                     </BoxContainer>
-                    <!-- Pirate: cameras (photo in records) (end) -->
-                    <!-- Pirate: security record identity editor (forensics start) -->
                     <BoxContainer Orientation="Horizontal"
                                   Margin="0 0 0 5"
                                   SeparationOverride="8">
@@ -228,7 +220,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                         <LineEdit Name="PersonDnaEdit"
                                   HorizontalExpand="True" />
                     </BoxContainer>
-                    <!-- Pirate: security record identity editor (forensics end) -->
+                    <!-- Pirate: records photos -->
                     <PanelContainer StyleClasses="LowDivider"
                                     Margin="0 5 0 5" />
                     <BoxContainer Orientation="Horizontal"

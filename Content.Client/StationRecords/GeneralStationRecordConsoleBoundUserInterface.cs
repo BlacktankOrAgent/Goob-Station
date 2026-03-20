@@ -35,7 +35,7 @@ public sealed class GeneralStationRecordConsoleBoundUserInterface : BoundUserInt
             SendMessage(new SelectStationRecord(key));
         _window.OnFiltersChanged += (type, filterValue) =>
             SendMessage(new SetStationRecordFilter(type, filterValue));
-        #region Pirate: general/security record decoupling
+        #region Pirate: records photos
         _window.OnDeleteRecord += id => SendMessage(new DeleteStationRecord(id));
         _window.OnCreateRecord += name => SendMessage(new GeneralRecordCreateRecord(name));
         _window.OnIdentityInfoChanged += (species, nationality, employer, age, gender) =>
