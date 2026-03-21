@@ -25,10 +25,22 @@ public sealed partial class RandomVirusRuleComponent : Component
     public EntProtoId DiseaseBase = "DiseaseBase";
 
     /// <summary>
-    /// Complexity used when generating a random disease.
+    /// Fallback complexity used when a non-pandemic disease range is not configured.
     /// </summary>
     [DataField]
     public float DiseaseComplexity = 20f;
+
+    /// <summary>
+    /// Minimum complexity for non-pandemic random diseases.
+    /// </summary>
+    [DataField]
+    public float? DiseaseComplexityMin;
+
+    /// <summary>
+    /// Maximum complexity for non-pandemic random diseases.
+    /// </summary>
+    [DataField]
+    public float? DiseaseComplexityMax;
 
     /// <summary>
     /// If provided, random diseases will be forced to one of these types.

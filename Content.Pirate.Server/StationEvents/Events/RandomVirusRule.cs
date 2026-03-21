@@ -86,7 +86,7 @@ public sealed class RandomVirusRule : StationEventSystem<RandomVirusRuleComponen
         var pandemicChance = Math.Clamp(component.PandemicChance, 0f, 1f);
         var pandemic = pandemicChance > 0f && _random.Prob(pandemicChance);
         var diseaseBase = pandemic ? component.PandemicDiseaseBase : component.DiseaseBase;
-        var diseaseComplexity = pandemic ? component.PandemicDiseaseComplexity : component.DiseaseComplexity;
+        var diseaseComplexity = pandemic ? component.PandemicDiseaseComplexity : GetDiseaseComplexity(component);
         var possibleTypes = pandemic ? component.PandemicPossibleTypes : component.PossibleTypes;
 
         var disease = _disease.MakeRandomDisease(diseaseBase, diseaseComplexity, possibleTypes);
@@ -104,5 +104,16 @@ public sealed class RandomVirusRule : StationEventSystem<RandomVirusRuleComponen
 
         var message = Loc.GetString("chat-manager-server-wrap-message", ("message", Loc.GetString(component.Message)));
         _chat.ChatMessageToOne(ChatChannel.Local, message, message, EntityUid.Invalid, false, session.Channel);
+    }
+
+    private float GetDiseaseComplexity(RandomVirusRuleComponent component)
+    {
+        if (component.DiseaseComplexityMin is not { } min || component.DiseaseComplexityMax is not { } max)
+            return component.DiseaseComplexity;
+
+        if (max < min)
+            (min, max) = (max, min);
+
+        return min == max ? min : _random.NextFloat(min, max);
     }
 }
