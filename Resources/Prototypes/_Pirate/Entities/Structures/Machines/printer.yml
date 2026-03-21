@@ -38,6 +38,7 @@
   - type: EmagLatheRecipes
     emagStaticPacks:
         - ErrorDocument
+  - type: DocumentPrinterPaperInput
   - type: MaterialStorage
     whitelist:
       tags:
