@@ -105,4 +105,5 @@
   - type: GameRule
     chaosScore: 40
   - type: RandomVirusRule
+    targetFraction: 0.15 # Pirate - infect 15% of eligible crew, rounded up
     pandemicChance: 0.05 # Pirate - rare MobMousePandemic-style roll

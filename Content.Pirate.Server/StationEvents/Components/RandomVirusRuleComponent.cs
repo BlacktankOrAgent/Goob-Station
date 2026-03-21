@@ -12,10 +12,11 @@ namespace Content.Pirate.Server.StationEvents.Components;
 public sealed partial class RandomVirusRuleComponent : Component
 {
     /// <summary>
-    /// How many unique targets to infect when the event fires.
+    /// Fraction of eligible crew to infect when the event fires.
+    /// The final target count is rounded up.
     /// </summary>
     [DataField]
-    public int TargetCount = 2;
+    public double TargetFraction = 0.15;
 
     /// <summary>
     /// Disease prototype to mutate from.

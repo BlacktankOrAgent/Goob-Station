@@ -27,6 +27,15 @@ public sealed class RandomVirusRule : StationEventSystem<RandomVirusRuleComponen
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly StationSystem _station = default!;
 
+    internal static int CalculateTargetCount(int eligibleCount, double targetFraction)
+    {
+        if (eligibleCount <= 0 || targetFraction <= 0d)
+            return 0;
+
+        var clampedFraction = Math.Clamp(targetFraction, 0d, 1d);
+        return Math.Min(eligibleCount, (int) Math.Ceiling(eligibleCount * clampedFraction));
+    }
+
     protected override void Started(EntityUid uid, RandomVirusRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
@@ -34,9 +43,9 @@ public sealed class RandomVirusRule : StationEventSystem<RandomVirusRuleComponen
         if (!TryGetRandomStation(out var chosenStation))
             return;
 
-        if (component.TargetCount <= 0)
+        if (component.TargetFraction <= 0d)
         {
-            Log.Warning($"RandomVirus event has invalid target count {component.TargetCount}.");
+            Log.Warning($"RandomVirus event has invalid target fraction {component.TargetFraction}.");
             return;
         }
 
@@ -61,12 +70,9 @@ public sealed class RandomVirusRule : StationEventSystem<RandomVirusRuleComponen
         if (candidates.Count == 0)
             return;
 
-        var targetCount = component.TargetCount;
-        if (candidates.Count < component.TargetCount)
-        {
-            Log.Warning($"RandomVirus event found only {candidates.Count} valid targets, requested {component.TargetCount}.");
-            targetCount = candidates.Count;
-        }
+        var targetCount = CalculateTargetCount(candidates.Count, component.TargetFraction);
+        if (targetCount == 0)
+            return;
 
         var pickedTargets = _random.GetItems(candidates, targetCount, allowDuplicates: false);
         foreach (var target in pickedTargets)
