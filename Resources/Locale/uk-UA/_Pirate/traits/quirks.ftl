@@ -32,3 +32,6 @@ trait-vampiric-blood-deficiency-desc = Ваш організм втрачає б
 
 trait-psionic-name = Псіонік
 trait-psionic-desc = Ваш розум і душа відкриті для ноосфери, що дозволяє вам отримувати псіонічні здібності.
+
+trait-unborgable-name = Несумісність боргофікації
+trait-unborgable-desc = Ваш мозок не можна використати для боргофікації.
