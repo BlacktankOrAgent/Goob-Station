@@ -234,7 +234,7 @@
 - type: entity
   id: FoodCoffeeBeansSynthetic
   parent: FoodCoffeeBeans
-  name: syntheticcoffee beans
+  name: synthetic coffee beans
   components:
   - type: Sprite
     state: coffee_synthetic
