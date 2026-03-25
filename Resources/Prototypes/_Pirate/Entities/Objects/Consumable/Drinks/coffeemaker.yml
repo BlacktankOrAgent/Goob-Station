@@ -29,7 +29,7 @@
           Bootleg: { state: cartridge_bootleg }
           Blank: { state: cartridge_blank }
   - type: StaticPrice
-    price: 0.04
+    price: 0.01
 
 - type: entity
   id: CoffeeCartridgeGenerico

@@ -91,7 +91,7 @@
     - type: PhysicalComposition
       materialComposition: {}
     - type: StaticPrice
-      price: 0.04
+      price: 0.01
 
 - type: entity
   id: CoffeePackRobustaPirate
