@@ -163,4 +163,15 @@
     - type: InnatePsionicPowers
       powersToAdd:
         - TelepathyPower
+
+- type: trait
+  id: Unborgable
+  name: trait-unborgable-name
+  description: trait-unborgable-desc
+  category: Quirks
+  cost: 0
+  speciesBlacklist:
+    - IPC
+  components:
+  - type: Unborgable
 #endregion
