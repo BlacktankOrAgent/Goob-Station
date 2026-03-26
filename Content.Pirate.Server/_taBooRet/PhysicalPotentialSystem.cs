@@ -1,8 +1,12 @@
+using Content.Goobstation.Maths.FixedPoint;
+using Content.Goobstation.Shared.Sprinting;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Nutrition.Components;
 using Content.Shared.Nutrition.EntitySystems;
+using Content.Shared.Standing;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Robust.Shared.Timing;
@@ -18,9 +22,23 @@ namespace Content.Server._taBooRet
         {
             base.Initialize();
             SubscribeLocalEvent<PhysicalPotentialComponent, MeleeHitEvent>(OnMeleeHit);
+            SubscribeLocalEvent<PhysicalPotentialComponent, DamageModifyEvent>(OnDamageModify);
+            SubscribeLocalEvent<PhysicalPotentialComponent, StoodEvent>(OnStood);
         }
 
-        // -- CALCULATE STRAIN FROM MELEE HITS -- 
+        public override void Update(float frameTime)
+        {
+            base.Update(frameTime);
+            var query = EntityQueryEnumerator<PhysicalPotentialComponent>();
+            while (query.MoveNext(out var uid, out var comp))
+            {
+                UpdateSprintProgress(frameTime, uid, comp);
+                HandleRecovery(uid, comp);
+            }
+        }
+
+        #region Calculate strains
+        // -- HITS -- 
         private void OnMeleeHit(EntityUid uid, PhysicalPotentialComponent comp, MeleeHitEvent args)
         {
             if (!TryComp<MeleeWeaponComponent>(uid, out var melee)) return;
@@ -30,86 +48,163 @@ namespace Content.Server._taBooRet
                 if (!TryComp<MobStateComponent>(hitEntity, out var mob)) continue;
                 if (mob.CurrentState != MobState.Alive) continue;
 
-                // Determine base damage values (Blunt/Slash) 
-                var blunt = melee.Damage.DamageDict.GetValueOrDefault("Blunt", 0);
-                var slash = melee.Damage.DamageDict.GetValueOrDefault("Slash", 0);
-                var totalDamage = blunt + slash;
-
-                // Prevent division by zero 
-                if (totalDamage <= 0) return;
-
-                // Distribute strain proportionally based on damage types 
-                var damageStrain = new DamageSpecifier();
-                damageStrain.DamageDict["Blunt"] = blunt / totalDamage;
-                damageStrain.DamageDict["Slash"] = slash / totalDamage;
-
+                var damageStrain = GetDamageStain(uid, comp, melee);
                 // Create and queue a new training strain 
-                var newStrain = new TrainingStrain { Damage = damageStrain * comp.DamageRisingSpeed };
-                AddStrain(args.User, comp, newStrain);
+                var newStrain = new TrainingStrain { Damage = damageStrain };
+                AddStrain(comp, newStrain);
             }
 
             // Apply current bonus to the final attack damage 
             args.BonusDamage += comp.DamageBonus;
         }
 
-        // -- ACCUMULATED STRAIN PROCESSING -- 
+        public DamageSpecifier GetDamageStain(EntityUid uid, PhysicalPotentialComponent comp, MeleeWeaponComponent melee)
+        {
+            // Extract raw damage values for Blunt and Slash types from the weapon's damage dictionary
+            var blunt = (float) melee.Damage.DamageDict.GetValueOrDefault("Blunt", 0);
+            var slash = (float) melee.Damage.DamageDict.GetValueOrDefault("Slash", 0);
+            var totalDamage = blunt + slash;
+
+            var damageStrain = new DamageSpecifier();
+
+            if (totalDamage > 0)
+            {
+                // Calculate the ratio of each damage type relative to the total damage
+                // This ensures the strain is proportional to the weapon's damage profile
+                damageStrain.DamageDict["Blunt"] = FixedPoint2.New(blunt / totalDamage);
+                damageStrain.DamageDict["Slash"] = FixedPoint2.New(slash / totalDamage);
+            }
+            else
+            {
+                damageStrain.DamageDict["Blunt"] = FixedPoint2.New(0.01);
+            }
+
+            damageStrain *= comp.DamageRisingSpeed;
+            return damageStrain;
+        }
+
+        // -- DAMAGE --
+        private void OnDamageModify(EntityUid uid, PhysicalPotentialComponent comp, DamageModifyEvent args)
+        {
+            if (args.Origin == null) return;
+
+            var newStrain = new TrainingStrain { Defense = comp.DefenseRisingSpeed };
+            AddStrain(comp, newStrain);
+
+            //Reduces incoming damage
+            if (args.Damage.DamageDict.ContainsKey("Blunt"))
+            {
+                args.Damage.DamageDict["Blunt"] -= comp.DefenseBonus;
+            }
+
+            if (args.Damage.DamageDict.ContainsKey("Slash"))
+            {
+                args.Damage.DamageDict["Slash"] -= comp.DefenseBonus;
+            }
+        }
+
+        // -- PUSH-UP --
+        private void OnStood(EntityUid uid, PhysicalPotentialComponent comp, StoodEvent args)
+        {
+            if (!TryComp<MeleeWeaponComponent>(uid, out var melee)) return;
+
+            var damageStrain = GetDamageStain(uid, comp, melee);
+
+            // Create and queue a new training strain 
+            var newStrain = new TrainingStrain
+            {
+                Damage = damageStrain * comp.PushUpsEfficiency,
+                Defense = comp.DefenseRisingSpeed * comp.PushUpsEfficiency,
+                Stamina = comp.StaminaRisingSpeed * comp.PushUpsEfficiency
+            };
+
+            AddStrain(comp, newStrain);
+        }
+
+        // -- STAMINA AND SPRINT --
+        private void UpdateSprintProgress(float frameTime, EntityUid uid, PhysicalPotentialComponent comp)
+        {
+            if (!TryComp<SprinterComponent>(uid, out var sprinter)) return;
+
+            if (sprinter.IsSprinting)
+            {
+                comp.SprintTimer += frameTime;
+
+                // Check if the sprint duration has exceeded the defined interval for a "tick"
+                if (comp.SprintTimer > comp.SprintInterval)
+                {
+                    comp.SprintTimer = 0;
+
+                    var newStrain = new TrainingStrain { Stamina = comp.StaminaRisingSpeed };
+                    AddStrain(comp, newStrain);
+                }
+            }
+        }
+
+        #endregion
+
         #region Strain Handling 
         // Adds a new training point to the processing queue 
-        private void AddStrain(EntityUid user, PhysicalPotentialComponent comp, TrainingStrain strain)
+        public void AddStrain(PhysicalPotentialComponent comp, TrainingStrain strain)
         {
             comp.Strains.Add(strain);
             // Set cooldown (rest period) before training absorption begins 
             comp.EndRestTime = _timing.CurTime + TimeSpan.FromSeconds(comp.TimeForRest);
             comp.IsResting = true;
-            Logger.Info($"{user} received strain: {strain.Damage.GetTotal()}");
         }
 
-        public override void Update(float frameTime)
+        private void HandleRecovery(EntityUid uid, PhysicalPotentialComponent comp)
         {
-            base.Update(frameTime);
-            var query = EntityQueryEnumerator<PhysicalPotentialComponent>();
-            while (query.MoveNext(out var uid, out var comp))
-            {
-                // Check if the rest period after the last activity has ended 
-                if (comp.IsResting && comp.EndRestTime < _timing.CurTime)
-                {
-                    comp.IsResting = false;
-                }
+            if (!TryComp<MobStateComponent>(uid, out var mob) || mob.CurrentState != MobState.Alive) return;
 
-                // Gradually process the strain queue if the player is resting 
-                if (!comp.IsResting && comp.Strains.Count > 0)
+            // Check if the rest period after the last activity has ended 
+            if (comp.IsResting && comp.EndRestTime < _timing.CurTime)
+            {
+                comp.IsResting = false;
+            }
+
+            // Gradually process the strain queue if the player is resting 
+            if (!comp.IsResting && comp.Strains.Count > 0)
+            {
+                // Introduce a delay between iterations for smooth bonus progression 
+                if (comp.NextStrainTime < _timing.CurTime)
                 {
-                    // Introduce a delay between iterations for smooth bonus progression 
-                    if (comp.NextStrainTime < _timing.CurTime)
-                    {
-                        ApplyStrain(uid, comp);
-                        comp.NextStrainTime = _timing.CurTime + TimeSpan.FromSeconds(comp.StrainsApplyingDelay);
-                    }
+                    ApplyStrain(uid, comp);
+                    comp.NextStrainTime = _timing.CurTime + TimeSpan.FromSeconds(comp.StrainsApplyingDelay);
                 }
             }
         }
 
         // Apply a specific strain point to the character's stats 
-        private void ApplyStrain(EntityUid user, PhysicalPotentialComponent comp)
+        private void ApplyStrain(EntityUid uid, PhysicalPotentialComponent comp)
         {
             if (comp.Strains.Count == 0) return;
 
             // Fetch the oldest strain from the queue (FIFO) 
             var strain = comp.Strains[0];
 
-            // Update damage bonus 
+            // Update damage bonus
             comp.DamageBonus += strain.Damage;
+
+            // Update defense bonus
+            comp.DefenseBonus += strain.Defense;
+
+            // Update stamina bonus
+            if (TryComp<StaminaComponent>(uid, out var stamina))
+            {
+                stamina.CritThreshold += strain.Stamina;
+            }
+
             comp.Strains.RemoveAt(0);
 
             // Mark component as dirty to sync data with the client 
-            Dirty(user, comp);
+            Dirty(uid, comp);
 
             // Deduct hunger/calories for training 
-            if (TryComp<HungerComponent>(user, out var hunger))
+            if (TryComp<HungerComponent>(uid, out var hunger))
             {
-                _hungerSystem.ModifyHunger(user, -comp.HungerCost, hunger);
+                _hungerSystem.ModifyHunger(uid, -comp.HungerCost, hunger);
             }
-            Logger.Info($"{user} grew stronger. Current bonus: {comp.DamageBonus.GetTotal()}");
         }
         #endregion
     }
