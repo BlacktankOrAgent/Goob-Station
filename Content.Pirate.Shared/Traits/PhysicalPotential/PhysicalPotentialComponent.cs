@@ -2,7 +2,7 @@ using Content.Goobstation.Maths.FixedPoint;
 using Content.Shared.Damage;
 using Robust.Shared.GameStates;
 
-namespace Content.Shared._taBooRet
+namespace Content.Pirate.Shared.Traits.PhysicalPotential
 {
     /// <summary> 
     /// Represents a single unit of training progress to be processed. 

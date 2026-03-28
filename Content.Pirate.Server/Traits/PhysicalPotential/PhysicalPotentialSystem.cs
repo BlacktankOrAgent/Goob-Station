@@ -2,6 +2,7 @@ using Content.Goobstation.Maths.FixedPoint;
 using Content.Goobstation.Shared.Sprinting;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
+using Content.Shared.Cloning.Events;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Nutrition.Components;
@@ -9,11 +10,11 @@ using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Standing;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
-using Robust.Shared.Timing;
-using Content.Shared._taBooRet;
+using Content.Pirate.Shared.Traits.PhysicalPotential;
 using Robust.Shared.Random;
+using Robust.Shared.Timing;
 
-namespace Content.Server._taBooRet
+namespace Content.Pirate.Server.Traits.PhysicalPotential
 {
     public sealed class PhysicalPotentialSystem : EntitySystem
     {
@@ -24,12 +25,12 @@ namespace Content.Server._taBooRet
         public override void Initialize()
         {
             base.Initialize();
-            SubscribeLocalEvent<PhysicalPotentialComponent, MeleeHitEvent>(OnMeleeHit);
+            SubscribeLocalEvent<MeleeHitEvent>(OnMeleeHit);
+            SubscribeLocalEvent<PhysicalPotentialComponent, CloningEvent>(OnClone);
             SubscribeLocalEvent<PhysicalPotentialComponent, DamageModifyEvent>(OnDamageModify);
             SubscribeLocalEvent<PhysicalPotentialComponent, StoodEvent>(OnStood);
-
-           
         }
+
         public override void Update(float frameTime)
         {
             base.Update(frameTime);
@@ -42,17 +43,19 @@ namespace Content.Server._taBooRet
         }
 
         #region Calculate strains
-        // -- HITS -- 
-        private void OnMeleeHit(EntityUid uid, PhysicalPotentialComponent comp, MeleeHitEvent args)
+        // -- HITS --
+        private void OnMeleeHit(MeleeHitEvent args)
         {
-            if (!TryComp<MeleeWeaponComponent>(uid, out var melee)) return;
+            if (!TryComp<PhysicalPotentialComponent>(args.User, out var comp)
+                || !TryComp<MeleeWeaponComponent>(args.Weapon, out var melee))
+                return;
 
             foreach (var hitEntity in args.HitEntities)
             {
                 if (!TryComp<MobStateComponent>(hitEntity, out var mob)) continue;
                 if (mob.CurrentState != MobState.Alive) continue;
 
-                var damageStrain = GetDamageStain(uid, comp, melee);
+                var damageStrain = GetDamageStain(comp, melee);
                 // Create and queue a new training strain
                 var newStrain = new TrainingStrain { Damage = damageStrain };
                 AddStrain(comp, newStrain);
@@ -62,11 +65,11 @@ namespace Content.Server._taBooRet
             args.BonusDamage += comp.DamageBonus;
         }
 
-        public DamageSpecifier GetDamageStain(EntityUid uid, PhysicalPotentialComponent comp, MeleeWeaponComponent melee)
+        public DamageSpecifier GetDamageStain(PhysicalPotentialComponent comp, MeleeWeaponComponent melee)
         {
             // Extract raw damage values for Blunt and Slash types from the weapon's damage dictionary
-            var blunt = (float) melee.Damage.DamageDict.GetValueOrDefault("Blunt", 0);
-            var slash = (float) melee.Damage.DamageDict.GetValueOrDefault("Slash", 0);
+            var blunt = (float)melee.Damage.DamageDict.GetValueOrDefault("Blunt", 0);
+            var slash = (float)melee.Damage.DamageDict.GetValueOrDefault("Slash", 0);
             var totalDamage = blunt + slash;
 
             var damageStrain = new DamageSpecifier();
@@ -87,6 +90,29 @@ namespace Content.Server._taBooRet
             return damageStrain;
         }
 
+        private void OnClone(Entity<PhysicalPotentialComponent> ent, ref CloningEvent args)
+        {
+            if (!args.Settings.EventComponents.Contains(Factory.GetRegistration(ent.Comp.GetType()).Name))
+                return;
+
+            var clone = EnsureComp<PhysicalPotentialComponent>(args.CloneUid);
+            clone.trainingEffectiveness = ent.Comp.trainingEffectiveness;
+            clone.MaxDamageBonus = ent.Comp.MaxDamageBonus;
+            clone.DamageRisingSpeed = ent.Comp.DamageRisingSpeed;
+            clone.DefenseRisingSpeed = ent.Comp.DefenseRisingSpeed;
+            clone.MaxDefenseBonus = ent.Comp.MaxDefenseBonus;
+            clone.StaminaRisingSpeed = ent.Comp.StaminaRisingSpeed;
+            clone.MaxStamina = ent.Comp.MaxStamina;
+            clone.SprintInterval = ent.Comp.SprintInterval;
+            clone.PushUpsEfficiency = ent.Comp.PushUpsEfficiency;
+            clone.TimeForRest = ent.Comp.TimeForRest;
+            clone.MaxStrainsNumber = ent.Comp.MaxStrainsNumber;
+            clone.StrainsApplyingDelay = ent.Comp.StrainsApplyingDelay;
+            clone.HungerCost = ent.Comp.HungerCost;
+
+            Dirty(args.CloneUid, clone);
+        }
+
         // -- DAMAGE --
         private void OnDamageModify(EntityUid uid, PhysicalPotentialComponent comp, DamageModifyEvent args)
         {
@@ -98,12 +124,16 @@ namespace Content.Server._taBooRet
             //Reduces incoming damage
             if (args.Damage.DamageDict.ContainsKey("Blunt"))
             {
-                args.Damage.DamageDict["Blunt"] -= comp.DefenseBonus;
+                args.Damage.DamageDict["Blunt"] = FixedPoint2.Max(
+                    args.Damage.DamageDict["Blunt"] - comp.DefenseBonus,
+                    FixedPoint2.Zero);
             }
 
             if (args.Damage.DamageDict.ContainsKey("Slash"))
             {
-                args.Damage.DamageDict["Slash"] -= comp.DefenseBonus;
+                args.Damage.DamageDict["Slash"] = FixedPoint2.Max(
+                    args.Damage.DamageDict["Slash"] - comp.DefenseBonus,
+                    FixedPoint2.Zero);
             }
         }
 
@@ -112,7 +142,7 @@ namespace Content.Server._taBooRet
         {
             if (!TryComp<MeleeWeaponComponent>(uid, out var melee)) return;
 
-            var damageStrain = GetDamageStain(uid, comp, melee);
+            var damageStrain = GetDamageStain(comp, melee);
 
             // Create and queue a new training strain 
             var newStrain = new TrainingStrain
