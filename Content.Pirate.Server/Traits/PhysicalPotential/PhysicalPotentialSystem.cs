@@ -18,6 +18,8 @@ namespace Content.Pirate.Server.Traits.PhysicalPotential
 {
     public sealed class PhysicalPotentialSystem : EntitySystem
     {
+        private static readonly string[] PhysicalDamageTypes = { "Blunt", "Slash", "Piercing" };
+
         [Dependency] private readonly IGameTiming _timing = default!;
         [Dependency] private readonly HungerSystem _hungerSystem = default!;
         [Dependency] private readonly IRobustRandom _random = default!;
@@ -46,8 +48,17 @@ namespace Content.Pirate.Server.Traits.PhysicalPotential
         // -- HITS --
         private void OnMeleeHit(MeleeHitEvent args)
         {
-            if (!TryComp<PhysicalPotentialComponent>(args.User, out var comp)
-                || !TryComp<MeleeWeaponComponent>(args.Weapon, out var melee))
+            if (!TryComp<PhysicalPotentialComponent>(args.User, out var comp))
+                return;
+
+            args.BonusDamage += comp.DamageBonus;
+
+            var resolvedDamage = new DamageSpecifier(args.BaseDamage);
+            resolvedDamage += args.BonusDamage;
+            resolvedDamage = DamageSpecifier.ApplyModifierSets(resolvedDamage, args.ModifiersList);
+
+            var damageStrain = GetDamageStain(comp, resolvedDamage);
+            if (damageStrain.Empty)
                 return;
 
             foreach (var hitEntity in args.HitEntities)
@@ -55,41 +66,30 @@ namespace Content.Pirate.Server.Traits.PhysicalPotential
                 if (!TryComp<MobStateComponent>(hitEntity, out var mob)) continue;
                 if (mob.CurrentState != MobState.Alive) continue;
 
-                var damageStrain = GetDamageStain(comp, melee);
                 // Create and queue a new training strain
                 var newStrain = new TrainingStrain { Damage = damageStrain };
                 AddStrain(comp, newStrain);
             }
-
-            // Apply current bonus to the final attack damage 
-            args.BonusDamage += comp.DamageBonus;
         }
 
-        public DamageSpecifier GetDamageStain(PhysicalPotentialComponent comp, MeleeWeaponComponent melee)
+        public DamageSpecifier GetDamageStain(PhysicalPotentialComponent comp, DamageSpecifier damage)
         {
-            // Extract the physical damage profile from the weapon's damage dictionary.
-            var blunt = (float)melee.Damage.DamageDict.GetValueOrDefault("Blunt", 0);
-            var slash = (float)melee.Damage.DamageDict.GetValueOrDefault("Slash", 0);
-            var piercing = (float)melee.Damage.DamageDict.GetValueOrDefault("Piercing", 0);
-            var totalDamage = blunt + slash + piercing;
-
             var damageStrain = new DamageSpecifier();
+            var totalDamage = FixedPoint2.Zero;
 
-            if (totalDamage > 0)
+            foreach (var type in PhysicalDamageTypes)
             {
-                // Keep the trained bonus aligned with the weapon's actual physical damage split.
-                if (blunt > 0)
-                    damageStrain.DamageDict["Blunt"] = FixedPoint2.New(blunt / totalDamage);
-
-                if (slash > 0)
-                    damageStrain.DamageDict["Slash"] = FixedPoint2.New(slash / totalDamage);
-
-                if (piercing > 0)
-                    damageStrain.DamageDict["Piercing"] = FixedPoint2.New(piercing / totalDamage);
+                if (damage.DamageDict.TryGetValue(type, out var amount) && amount > FixedPoint2.Zero)
+                    totalDamage += amount;
             }
-            else
+
+            if (totalDamage <= FixedPoint2.Zero)
+                return damageStrain;
+
+            foreach (var type in PhysicalDamageTypes)
             {
-                damageStrain.DamageDict["Blunt"] = FixedPoint2.New(0.01);
+                if (damage.DamageDict.TryGetValue(type, out var amount) && amount > FixedPoint2.Zero)
+                    damageStrain.DamageDict[type] = amount / totalDamage;
             }
 
             damageStrain *= comp.DamageRisingSpeed;
@@ -146,26 +146,7 @@ namespace Content.Pirate.Server.Traits.PhysicalPotential
         // -- DAMAGE --
         private void OnDamageModify(EntityUid uid, PhysicalPotentialComponent comp, DamageModifyEvent args)
         {
-            var trainsDefense = false;
-
-            //Reduces incoming damage
-            if (args.Damage.DamageDict.TryGetValue("Blunt", out var blunt))
-            {
-                trainsDefense |= blunt > FixedPoint2.Zero;
-                args.Damage.DamageDict["Blunt"] = ApplyDefenseReduction(blunt, comp.DefenseBonus);
-            }
-
-            if (args.Damage.DamageDict.TryGetValue("Slash", out var slash))
-            {
-                trainsDefense |= slash > FixedPoint2.Zero;
-                args.Damage.DamageDict["Slash"] = ApplyDefenseReduction(slash, comp.DefenseBonus);
-            }
-
-            if (args.Damage.DamageDict.TryGetValue("Piercing", out var piercing))
-            {
-                trainsDefense |= piercing > FixedPoint2.Zero;
-                args.Damage.DamageDict["Piercing"] = ApplyDefenseReduction(piercing, comp.DefenseBonus);
-            }
+            var trainsDefense = ApplyDefenseReduction(args.Damage, comp.DefenseBonus);
 
             if (args.Origin != null && trainsDefense)
             {
@@ -179,7 +160,7 @@ namespace Content.Pirate.Server.Traits.PhysicalPotential
         {
             if (!TryComp<MeleeWeaponComponent>(uid, out var melee)) return;
 
-            var damageStrain = GetDamageStain(comp, melee);
+            var damageStrain = GetDamageStain(comp, melee.Damage);
 
             // Create and queue a new training strain 
             var newStrain = new TrainingStrain
@@ -192,12 +173,50 @@ namespace Content.Pirate.Server.Traits.PhysicalPotential
             AddStrain(comp, newStrain);
         }
 
-        private static FixedPoint2 ApplyDefenseReduction(FixedPoint2 damage, FixedPoint2 defenseBonus)
+        private static bool ApplyDefenseReduction(DamageSpecifier damage, FixedPoint2 defenseBonus)
         {
-            if (damage <= FixedPoint2.Zero)
-                return damage;
+            var totalPhysicalDamage = FixedPoint2.Zero;
+            string? lastPositiveType = null;
 
-            return FixedPoint2.Max(damage - defenseBonus, FixedPoint2.Zero);
+            foreach (var type in PhysicalDamageTypes)
+            {
+                if (!damage.DamageDict.TryGetValue(type, out var amount) || amount <= FixedPoint2.Zero)
+                    continue;
+
+                totalPhysicalDamage += amount;
+                lastPositiveType = type;
+            }
+
+            if (totalPhysicalDamage <= FixedPoint2.Zero)
+                return false;
+
+            var remainingReduction = FixedPoint2.Min(defenseBonus, totalPhysicalDamage);
+            if (remainingReduction <= FixedPoint2.Zero || lastPositiveType == null)
+                return true;
+
+            foreach (var type in PhysicalDamageTypes)
+            {
+                if (!damage.DamageDict.TryGetValue(type, out var amount) || amount <= FixedPoint2.Zero)
+                    continue;
+
+                FixedPoint2 reduction;
+                if (type == lastPositiveType)
+                {
+                    reduction = FixedPoint2.Min(amount, remainingReduction);
+                }
+                else
+                {
+                    reduction = FixedPoint2.Min(amount, totalPhysicalDamage == FixedPoint2.Zero
+                        ? FixedPoint2.Zero
+                        : remainingReduction * amount / totalPhysicalDamage);
+                }
+
+                damage.DamageDict[type] = amount - reduction;
+                remainingReduction -= reduction;
+                totalPhysicalDamage -= amount;
+            }
+
+            return true;
         }
 
         // -- STAMINA AND SPRINT --
