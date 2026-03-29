@@ -131,7 +131,7 @@ public sealed class GhostRespawnLobbyTests
     public async Task CriticalGhostStartsTimer()
     {
         var delay = TimeSpan.FromSeconds(5);
-        await using var pair = await SetupRoundPair(delay, ghostKillCrit: true);
+        await using var pair = await SetupRoundPair(delay, ghostKillCrit: false);
         var userId = pair.Client.User!.Value;
         var respawnSystem = pair.Server.System<PirateGhostRespawnSystem>();
         var mobState = pair.Server.System<MobStateSystem>();
