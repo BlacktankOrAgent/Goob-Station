@@ -42,7 +42,7 @@ public sealed class PirateGhostRespawnSystem : EntitySystem
         SubscribeLocalEvent<MindContainerComponent, MindAddedMessage>(OnMindAdded);
         SubscribeLocalEvent<MindContainerComponent, MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
-        SubscribeLocalEvent<TransferredToCloneEvent>(OnTransferredToClone);
+        SubscribeLocalEvent<MindContainerComponent, TransferredToCloneEvent>(OnTransferredToClone);
 
         SubscribeNetworkEvent<GhostRespawnLobbyRequest>(OnGhostRespawnLobbyRequest);
     }
@@ -152,7 +152,7 @@ public sealed class PirateGhostRespawnSystem : EntitySystem
         RearmRespawnTimer(userId, state);
     }
 
-    private void OnTransferredToClone(EntityUid uid, ref TransferredToCloneEvent args)
+    private void OnTransferredToClone(Entity<MindContainerComponent> ent, ref TransferredToCloneEvent args)
     {
         if (!TryComp<MindContainerComponent>(args.Cloned, out var clonedContainer) ||
             clonedContainer.Mind is not { } mindId ||
@@ -164,7 +164,7 @@ public sealed class PirateGhostRespawnSystem : EntitySystem
 
         if (!TryGetState(userId, out var state) ||
             !state.HasCrewCycle ||
-            state.CrewLifeEntity != uid ||
+            state.CrewLifeEntity != ent.Owner ||
             !ShouldSeedCrewCycle(args.Cloned))
         {
             return;

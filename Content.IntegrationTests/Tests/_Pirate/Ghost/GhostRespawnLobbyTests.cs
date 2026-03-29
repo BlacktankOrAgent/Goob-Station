@@ -587,7 +587,7 @@ public sealed class GhostRespawnLobbyTests
             var originalBody = mind!.OwnedEntity!.Value;
             var coords = entMan.GetComponent<TransformComponent>(originalBody).Coordinates;
             var clone = entMan.SpawnEntity("MobHuman", coords);
-            mindSystem.TransferTo(mindId!.Value, clone, ghostCheckOverride: true, mind);
+            mindSystem.TransferTo(mindId!.Value, clone, ghostCheckOverride: true, mind: mind);
 
             var ev = new TransferredToCloneEvent(clone);
             entMan.EventBus.RaiseLocalEvent(originalBody, ref ev);
@@ -701,7 +701,7 @@ public sealed class GhostRespawnLobbyTests
             var originalBody = mind!.OwnedEntity!.Value;
             var coords = entMan.GetComponent<TransformComponent>(originalBody).Coordinates;
             var replacement = entMan.SpawnEntity("MobHuman", coords);
-            mindSystem.TransferTo(mindId!.Value, replacement, ghostCheckOverride: true, mind);
+            mindSystem.TransferTo(mindId!.Value, replacement, ghostCheckOverride: true, mind: mind);
         });
         await pair.RunTicksSync(10);
 
