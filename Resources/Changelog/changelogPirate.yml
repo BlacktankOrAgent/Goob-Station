@@ -716,3 +716,15 @@ Entries:
         СС13
   id: 59
   time: '2026-03-30T18:57:05.0000000+00:00'
+- author: AgentMaper
+  changes:
+    - type: Tweak
+      message: Додані текстурки шлюзів для глав відділків
+    - type: Tweak
+      message: Респрайт файрлоків
+    - type: Tweak
+      message: Респрайт якихось прикольних дверей
+    - type: Fix
+      message: Пофікшені скляні двері
+  id: 60
+  time: '2026-03-30T19:00:27.0000000+00:00'
