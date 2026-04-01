@@ -25,7 +25,7 @@
 
       pushUpsEfficiency: 0.3
 
-      timeForRest: 15
+      timeForRest: 180
 
       # Strain system
       strainsApplyingDelay: 0.5
