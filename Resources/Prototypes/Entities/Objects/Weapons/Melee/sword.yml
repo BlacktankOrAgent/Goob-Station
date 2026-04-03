@@ -294,6 +294,9 @@
     slots:
     - Back
     - Belt
+  - type: Wieldable # Pirate: katana
+    wieldedInhandPrefix: wielded # Pirate: katana
+  - type: TimedDeflectBlock # Pirate: katana
   - type: DisarmMalus
 
 - type: entity

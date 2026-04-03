@@ -50,6 +50,7 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         SubscribeLocalEvent<TimedDeflectBlockComponent, ItemSwitchedEvent>(OnItemSwitched);
         SubscribeLocalEvent<TimedDeflectBlockComponent, HeldRelayedEvent<ProjectileReflectAttemptEvent>>(OnProjectileReflectAttempt);
         SubscribeLocalEvent<TimedDeflectBlockComponent, AttemptMeleeEvent>(OnAttemptMelee);
+        SubscribeLocalEvent<TimedDeflectBlockComponent, MeleeHitEvent>(OnMeleeHit);
         SubscribeLocalEvent<TimedDeflectBlockComponent, GetMeleeDamageEvent>(OnGetMeleeDamage);
 
         SubscribeLocalEvent<HandsComponent, BeforeHarmfulActionEvent>(OnBeforeHarmfulAction);
@@ -96,7 +97,7 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
 
     private void OnItemSwitched(Entity<TimedDeflectBlockComponent> ent, ref ItemSwitchedEvent args)
     {
-        ApplyReplicatedVisualState(ent.Owner, GetVisualState(ent.Comp));
+        ApplyReplicatedVisualState(ent.Owner, args.State);
     }
 
     private void OnUnwielded(Entity<TimedDeflectBlockComponent> ent, ref ItemUnwieldedEvent args)
@@ -150,6 +151,14 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         args.Damage += bonus;
     }
 
+    private void OnMeleeHit(Entity<TimedDeflectBlockComponent> ent, ref MeleeHitEvent args)
+    {
+        if (!_net.IsServer)
+            return;
+
+        SetPower(ent.Owner, ent.Comp, ent.Comp.CurrentPower - 5f);
+    }
+
     private bool TryGetActiveDeflectWeapon(
         Entity<HandsComponent> user,
         out EntityUid weapon,
@@ -188,7 +197,7 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         {
             AddDeflectPower(weapon, block);
             block.DeflectWindowEnd = _timing.CurTime + TimeSpan.FromSeconds(GetDeflectWindow(block));
-            AdjustStamina(defender, -GetDeflectStaminaRegen(block), attacker, weapon);
+            AdjustStamina(defender, GetDeflectStaminaDamage(block), attacker, weapon);
             _sparks.DoSparks(Transform(weapon).Coordinates, minSparks: 1, maxSparks: 2, playSound: false);
             _audio.PlayPredicted(block.DeflectSound, weapon, attacker);
         }
@@ -237,11 +246,13 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
 
     private void UpdateVisualState(EntityUid weapon, TimedDeflectBlockComponent block)
     {
+        if (!TryComp<ItemSwitchComponent>(weapon, out var itemSwitch))
+            return;
+
         var state = GetVisualState(block);
         var wieldedState = GetWieldedInhandState(state);
 
-        if (TryComp<ItemSwitchComponent>(weapon, out var itemSwitch) &&
-            itemSwitch.State != state)
+        if (itemSwitch.State != state)
         {
             _itemSwitch.Switch((weapon, itemSwitch), state, predicted: false);
         }
@@ -260,6 +271,9 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
 
     private void ApplyReplicatedVisualState(EntityUid weapon, string state)
     {
+        if (!HasComp<ItemSwitchComponent>(weapon))
+            return;
+
         var wieldedState = GetWieldedInhandState(state);
         var changed = false;
 
@@ -309,6 +323,11 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
     private float GetDeflectStaminaRegen(TimedDeflectBlockComponent block)
     {
         return block.DeflectStaminaRegenFraction + GetLevel(block) * block.DeflectStaminaRegenBonusPerLevel;
+    }
+
+    private float GetDeflectStaminaDamage(TimedDeflectBlockComponent block)
+    {
+        return GetBlockStaminaDamage(block) / 2f;
     }
 
     private float GetDeflectWindow(TimedDeflectBlockComponent block)
