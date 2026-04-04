@@ -15,7 +15,7 @@ public sealed partial class ComboHelperComponent : Component
     [ViewVariables(VVAccess.ReadWrite), DataField("enabled"), AutoNetworkedField]
     public bool Enabled = true;
 
-    [DataField("toggleAction")]
+    [DataField("toggleAction"), AutoNetworkedField]
     public EntityUid? ToggleAction;
 }
 
