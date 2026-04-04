@@ -1,5 +1,6 @@
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
+using System.Collections.Generic;
 namespace Content.Shared._Pirate.Weapons.Melee.Components;
 
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true)]
@@ -38,8 +39,12 @@ public sealed partial class TimedDeflectBlockComponent : Component
     [DataField]
     public int MaxLevel = 6;
 
+    /// <summary>
+    /// Bonus damage added per power level, supports multiple types.
+    /// e.g. { "Slash": 2, "Holy": 2 } adds 2 Slash and 2 Holy damage per level.
+    /// </summary>
     [DataField]
-    public float DamageBonusPerLevel = 3f;
+    public Dictionary<string, float> BonusDamagePerLevel = new() { ["Slash"] = 3f };
 
     [DataField]
     public float BlockStaminaDamageReductionPerLevel = 0.01f;
@@ -63,10 +68,7 @@ public sealed partial class TimedDeflectBlockComponent : Component
     public bool DeflectToSource;
 
     [DataField]
-    public float BackflipChance = 0.3f;
-
-    [DataField]
-    public string BonusDamageType = "Slash";
+    public float BackflipChance = 0.15f;
 
     [DataField]
     public string BaseVisualState = "dormant";

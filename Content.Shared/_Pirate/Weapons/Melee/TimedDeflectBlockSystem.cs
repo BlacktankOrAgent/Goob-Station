@@ -23,6 +23,10 @@ using Content.Shared.Wieldable;
 using Content.Shared.Wieldable.Components;
 using Content.Goobstation.Common.Effects;
 using Content.Goobstation.Maths.FixedPoint;
+using Content.Shared.Ninja.Components;
+using Content.Shared.Ninja.Systems;
+using Content.Shared.Stealth;
+using Content.Shared.Stealth.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameStates;
 using Robust.Shared.Map;
@@ -43,11 +47,13 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
     [Dependency] private readonly SharedItemSystem _item = default!;
     [Dependency] private readonly SharedItemSwitchSystem _itemSwitch = default!;
     [Dependency] private readonly INetManager _net = default!;
+    [Dependency] private readonly SharedNinjaSuitSystem _ninjaSuit = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly ISharedPlayerManager _player = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SparksSystem _sparks = default!;
     [Dependency] private readonly SharedStaminaSystem _stamina = default!;
+    [Dependency] private readonly SharedStealthSystem _stealth = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
 
@@ -210,30 +216,19 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
 
     private void OnGetMeleeDamage(Entity<TimedDeflectBlockComponent> ent, ref GetMeleeDamageEvent args)
     {
-        ConvertSlashDamageToBonusType(ent.Comp, args.Damage);
-
-        var bonusDamage = GetLevel(ent.Comp) * ent.Comp.DamageBonusPerLevel;
-        if (bonusDamage <= 0f)
+        var level = GetLevel(ent.Comp);
+        if (level <= 0)
             return;
 
         var bonus = new DamageSpecifier();
-        bonus.DamageDict[ent.Comp.BonusDamageType] = FixedPoint2.New(bonusDamage);
-        args.Damage += bonus;
-    }
-
-    private void ConvertSlashDamageToBonusType(TimedDeflectBlockComponent block, DamageSpecifier damage)
-    {
-        if (block.BonusDamageType == "Slash" ||
-            !damage.DamageDict.Remove("Slash", out var slashDamage) ||
-            slashDamage <= FixedPoint2.Zero)
+        foreach (var (type, perLevel) in ent.Comp.BonusDamagePerLevel)
         {
-            return;
+            var amount = level * perLevel;
+            if (amount > 0f)
+                bonus.DamageDict[type] = FixedPoint2.New(amount);
         }
 
-        if (damage.DamageDict.TryGetValue(block.BonusDamageType, out var existingDamage))
-            damage.DamageDict[block.BonusDamageType] = existingDamage + slashDamage;
-        else
-            damage.DamageDict[block.BonusDamageType] = slashDamage;
+        args.Damage += bonus;
     }
 
     private void OnMeleeHit(Entity<TimedDeflectBlockComponent> ent, ref MeleeHitEvent args)
@@ -365,6 +360,19 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         {
             AdjustStamina(defender, GetBlockStaminaDamage(block), attacker, weapon);
             _audio.PlayPredicted(block.BlockSound, weapon, attacker);
+        }
+
+        // A blocked hit still counts as being hit — reveal stealth/ninja invisibility.
+        if (TryComp<StealthComponent>(defender, out var stealth) && stealth.RevealOnDamage)
+        {
+            _stealth.ModifyVisibility(defender, stealth.MaxVisibility, stealth);
+
+            if (TryComp<SpaceNinjaComponent>(defender, out var ninja) &&
+                ninja.Suit is { } suit &&
+                TryComp<NinjaSuitComponent>(suit, out var suitComp))
+            {
+                _ninjaSuit.RevealNinja((suit, suitComp), defender, true);
+            }
         }
 
         if (projectile is { } projectileUid && !Deleted(projectileUid))
@@ -505,7 +513,7 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
 
     private float GetDeflectStaminaCost(TimedDeflectBlockComponent block)
     {
-        return GetBaseStaminaDamage(block);
+        return GetBaseStaminaDamage(block) * 0.75f;
     }
 
     private float GetBaseStaminaDamage(TimedDeflectBlockComponent block)
