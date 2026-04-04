@@ -40,7 +40,6 @@
   - Disarm
   - Harm
   name: legendary-cqc-takedown-name
-  requiredMartialArt: LegendaryCloseQuartersCombat
   paralyzeTime: 8
   extraDamage: 15.0
   staminaDamage: 40.0
@@ -53,7 +52,6 @@
   - Disarm
   - Grab
   name: legendary-cqc-disarm-name
-  requiredMartialArt: LegendaryCloseQuartersCombat
   paralyzeTime: 2
   extraDamage: 5.0
   staminaDamage: 30.0
@@ -67,7 +65,6 @@
   - Harm
   - Disarm
   name: legendary-cqc-throw-name
-  requiredMartialArt: LegendaryCloseQuartersCombat
   paralyzeTime: 6
   extraDamage: 20.0
   staminaDamage: 35.0
@@ -81,7 +78,6 @@
   - Grab
   - Harm
   name: legendary-cqc-choke-name
-  requiredMartialArt: LegendaryCloseQuartersCombat
   paralyzeTime: 3
   extraDamage: 10.0
   staminaDamage: 25.0
@@ -95,7 +91,6 @@
   - Harm
   - Harm
   name: legendary-cqc-chain-name
-  requiredMartialArt: LegendaryCloseQuartersCombat
   paralyzeTime: 4
   extraDamage: 18.0
   staminaDamage: 45.0
@@ -109,7 +104,6 @@
   - Harm
   - Harm
   name: legendary-cqc-counter-name
-  requiredMartialArt: LegendaryCloseQuartersCombat
   paralyzeTime: 8
   extraDamage: 20.0
   staminaDamage: 60.0
@@ -124,7 +118,6 @@
   - Grab
   - Harm
   name: legendary-cqc-interrogation-name
-  requiredMartialArt: LegendaryCloseQuartersCombat
   paralyzeTime: 5
   extraDamage: 12.0
   staminaDamage: 30.0
@@ -138,7 +131,6 @@
   - Harm
   - Grab
   name: legendary-cqc-stealth-name
-  requiredMartialArt: LegendaryCloseQuartersCombat
   paralyzeTime: 12
   extraDamage: 25.0
   staminaDamage: 50.0
@@ -153,7 +145,6 @@
   - Grab
   - Harm
   name: legendary-cqc-rush-name
-  requiredMartialArt: LegendaryCloseQuartersCombat
   paralyzeTime: 6
   extraDamage: 22.0
   staminaDamage: 55.0
@@ -168,7 +159,6 @@
   - Harm
   - Disarm
   name: legendary-cqc-finisher-name
-  requiredMartialArt: LegendaryCloseQuartersCombat
   paralyzeTime: 20
   extraDamage: 40.0
   staminaDamage: 80.0

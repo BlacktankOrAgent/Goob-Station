@@ -4,6 +4,11 @@ legendary-cqc-success-learned = Ви відчуваєте, як легендар
 
 legendary-cqc-action-toggle-helper-name = Перемкнути допомогу CQC
 legendary-cqc-action-toggle-helper-desc = Показує або ховає підказки по комбо CQC.
+legendary-cqc-saying-1 = Тримайся ближче.
+legendary-cqc-saying-2 = Один рух і ти лежиш.
+legendary-cqc-saying-3 = Не смикайся.
+legendary-cqc-downed-saying-1 = Залишайся на землі.
+legendary-cqc-downed-saying-2 = Бій для тебе вже закінчився.
 
 legendary-cqc-takedown-name = CQC Повалення
 legendary-cqc-disarm-name = Тотальне Роззброєння
