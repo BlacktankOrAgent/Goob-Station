@@ -6,6 +6,7 @@ using Content.Shared.Popups;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameStates;
 using Robust.Shared.Network;
+using Robust.Shared.Prototypes;
 
 namespace Content.Pirate.Shared._JustDecor.MartialArts.Systems;
 
@@ -19,6 +20,7 @@ public sealed class ComboHelperSystem : EntitySystem
     [Dependency] private readonly INetManager _netManager = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
 
     public override void Initialize()
     {
@@ -32,8 +34,6 @@ public sealed class ComboHelperSystem : EntitySystem
 
     private void OnStartup(EntityUid uid, ComboHelperComponent component, ComponentStartup args)
     {
-
-        // Додаємо action для toggle якщо його немає
         if (component.ToggleAction == null)
         {
             _actions.AddAction(uid, ref component.ToggleAction, "ActionCqcComboHelperToggle");
@@ -43,8 +43,6 @@ public sealed class ComboHelperSystem : EntitySystem
 
     private void OnShutdown(EntityUid uid, ComboHelperComponent component, ComponentShutdown args)
     {
-
-        // Видаляємо action при видаленні компонента
         if (component.ToggleAction != null)
         {
             _actions.RemoveAction(uid, component.ToggleAction);
@@ -102,6 +100,12 @@ public sealed class ComboHelperSystem : EntitySystem
         if (!Resolve(uid, ref component, false))
         {
             Logger.WarningS("ComboHelper", $"Tried to set helper prototype on {uid} without ComboHelperComponent");
+            return;
+        }
+
+        if (!_proto.HasIndex<CqcComboHelperPrototype>(prototypeId))
+        {
+            Logger.WarningS("ComboHelper", $"Tried to set non-existent helper prototype on {uid}: {prototypeId}");
             return;
         }
 

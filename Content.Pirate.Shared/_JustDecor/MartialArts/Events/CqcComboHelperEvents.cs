@@ -1,5 +1,4 @@
 using Content.Shared.Actions;
-using Robust.Shared.Serialization;
 
 namespace Content.Pirate.Shared._JustDecor.MartialArts.Events;
 

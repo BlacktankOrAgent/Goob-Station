@@ -9,6 +9,7 @@ namespace Content.Pirate.Shared._JustDecor.MartialArts.Systems;
 public sealed class ComboHelperIntegrationSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly ComboHelperSystem _comboSystem = default!;
 
     public bool TryAddComboHelper(EntityUid uid, string? helperPrototypeId = null, bool enabled = true)
     {
@@ -19,15 +20,16 @@ public sealed class ComboHelperIntegrationSystem : EntitySystem
         }
 
         var helper = EnsureComp<ComboHelperComponent>(uid);
-        helper.Prototype = helperPrototypeId;
-        helper.Enabled = enabled;
+
+        if (helperPrototypeId != null)
+            _comboSystem.SetHelperPrototype(uid, helperPrototypeId, helper);
+
+        _comboSystem.SetEnabled(uid, enabled, helper);
 
         Logger.DebugS("ComboHelper",
             helperPrototypeId == null
                 ? $"Added dynamic ComboHelper to {uid}"
                 : $"Added ComboHelper to {uid} with prototype {helperPrototypeId}");
-
-        Dirty(uid, helper);
         return true;
     }
 
@@ -51,9 +53,8 @@ public sealed class ComboHelperIntegrationSystem : EntitySystem
             return false;
         }
 
-        component.Prototype = newPrototypeId;
+        _comboSystem.SetHelperPrototype(uid, newPrototypeId, component);
         Logger.DebugS("ComboHelper", $"Updated helper prototype for {uid} to {newPrototypeId}");
-        Dirty(uid, component);
         return true;
     }
 
@@ -70,6 +71,6 @@ public sealed class ComboHelperIntegrationSystem : EntitySystem
         if (!Resolve(uid, ref component, false))
             return null;
 
-        return component.Prototype;
+        return component.Prototype?.Id;
     }
 }

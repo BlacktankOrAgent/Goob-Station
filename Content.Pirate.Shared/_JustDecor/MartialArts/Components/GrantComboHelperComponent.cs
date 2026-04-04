@@ -19,5 +19,5 @@ public sealed partial class GrantComboHelperComponent : Component
 
     [DataField]
     public SoundSpecifier? SoundOnUse =
-        new SoundPathSpecifier("/Audio/Effects/fire.ogg", AudioParams.Default.WithVolume(10));
+        new SoundPathSpecifier("/Audio/_Goobstation/Items/handling/paper_use.ogg", AudioParams.Default.WithVolume(-2));
 }

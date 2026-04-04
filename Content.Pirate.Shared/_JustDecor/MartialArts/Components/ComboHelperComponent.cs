@@ -25,7 +25,9 @@ public sealed partial class CqcComboHelperPrototype : IPrototype
     [IdDataField] public string ID { get; private set; } = default!;
 
     [DataField("combos")]
-    public List<ComboHelperEntry> Combos = new();
+    private List<ComboHelperEntry> _combos = new();
+
+    public IReadOnlyList<ComboHelperEntry> Combos => _combos;
 
     /// <summary>
     /// Texture for the background of the helper.

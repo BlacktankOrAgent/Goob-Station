@@ -18,8 +18,6 @@ public sealed class ComboHelperUIController : UIController, IOnStateEntered<Game
 {
     [Dependency] private readonly IPlayerManager _player = default!;
 
-    private ComboHelperWidget? Widget => UIManager.GetActiveUIWidgetOrNull<ComboHelperWidget>();
-
     public override void Initialize()
     {
         base.Initialize();
@@ -28,14 +26,12 @@ public sealed class ComboHelperUIController : UIController, IOnStateEntered<Game
         gameplayLoad.OnScreenLoad += OnScreenLoad;
         gameplayLoad.OnScreenUnload += OnScreenUnload;
 
-        // Підписуємось на події компонента
         EntityManager.EventBus.SubscribeLocalEvent<ComboHelperComponent, AfterAutoHandleStateEvent>(OnHandleState);
         EntityManager.EventBus.SubscribeLocalEvent<ComboHelperComponent, ComponentAdd>(OnComponentAdd);
         EntityManager.EventBus.SubscribeLocalEvent<ComboHelperComponent, ComponentRemove>(OnComponentRemove);
         EntityManager.EventBus.SubscribeLocalEvent<MartialArtsKnowledgeComponent, ComponentAdd>(OnMartialArtsAdded);
         EntityManager.EventBus.SubscribeLocalEvent<MartialArtsKnowledgeComponent, ComponentRemove>(OnMartialArtsRemoved);
 
-        // LocalPlayerAttachedEvent - це глобальна подія
         SubscribeLocalEvent<LocalPlayerAttachedEvent>(OnPlayerAttached);
     }
 
@@ -51,9 +47,6 @@ public sealed class ComboHelperUIController : UIController, IOnStateEntered<Game
     {
         if (uid != _player.LocalEntity)
             return;
-
-
-        // При видаленні компонента - видаляємо віджет
         RemoveWidget();
     }
 
@@ -122,8 +115,7 @@ public sealed class ComboHelperUIController : UIController, IOnStateEntered<Game
             return;
         }
 
-        if (!screen.TryGetWidget<ComboHelperWidget>(out var widget))
-            widget = screen.GetOrAddWidget<ComboHelperWidget>();
+        var widget = screen.GetOrAddWidget<ComboHelperWidget>();
         if (widget == null)
             return;
 

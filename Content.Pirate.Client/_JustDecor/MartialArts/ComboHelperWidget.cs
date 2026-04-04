@@ -17,6 +17,18 @@ namespace Content.Pirate.Client._JustDecor.MartialArts;
 
 public sealed class ComboHelperWidget : UIWidget
 {
+    private static readonly IReadOnlyDictionary<MartialArtsForms, string> MartialArtPrototypeIds =
+        new Dictionary<MartialArtsForms, string>
+        {
+            [MartialArtsForms.CorporateJudo] = "CorporateJudo",
+            [MartialArtsForms.CloseQuartersCombat] = "CloseQuartersCombat",
+            [MartialArtsForms.SleepingCarp] = "SleepingCarp",
+            [MartialArtsForms.Capoeira] = "Capoeira",
+            [MartialArtsForms.KungFuDragon] = "KungFuDragon",
+            [MartialArtsForms.Ninjutsu] = "Ninjutsu",
+            [MartialArtsForms.HellRip] = "HellRip",
+        };
+
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IEntityManager _entManager = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
@@ -91,7 +103,10 @@ public sealed class ComboHelperWidget : UIWidget
         if (!_entManager.TryGetComponent<MartialArtsKnowledgeComponent>(player, out var knowledge))
             return false;
 
-        if (!_proto.TryIndex<MartialArtPrototype>(knowledge.MartialArtsForm.ToString(), out var martialArt))
+        if (!MartialArtPrototypeIds.TryGetValue(knowledge.MartialArtsForm, out var prototypeId))
+            return false;
+
+        if (!_proto.TryIndex<MartialArtPrototype>(prototypeId, out var martialArt))
             return false;
 
         if (!_proto.TryIndex(martialArt.RoundstartCombos, out ComboListPrototype? comboList))
@@ -181,6 +196,8 @@ public sealed class ComboHelperWidget : UIWidget
                 ComboAttackType.Grab => "grab",
                 ComboAttackType.Disarm => "disarm",
                 ComboAttackType.Harm => "harm",
+                ComboAttackType.HarmLight => "harmlight",
+                ComboAttackType.Hug => "hug",
                 _ => "help"
             };
 
