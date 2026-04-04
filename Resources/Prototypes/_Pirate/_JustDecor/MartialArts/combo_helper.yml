@@ -18,8 +18,8 @@
 - type: entity
   parent: BaseItem
   id: ComboHelperManual
-  name: combo-helper-manual-name
-  description: combo-helper-manual-description
+  name: Посібник з комбо ближнього бою
+  description: Компактний посібник для запам'ятовування нотації комбінацій бойових мистецтв.
   components:
   - type: Sprite
     sprite: _Goobstation/Objects/Misc/cqc_manual.rsi
