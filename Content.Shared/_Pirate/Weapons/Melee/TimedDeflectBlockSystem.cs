@@ -92,7 +92,20 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
                 continue;
             }
 
-            SetPower(uid, block, block.CurrentPower - block.PowerDecayPerSecond * frameTime);
+            // Advance power locally every frame without marking dirty —
+            // clients derive display and damage from the discrete level, not the float.
+            var levelBefore = GetLevel(block);
+            block.CurrentPower = Math.Clamp(
+                block.CurrentPower - block.PowerDecayPerSecond * frameTime,
+                block.MinPower,
+                block.MaxPower);
+
+            // Only replicate when the level (and therefore visual state / damage) actually changes.
+            if (GetLevel(block) != levelBefore)
+            {
+                UpdateVisualState(uid, block);
+                Dirty(uid, block);
+            }
         }
     }
 
@@ -287,6 +300,7 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
             return false;
 
         ApplySuccessfulDeflect(defender, weapon, block, attacker);
+        RevealDefender(defender);
         return true;
     }
 
@@ -361,17 +375,7 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         }
 
         // A blocked hit still counts as being hit — reveal stealth/ninja invisibility.
-        if (TryComp<StealthComponent>(defender, out var stealth) && stealth.RevealOnDamage)
-        {
-            _stealth.ModifyVisibility(defender, stealth.MaxVisibility, stealth);
-
-            if (TryComp<SpaceNinjaComponent>(defender, out var ninja) &&
-                ninja.Suit is { } suit &&
-                TryComp<NinjaSuitComponent>(suit, out var suitComp))
-            {
-                _ninjaSuit.RevealNinja((suit, suitComp), defender, true);
-            }
-        }
+        RevealDefender(defender);
 
         if (projectile is { } projectileUid && !Deleted(projectileUid))
         {
@@ -397,6 +401,26 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         _sparks.DoSparks(Transform(weapon).Coordinates, minSparks: 1, maxSparks: 2, playSound: false);
         _audio.PlayPredicted(block.DeflectSound, weapon, attacker);
         TryBackflip(defender, block);
+    }
+
+    /// <summary>
+    /// Reveals a defending ninja's invisibility when they intercept an attack.
+    /// Mirrors the reveal that <see cref="SharedGoobStealthSystem"/> would apply on actual damage,
+    /// since projectile deletion means <c>BeforeDamageChangedEvent</c> never fires on the defender.
+    /// </summary>
+    private void RevealDefender(EntityUid defender)
+    {
+        if (!TryComp<StealthComponent>(defender, out var stealth) || !stealth.RevealOnDamage)
+            return;
+
+        _stealth.ModifyVisibility(defender, stealth.MaxVisibility, stealth);
+
+        if (TryComp<SpaceNinjaComponent>(defender, out var ninja) &&
+            ninja.Suit is { } suit &&
+            TryComp<NinjaSuitComponent>(suit, out var suitComp))
+        {
+            _ninjaSuit.RevealNinja((suit, suitComp), defender, true);
+        }
     }
 
     private void AdjustStamina(EntityUid defender, float fraction, EntityUid? attacker, EntityUid weapon)
@@ -449,13 +473,23 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         if (!TryComp<WieldableComponent>(weapon, out var wieldable))
             return;
 
-        wieldable.WieldedInhandPrefix = wieldedState;
-        wieldable.OldInhandPrefix = state;
+        var wieldableChanged = false;
+        if (wieldable.WieldedInhandPrefix != wieldedState)
+        {
+            wieldable.WieldedInhandPrefix = wieldedState;
+            wieldableChanged = true;
+        }
+        if (wieldable.OldInhandPrefix != state)
+        {
+            wieldable.OldInhandPrefix = state;
+            wieldableChanged = true;
+        }
 
         if (TryComp<ItemComponent>(weapon, out var item) && wieldable.Wielded)
             _item.SetHeldPrefix(weapon, wieldedState, component: item);
 
-        Dirty(weapon, wieldable);
+        if (wieldableChanged)
+            Dirty(weapon, wieldable);
     }
 
     private void ApplyReplicatedVisualState(EntityUid weapon, string state)
