@@ -331,6 +331,8 @@
     - NONE
   - type: TimedDeflectBlock # Pirate: gunplay
     deflectToSource: true # Pirate: gunplay
+  - type: DisarmMalus # Pirate: gunplay - override Katana's malus so the katana IS disarmable
+    malus: 0
 
 #Greatswords
 - type: entity
