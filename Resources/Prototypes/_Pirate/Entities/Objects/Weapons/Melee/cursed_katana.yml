@@ -22,7 +22,6 @@
   - type: Wieldable
     wieldedInhandPrefix: dormant
   - type: TimedDeflectBlock
-    deflectStaminaRegenFraction: 0.1
   - type: ItemSwitch
     state: dormant
     onActivate: false
