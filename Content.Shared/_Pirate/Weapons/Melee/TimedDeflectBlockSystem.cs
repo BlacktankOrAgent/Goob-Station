@@ -312,11 +312,9 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         EntityUid projectileUid,
         ProjectileComponent projectile)
     {
-        if (!TryApplyDirectedDeflect(defender, weapon, block, attacker) ||
-            !TryComp<PhysicsComponent>(projectileUid, out var physics))
-        {
+        // Validate all redirect prerequisites before committing any side effects.
+        if (!TryComp<PhysicsComponent>(projectileUid, out var physics))
             return false;
-        }
 
         var direction = GetDirectionToEntity(projectileUid, attacker);
         if (direction == Vector2.Zero)
@@ -330,14 +328,17 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         if (speed <= 0.001f)
             return false;
 
+        // All checks passed — apply deflect side effects (power gain, stamina, sound, stealth reveal).
+        if (!TryApplyDirectedDeflect(defender, weapon, block, attacker))
+            return false;
+
         var desiredVelocity = direction * speed;
         _physics.SetLinearVelocity(projectileUid, physics.LinearVelocity + desiredVelocity - existingVelocity, body: physics);
         _transform.SetWorldRotation(projectileUid, direction.ToWorldAngle() + projectile.Angle);
 
-        projectile.Shooter = defender;
-        projectile.Weapon = defender;
+        projectile.Weapon = weapon;
         projectile.ProjectileSpent = false;
-        projectile.IgnoredEntities.Clear();
+        projectile.IgnoredEntities.Clear(); // allow the redirected bullet to hit its original shooter
 
         if (TryGetMapPosition(attacker, out var attackerPosition))
             projectile.TargetCoordinates = attackerPosition.Position;
@@ -540,12 +541,12 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
 
     private float GetBlockStaminaDamage(TimedDeflectBlockComponent block)
     {
-        return GetBaseStaminaDamage(block) * 1.5f;
+        return GetBaseStaminaDamage(block) * block.BlockStaminaMultiplier;
     }
 
     private float GetDeflectStaminaCost(TimedDeflectBlockComponent block)
     {
-        return GetBaseStaminaDamage(block) * 0.75f;
+        return GetBaseStaminaDamage(block) * block.DeflectStaminaMultiplier;
     }
 
     private float GetBaseStaminaDamage(TimedDeflectBlockComponent block)
