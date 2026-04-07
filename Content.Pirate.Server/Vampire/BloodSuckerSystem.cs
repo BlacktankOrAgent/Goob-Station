@@ -129,10 +129,8 @@ namespace Content.Pirate.Server.Vampirism.Systems
                 if (!_interactionSystem.InRangeUnobstructed(bloodsucker, victim))
                     return;
 
-                // FoodSystem mouth checks were moved to IngestionSystem.
-                var ingestAttempt = new IngestionAttemptEvent(IngestionSystem.DefaultFlags);
-                RaiseLocalEvent(victim, ref ingestAttempt);
-                if (ingestAttempt.Cancelled)
+                // Block if the victim is wearing pressure-protecting headgear, because that would be only think that really hard to bite through
+                if (_inventorySystem.TryGetSlotEntity(victim, "head", out var head) && HasComp<PressureProtectionComponent>(head))
                 {
                     _popups.PopupEntity(Loc.GetString("bloodsucker-fail-mouth-blocked", ("target", victim)), victim, bloodsucker, PopupType.Medium);
                     return;
