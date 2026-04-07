@@ -190,9 +190,6 @@ namespace Content.Server.Heretic.Ritual;
             .Select(o => o.Id)
             .ToList();
 
-        if (eligibleOrgans.Count == 0)
-            continue;
-
         // Select 1-3 random organs and drop them at ritual site
         if (_random == null)
         {
@@ -209,7 +206,8 @@ namespace Content.Server.Heretic.Ritual;
         }
 
         // Teleport the corpse to a random safe location on the station
-        _randomTeleport.RandomTeleportToStation(uid, 50, false);
+        if (_randomTeleport.RandomTeleportToStation(uid, 50, false) != null)
+            continue;
 
         // Remove sacrificed target from heretic target list
         heretic.SacrificeTargets.RemoveAll(x => x.Entity == args.EntityManager.GetNetEntity(uid));

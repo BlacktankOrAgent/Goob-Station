@@ -75,17 +75,25 @@ public partial class SharedRandomTeleportSystem
             pullableEntity = puller.Pulling;
         }
 
-        for (var i = 0; i < triesBase; i++)
+        var candidateTiles = _map.GetAllTiles(stationGrid.Owner, stationGrid.Comp, ignoreEmpty: true).ToList();
+        if (candidateTiles.Count == 0)
         {
-            var bounds = stationGrid.Comp.LocalAABB;
-            var x = _random.NextFloat(bounds.Left, bounds.Right);
-            var y = _random.NextFloat(bounds.Bottom, bounds.Top);
-            var worldPos = _map.LocalToWorld(stationGrid.Owner, stationGrid.Comp, new Vector2(x, y));
-            targetCoords = new MapCoordinates(worldPos, mapId);
+            return null;
+        }
 
-            // Check if we picked a position inside a solid object
+        var candidateIndices = Enumerable.Range(0, candidateTiles.Count).ToArray();
+        var maxSamples = Math.Min(triesBase, candidateTiles.Count);
+
+        for (var i = 0; i < maxSamples; i++)
+        {
+            var swapIndex = _random.Next(i, candidateIndices.Length);
+            (candidateIndices[i], candidateIndices[swapIndex]) = (candidateIndices[swapIndex], candidateIndices[i]);
+
+            var tile = candidateTiles[candidateIndices[i]];
+            targetCoords = _map.GridTileToWorld(stationGrid.Owner, stationGrid.Comp, tile.GridIndices);
+
             var valid = true;
-            foreach (var entity in _map.GetAnchoredEntities(stationGrid, targetCoords))
+            foreach (var entity in _map.GetAnchoredEntities(stationGrid.Owner, stationGrid.Comp, tile.GridIndices))
             {
                 if (!_physicsQuery.TryGetComponent(entity, out var body))
                     continue;
@@ -107,11 +115,7 @@ public partial class SharedRandomTeleportSystem
 
         if (!foundValid)
         {
-            var bounds = stationGrid.Comp.LocalAABB;
-            var x = _random.NextFloat(bounds.Left, bounds.Right);
-            var y = _random.NextFloat(bounds.Bottom, bounds.Top);
-            var worldPos = _map.LocalToWorld(stationGrid.Owner, stationGrid.Comp, new Vector2(x, y));
-            targetCoords = new MapCoordinates(worldPos, mapId);
+            return null;
         }
 
         _pullingSystem.StopAllPulls(uid);
