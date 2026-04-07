@@ -1,35 +1,38 @@
 ent-PhotoAlbum = фотоальбом
     .desc = Книга зі спогадами. Покладіть туди фотографії, щоб вони потрапили у фінальне зведення раунду. Використайте ручку, щоб налаштувати назви, описи та підписи фото.
 
-ent-PhotoAlbumTGGreen = зелений фотоальбом
-    .desc = Книга зі спогадами. Покладіть туди фотографії, щоб вони потрапили у фінальне зведення раунду. Використайте ручку, щоб налаштувати назви, описи та підписи фото.
+ent-PhotoAlbumLoadoutSigned = { ent-PhotoAlbum }
+    .desc = { ent-PhotoAlbum.desc }
 
-ent-PhotoAlbumTGRed = червоний фотоальбом
-    .desc = Книга зі спогадами. Покладіть туди фотографії, щоб вони потрапили у фінальне зведення раунду. Використайте ручку, щоб налаштувати назви, описи та підписи фото.
+ent-PhotoAlbumGreen = зелений фотоальбом
+    .desc = { ent-PhotoAlbum.desc }
 
-ent-PhotoAlbumTGBlue = синій фотоальбом
-    .desc = Книга зі спогадами. Покладіть туди фотографії, щоб вони потрапили у фінальне зведення раунду. Використайте ручку, щоб налаштувати назви, описи та підписи фото.
+ent-PhotoAlbumRed = червоний фотоальбом
+    .desc = { ent-PhotoAlbum.desc }
 
-ent-PhotoAlbumHeadCaptain = фотоальбом капітана
-    .desc = Велика книга для зберігання фотографій і пам’яток.
+ent-PhotoAlbumBlue = синій фотоальбом
+    .desc = { ent-PhotoAlbum.desc }
 
-ent-PhotoAlbumHeadHop = фотоальбом голови персоналу
-    .desc = Велика книга для зберігання фотографій і пам’яток.
+ent-PhotoAlbumDepartmentService = фотоальбом сервісного відділу
+    .desc = { ent-PhotoAlbum.desc }
 
-ent-PhotoAlbumHeadHos = фотоальбом голови служби безпеки
-    .desc = Велика книга для зберігання фотографій і пам’яток.
+ent-PhotoAlbumDepartmentSecurity = фотоальбом охорони
+    .desc = { ent-PhotoAlbum.desc }
 
-ent-PhotoAlbumHeadRd = фотоальбом наукового керівника
-    .desc = Велика книга для зберігання фотографій і пам’яток.
+ent-PhotoAlbumDepartmentSupply = фотоальбом постачання
+    .desc = { ent-PhotoAlbum.desc }
 
-ent-PhotoAlbumHeadCmo = фотоальбом головного лікаря
-    .desc = Велика книга для зберігання фотографій і пам’яток.
+ent-PhotoAlbumDepartmentScience = фотоальбом наукового відділу
+    .desc = { ent-PhotoAlbum.desc }
 
-ent-PhotoAlbumHeadQm = фотоальбом квартирмейстера
-    .desc = Велика книга для зберігання фотографій і пам’яток.
+ent-PhotoAlbumDepartmentCommand = фотоальбом командування
+    .desc = { ent-PhotoAlbum.desc }
 
-ent-PhotoAlbumHeadCe = фотоальбом головного інженера
-    .desc = Велика книга для зберігання фотографій і пам’яток.
+ent-PhotoAlbumDepartmentEngineering = фотоальбом інженерного відділу
+    .desc = { ent-PhotoAlbum.desc }
+
+ent-PhotoAlbumDepartmentMedical = фотоальбом медичного відділу
+    .desc = { ent-PhotoAlbum.desc }
 
 ent-PhotoAlbumMakeshift = саморобний фотоальбом
     .desc = Саморобна книжка зі спогадами. Покладіть туди фотографії, щоб вони потрапили у фінальне зведення раунду. Використайте ручку, щоб налаштувати назви, описи та підписи фото.
