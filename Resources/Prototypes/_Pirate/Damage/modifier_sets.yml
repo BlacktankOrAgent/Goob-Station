@@ -18,3 +18,11 @@
     Blunt: 0.9
     Slash: 1.15
     Piercing: 0.9
+
+- type: damageModifierSet
+  id: Goblin
+  coefficients:
+    Blunt: 1.25
+    Slash: 1.25
+    Piercing: 1.25
+    Poison: 0.75
