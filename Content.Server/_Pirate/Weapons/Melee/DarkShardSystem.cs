@@ -166,13 +166,13 @@ public sealed class DarkShardSystem : EntitySystem
 
         var bloodMax = bloodstream.BloodMaxVolume;
         var drainAmount = FixedPoint2.New(bloodMax.Float() * costPercent);
-        var currentVolume = bloodSolution.Comp.Solution.Volume;
+        var currentVolume = bloodSolution.Volume;
 
         drainAmount = FixedPoint2.Min(drainAmount, currentVolume);
         if (drainAmount <= FixedPoint2.Zero)
             return;
 
-        var spill = _solution.SplitSolution(bloodSolution, drainAmount);
+        var spill = _solution.SplitSolution(bloodstream.BloodSolution.Value, drainAmount);
         _puddle.TrySpillAt(performer, spill, out _);
     }
 }
