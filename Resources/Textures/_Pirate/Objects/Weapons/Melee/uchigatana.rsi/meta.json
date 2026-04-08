@@ -1,7 +1,7 @@
 {
     "version": 1,
     "license": "CC-BY-SA-3.0",
-    "copyright": "Extracted from tgstation sword and belt sprites: icons/obj/weapons/sword.dmi, icons/mob/inhands/weapons/swords_lefthand.dmi, icons/mob/inhands/weapons/swords_righthand.dmi, and icons/mob/clothing/belt.dmi.",
+    "copyright": "tgstation",
     "size": {
         "x": 32,
         "y": 32

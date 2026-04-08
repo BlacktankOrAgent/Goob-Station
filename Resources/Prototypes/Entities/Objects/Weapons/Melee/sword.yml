@@ -276,7 +276,7 @@
     - KatanaSheathable # Pirate: kataba
   - type: KatanaSheathHandle # Pirate: katana
     sprite: Objects/Weapons/Melee/katana.rsi # Pirate: kataba
-    inventoryState: handle-ICON # Pirate: port EE item offer
+    inventoryState: handle-ICON # Pirate: katana
     beltState: handle-BELT # Pirate: katana
     backpackState: handle-BACKPACK # Pirate: katana
   - type: Sprite

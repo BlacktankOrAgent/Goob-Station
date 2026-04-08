@@ -1,7 +1,7 @@
 {
     "version": 1,
     "license": "CC-BY-SA-3.0",
-    "copyright": "Extracted from tgstation cursed katana art: icons/obj/mining_zones/artefacts.dmi, icons/mob/inhands/weapons/swords_lefthand.dmi, and icons/mob/inhands/weapons/swords_righthand.dmi.",
+    "copyright": "tgstation",
     "size": {
         "x": 32,
         "y": 32

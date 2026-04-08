@@ -1,7 +1,7 @@
 {
     "version": 1,
     "license": "CC-BY-SA-3.0",
-    "copyright": "Uses tgstation ninja sheath object sprites from icons/obj/clothing/belts.dmi for inventory icons and worn sprites from icons/mob/clothing/belt.dmi for belt states.",
+    "copyright": "tgstation",
     "size": {
         "x": 32,
         "y": 32

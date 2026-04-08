@@ -2,7 +2,7 @@
   abstract: true
   parent: [ ClothingBeltBase, ClothingSlotBase, BaseMajorContraband ]
   id: ClothingBeltKatanaSheathBase
-  name: katana sheath
+  name: crimson sheath
   description: A sheath that houses the nimble katana.
   components:
   - type: Item
@@ -68,15 +68,15 @@
 
 - type: entity
   parent: ClothingBeltKatanaSheathBase
-  id: ClothingBeltHanzoKatanaSheath
-  name: hanzo katana sheath
-  description: A normal black sheath meant to house the legendary hanzo steel.
+  id: ClothingBeltDarkKatanaSheath
+  name: dark sheath
+  description: A plain black sheath built for a quick, silent draw.
   components:
   - type: Sprite
-    sprite: _Pirate/Clothing/Belt/hanzo_sheath.rsi
+    sprite: _Pirate/Clothing/Belt/dark_sheath.rsi
     state: sheath
   - type: Clothing
-    sprite: _Pirate/Clothing/Belt/hanzo_sheath.rsi
+    sprite: _Pirate/Clothing/Belt/dark_sheath.rsi
     slots: [belt, back]
   - type: ItemSlots
     slots:
@@ -88,8 +88,8 @@
           - KatanaSheathable
 
 - type: entity
-  parent: ClothingBeltHanzoKatanaSheath
-  id: ClothingBeltHanzoKatanaSheathKatanaFilled
+  parent: ClothingBeltDarkKatanaSheath
+  id: ClothingBeltDarkKatanaSheathKatanaFilled
   suffix: Filled - Katana
   components:
   - type: ContainerFill
@@ -98,8 +98,8 @@
       - Katana
 
 - type: entity
-  parent: ClothingBeltHanzoKatanaSheath
-  id: ClothingBeltHanzoKatanaSheathUchigatanaFilled
+  parent: ClothingBeltDarkKatanaSheath
+  id: ClothingBeltDarkKatanaSheathUchigatanaFilled
   suffix: Filled - Uchigatana
   components:
   - type: ContainerFill

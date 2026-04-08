@@ -13,7 +13,7 @@
     entity: ClothingBeltKatanaSheath
 
 - type: constructionGraph
-  id: ClothingBeltHanzoKatanaSheath
+  id: ClothingBeltDarkKatanaSheath
   start: start
   graph:
   - node: start
@@ -24,4 +24,4 @@
         amount: 3
         doAfter: 3
   - node: sheath
-    entity: ClothingBeltHanzoKatanaSheath
+    entity: ClothingBeltDarkKatanaSheath

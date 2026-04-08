@@ -15,8 +15,8 @@
   objectType: Item
 
 - type: construction
-  id: ClothingBeltHanzoKatanaSheath
-  graph: ClothingBeltHanzoKatanaSheath
+  id: ClothingBeltDarkKatanaSheath
+  graph: ClothingBeltDarkKatanaSheath
   startNode: start
   targetNode: sheath
   category: construction-category-clothing
