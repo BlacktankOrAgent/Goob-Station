@@ -2,7 +2,7 @@
   parent: Katana
   id: HolyKatana
   name: suncatcher
-  description: Cursed blade of dull gold. Once wielded by a disciplined swordsman who fell from grace
+  description: A sunlit ceremonial blade of dull gold, borne by a fallen swordsman seeking atonement.
   components:
   - type: Tag
     tags:
@@ -31,6 +31,9 @@
   - type: Wieldable
     wieldedInhandPrefix: dormant-wielded
   - type: TimedDeflectBlock
+    bonusDamagePerLevel:
+      Holy: 1.5
+      Slash: 1.5
   - type: ItemSwitch
     state: dormant
     onActivate: false

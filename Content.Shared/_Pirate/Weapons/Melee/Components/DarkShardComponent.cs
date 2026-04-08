@@ -23,7 +23,7 @@ public sealed partial class DarkShardComponent : Component
     public SoundSpecifier ConsumeSound = new SoundPathSpecifier("/Audio/Effects/demon_consume.ogg");
 
     [DataField]
-    public SoundSpecifier SummonSound = new SoundPathSpecifier("/Audio/Effects/demon_consume.ogg");
+    public SoundSpecifier SummonSound = new SoundPathSpecifier("/Audio/Effects/demon_attack1.ogg");
 
     [DataField]
     public SoundSpecifier RetractSound = new SoundPathSpecifier("/Audio/Effects/demon_consume.ogg");

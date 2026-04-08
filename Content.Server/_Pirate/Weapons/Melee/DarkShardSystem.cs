@@ -13,6 +13,7 @@ using Content.Shared.Interaction.Events;
 using Content.Shared.Popups;
 using Robust.Shared.Audio.Systems;
 using Content.Goobstation.Maths.FixedPoint;
+using System.Linq;
 
 namespace Content.Server._Pirate.Weapons.Melee;
 
@@ -61,13 +62,7 @@ public sealed class DarkShardSystem : EntitySystem
         if (!TryComp<OrganComponent>(shard, out var organComp))
             return;
 
-        var chestParts = _body.GetBodyChildrenOfType(user, BodyPartType.Chest, symmetry: BodyPartSymmetry.None);
-        var chest = default((EntityUid Id, BodyPartComponent Component));
-        foreach (var part in chestParts)
-        {
-            chest = part;
-            break;
-        }
+        var chest = _body.GetBodyChildrenOfType(user, BodyPartType.Chest, symmetry: BodyPartSymmetry.None).FirstOrDefault();
 
         if (chest == default)
         {
@@ -166,18 +161,18 @@ public sealed class DarkShardSystem : EntitySystem
         if (!_solution.ResolveSolution(performer,
                 bloodstream.BloodSolutionName,
                 ref bloodstream.BloodSolution,
-                out _))
+                out var bloodSolution))
             return;
 
         var bloodMax = bloodstream.BloodMaxVolume;
         var drainAmount = FixedPoint2.New(bloodMax.Float() * costPercent);
-        var currentVolume = bloodstream.BloodSolution.Value.Comp.Solution.Volume;
+        var currentVolume = bloodSolution.Comp.Solution.Volume;
 
         drainAmount = FixedPoint2.Min(drainAmount, currentVolume);
         if (drainAmount <= FixedPoint2.Zero)
             return;
 
-        var spill = _solution.SplitSolution(bloodstream.BloodSolution.Value, drainAmount);
+        var spill = _solution.SplitSolution(bloodSolution, drainAmount);
         _puddle.TrySpillAt(performer, spill, out _);
     }
 }

@@ -2,7 +2,7 @@
   parent: HolyKatana
   id: NullrodHolyKatana
   name: suncatcher
-  description: Cursed katana of dull gold. Once wielded by a disciplined swordsman who fell from grace
+  description: A sunlit ceremonial blade of dull gold, borne by a fallen swordsman seeking atonement.
   components:
   - type: DivineIntervention
   - type: AlternatePrayable
