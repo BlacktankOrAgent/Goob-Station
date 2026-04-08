@@ -118,7 +118,7 @@ selectable-set-blueshield-cqc-description = Іноді доводиться бр
 
 #region Pirate: katana
 selectable-set-blueshield-kendo-name = набір «Кендо»
-selectable-set-blueshield-kendo-description = Набір мечника, зосереджений на терпінні та захисті. Клинок може блокувати й відбивати удари, а потім відповідати сильнішими атаками, коли її сила зростає.
+selectable-set-blueshield-kendo-description = Набір мечника, зосереджений на терпінні та захисті. Клинок може блокувати й відбивати удари, а потім відповідати сильнішими атаками, коли його сила зростає.
     Включає: піхви та учігатану.
 #endregion Pirate: katana
 
