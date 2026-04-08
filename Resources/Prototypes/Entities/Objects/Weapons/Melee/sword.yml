@@ -318,6 +318,8 @@
     sprite: Objects/Weapons/Melee/energykatana.rsi
   - type: MeleeWeapon # Pirate: katana
     wideAnimationRotation: -60 # Pirate: katana
+    woundSeverityMultipliers:
+      Slash: 2
   - type: Item
     storedSprite:
       state: storage
