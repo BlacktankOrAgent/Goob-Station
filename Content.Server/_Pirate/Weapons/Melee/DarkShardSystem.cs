@@ -132,7 +132,6 @@ public sealed class DarkShardSystem : EntitySystem
 
         if (comp.SummonedKatana is { } existing && EntityManager.EntityExists(existing))
         {
-            DrainAndSpillBlood(args.Performer, comp.BloodCostPercent);
             _audio.PlayPvs(comp.RetractSound, args.Performer);
             QueueDel(existing);
             comp.SummonedKatana = null;
@@ -140,6 +139,7 @@ public sealed class DarkShardSystem : EntitySystem
         }
 
         // Summon.
+        DrainAndSpillBlood(args.Performer, comp.BloodCostPercent);
         var katana = Spawn(comp.KatanaProto, _transform.GetMapCoordinates(args.Performer));
         if (!_hands.TryPickupAnyHand(args.Performer, katana))
         {
