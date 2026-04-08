@@ -10,7 +10,7 @@
   - type: ItemSlots
     slots:
       item:
-        name: Katana
+        name: katana-sheath-slot-name
         insertVerbText: sheath-insert-verb
         ejectVerbText: sheath-eject-verb
         insertSound: /Audio/Items/sheath.ogg
@@ -30,7 +30,7 @@
   - type: ItemSlots
     slots:
       item:
-        name: Katana
+        name: katana-sheath-slot-name
         insertVerbText: sheath-insert-verb
         ejectVerbText: sheath-eject-verb
         insertSound: /Audio/Items/sheath.ogg

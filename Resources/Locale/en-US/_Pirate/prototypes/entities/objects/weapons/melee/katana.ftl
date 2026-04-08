@@ -13,6 +13,9 @@ ent-NullrodHolyKatana = suncatcher
 ent-CursedKatana = cursed katana
     .desc = A cursed katana that clings to its wielder and refuses to be sheathed.
 
+ent-Uchigatana = katana
+    .desc = Woefully underpowered in D20.
+
 ent-DarkShard = dark shard
     .desc = An eerie metal shard wrapped in dark energy.
 
