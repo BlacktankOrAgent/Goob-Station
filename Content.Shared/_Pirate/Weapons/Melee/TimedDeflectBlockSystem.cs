@@ -275,11 +275,12 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
             return;
 
         // Only drain power and break wield when the swing actually reached a target (miss = empty list).
-        if (args.HitEntities.Count > 0 &&
-            TryComp<WieldableComponent>(ent, out var wieldable) && wieldable.Wielded)
+        if (args.HitEntities.Count > 0)
         {
             SetPower(ent.Owner, ent.Comp, ent.Comp.CurrentPower - ent.Comp.PowerLossOnMeleeHit);
-            _wieldable.TryUnwield(ent.Owner, wieldable, args.User, force: true);
+
+            if (TryComp<WieldableComponent>(ent, out var wieldable) && wieldable.Wielded)
+                _wieldable.TryUnwield(ent.Owner, wieldable, args.User, force: true);
         }
     }
 
