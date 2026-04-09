@@ -4,6 +4,9 @@
   name: katana
   description: Woefully underpowered in D20.
   components:
+  - type: Contraband
+    severity: Restricted
+    allowedDepartments: [ CentralCommand ]
   - type: Tag
     tags:
     - Katana

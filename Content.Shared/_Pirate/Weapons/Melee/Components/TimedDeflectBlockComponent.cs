@@ -10,7 +10,7 @@ public sealed partial class TimedDeflectBlockComponent : Component
     public float DeflectWindow = 0.5f;
 
     [DataField]
-    public float BlockStaminaDamageFraction = 0.1f;
+    public float BlockStaminaDamageFraction = 0.075f;
 
     [DataField]
     public SoundSpecifier DeflectSound = new SoundCollectionSpecifier("PirateBladeDeflects");
@@ -19,10 +19,10 @@ public sealed partial class TimedDeflectBlockComponent : Component
     public SoundSpecifier BlockSound = new SoundCollectionSpecifier("PirateBladeBlocks");
 
     [DataField]
-    public float PowerGainOnDeflect = 10f;
+    public float PowerGainOnDeflect = 8f;
 
     [DataField]
-    public float PowerLossOnMeleeHit = 5f;
+    public float PowerLossOnMeleeHit = 4f;
 
     [DataField]
     public float PowerDecayDelay = 30f;
@@ -56,10 +56,10 @@ public sealed partial class TimedDeflectBlockComponent : Component
     public float BlockStaminaMultiplier = 1.5f;
 
     [DataField]
-    public float DeflectStaminaMultiplier = 0.75f;
+    public float DeflectStaminaMultiplier = 0.5f;
 
     [DataField]
-    public float DeflectWindowBonusPerLevel = 0.1f;
+    public float DeflectWindowBonusPerLevel = 0.15f;
 
     [DataField]
     public float DeflectLagCompensationMultiplier = 1.5f;

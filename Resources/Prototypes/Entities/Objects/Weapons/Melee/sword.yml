@@ -284,7 +284,7 @@
   - type: MeleeWeapon
     damage:
       types:
-        Slash: 15
+        Slash: 20
       woundSeverityMultipliers:
         Slash: 2.5
     soundHit:
@@ -318,8 +318,11 @@
     sprite: Objects/Weapons/Melee/energykatana.rsi
   - type: MeleeWeapon # Pirate: katana
     wideAnimationRotation: -60 # Pirate: katana
-    woundSeverityMultipliers:
-      Slash: 2
+    damage:
+      types:
+        Slash: 20
+      woundSeverityMultipliers:
+        Slash: 2
   - type: Item
     storedSprite:
       state: storage

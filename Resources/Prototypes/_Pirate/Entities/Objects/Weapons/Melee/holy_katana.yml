@@ -4,6 +4,9 @@
   name: suncatcher
   description: A sunlit ceremonial blade of dull gold, borne by a fallen swordsman seeking atonement.
   components:
+  - type: Contraband
+    severity: Restricted
+    allowedDepartments: [ Civilian ]
   - type: Tag
     tags:
     - Katana
