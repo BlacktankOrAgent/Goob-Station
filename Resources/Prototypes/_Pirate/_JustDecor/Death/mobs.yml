@@ -1,13 +1,20 @@
 - type: entity
   id: MobDeathSkeleton
   name: Кістлява смерть
-  description: Величезний скелет у рясі, що несе косу смерті.
   parent: BaseMobSkeletonPerson
-  suffix: Death
+  suffix: JustDecor, Death
   components:
+    - type: HumanoidAppearance
+      species: Skeleton
+      skinColor: "#000000"
     - type: Damageable
       damageContainer: Biological
       damageModifierSet: Skeleton
+      healthIcons:
+        Alive: HealthIconDead
+        Critical: HealthIconDead
+        Dead: HealthIconDead
+      healthBarThreshold: 9999
     - type: MobThresholds
       thresholds:
         0: Alive
@@ -21,12 +28,6 @@
         behaviors:
         - !type:GibBehavior # Shitmed Change
           gibContents: Skip # Shitmed Change
-    - type: PointLight
-      enabled: true
-      color: "#b01403"
-      radius: 6.0
-      energy: 3.0
-      netsync: false
     - type: GhostRole
       name: Кістлява смерть
       description: "Ти - Жива Смерть, втілення загибелі. Твоя задача - випробувати екіпаж, використовуючи свою косу. Не забувай: ти не людина, а надприродна сила, і твоя поява - це знак кінця."
@@ -45,6 +46,12 @@
     - type: Loadout
       prototypes: [SkeletonDeathGear]
     - type: GhostTargeting
+    - type: ActionGrant
+      actions:
+      - ActionToggleLighting
+      - ActionToggleFov
+      - ActionToggleGhosts
+    - type: Spectral
     - type: Tag
       tags:
       - CanPilot
@@ -70,3 +77,19 @@
       damageRecovery:
         types:
           Asphyxiation: -10.0
+    - type: GhostHearing
+    - type: Eye
+      drawFov: false
+      visMask:
+        - Normal
+        - Ghost
+        - TargetingGhost
+        - CosmicCultMonument # DeltaV - Cosmic Cult
+        - Abductor # Shitmed - Starlight Abductors
+
+- type: typingIndicator
+  id: death
+  spritePath: /Textures/_Pirate/_JustDecor/Clothing/Death/speech.rsi
+  typingState: skeleton0
+  idleState: skeleton1
+  offset: 0, 0.2 # 0625
