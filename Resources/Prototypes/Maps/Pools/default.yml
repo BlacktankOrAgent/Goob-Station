@@ -49,38 +49,38 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
-- type: gameMapPool
-  id: DefaultMapPool
-  maps:
-  - Atlas
-  - Amber
-  - Bagel
-  - BoxTP # Pirate
-  #- Box # Pirate
-  - GateTP # Pirate
-  - Cluster
-  #- Core
-  - Fland
-  - GlacierTP # Pirate
- # - Gate Goobstation - My name is Walter Hartwell White, I live at 2308 Negra alloya line albequrque new mexico.
-  #- Loop Goobstation - I love maintenance!!!
-  - Marathon
-  - Meta
-  - Oasis
-  - OmegaTP # Pirate
-  #- Omega # Pirate
-  - Origin
-  - Saltern
-  - Packed
-  #- Reach # Goobstation, removed from map pool
-  #- Train # Goobstation - all my friends hate train
-  - FlandHighPop
-  - OasisHighPop
-  - Barratry # Goobstation - Re-add barratry
-  - KettleTP # Pirate - Попа.
-  #- Kettle # Pirate
-  - Leonid # Goobstation - for goob by goob
-  - Delta # Goobstation - ported from Corvax
-  - Chloris # Goobstation - also Corvax because we love goidamaps
-  - Cog # those who forget to clear their multitool
-  - Serpentcrest # Goobstation when contra
+#- type: gameMapPool # Pirate changes, we have a own Mappoll
+#  id: DefaultMapPool
+#  maps:
+#  - Atlas
+#  - Amber
+#  - Bagel
+#  - BoxTP # Pirate
+#  #- Box # Pirate
+#  - GateTP # Pirate
+#  - Cluster
+#  #- Core
+#  - Fland
+#  - GlacierTP # Pirate
+# # - Gate Goobstation - My name is Walter Hartwell White, I live at 2308 Negra alloya line albequrque new mexico.
+#  #- Loop Goobstation - I love maintenance!!!
+#  - Marathon
+#  - Meta
+#  - Oasis
+#  - OmegaTP # Pirate
+#  #- Omega # Pirate
+#  - Origin
+#  - Saltern
+#  - Packed
+#  #- Reach # Goobstation, removed from map pool
+#  #- Train # Goobstation - all my friends hate train
+#  - FlandHighPop
+#  - OasisHighPop
+#  - Barratry # Goobstation - Re-add barratry
+#  - KettleTP # Pirate - Попа.
+#  #- Kettle # Pirate
+#  - Leonid # Goobstation - for goob by goob
+#  - Delta # Goobstation - ported from Corvax
+#  - Chloris # Goobstation - also Corvax because we love goidamaps
+#  - Cog # those who forget to clear their multitool
+#  - Serpentcrest # Goobstation when contra
