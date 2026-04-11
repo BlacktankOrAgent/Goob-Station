@@ -88,6 +88,8 @@
 - type: entity
   suffix: JustDecor, Death
   id: ClothingOuterSuitDeath
+  name: "Костюм Смерті"
+  description: "Здатися - це єдиний варіант..."
   parent: [ClothingOuterBaseMedium, AllowSuitStorageClothing]
   components:
   - type: PressureProtection
