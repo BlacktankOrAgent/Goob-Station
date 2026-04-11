@@ -169,7 +169,7 @@
   - RoboticistGloves
   - RoboticistShoes
   - RoboticistPDA
-  - Glasses
+   #- Glasses # Pirate
   - Survival
   - Trinkets
   - GroupSpeciesBreathTool
