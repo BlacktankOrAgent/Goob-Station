@@ -6,6 +6,7 @@ using Robust.Shared.Collections;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Maths;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Timing;
 
 namespace Content.Client._Pirate.Projectiles;
@@ -13,6 +14,7 @@ namespace Content.Client._Pirate.Projectiles;
 public sealed class PredictedProjectileSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SpriteSystem _sprite = default!;
     [Dependency] private readonly SharedPointLightSystem _lights = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
@@ -31,13 +33,19 @@ public sealed class PredictedProjectileSystem : EntitySystem
     }
 
     private readonly Dictionary<EntityUid, PromotedData> _promoted = new();
+    private readonly Queue<EntityUid> _pendingPromoted = new();
     private readonly HashSet<NetEntity> _pendingHide = new();
+    private readonly Dictionary<NetEntity, EntityUid> _pendingAuthoritativeLinks = new();
+    private readonly Dictionary<EntityUid, EntityUid> _authoritativeToPromoted = new();
+    private readonly Dictionary<EntityUid, EntityUid> _promotedToAuthoritative = new();
+    private readonly HashSet<EntityUid> _hiddenAuthoritative = new();
 
     public override void Initialize()
     {
         base.Initialize();
 
         SubscribeLocalEvent<ProjectileComponent, Robust.Client.Physics.UpdateIsPredictedEvent>(OnUpdateIsPredicted);
+        SubscribeLocalEvent<ProjectileComponent, EntityTerminatingEvent>(OnProjectileTerminating);
         SubscribeLocalEvent<PlayerShotProjectileEvent>(OnLocalPlayerShotProjectile);
         SubscribeNetworkEvent<ShotPredictedProjectileEvent>(OnShotPredictedProjectile);
     }
@@ -67,6 +75,24 @@ public sealed class PredictedProjectileSystem : EntitySystem
                 _promoted.Remove(uid);
         }
 
+        if (_hiddenAuthoritative.Count > 0)
+        {
+            var hiddenToRemove = new ValueList<EntityUid>();
+            foreach (var uid in _hiddenAuthoritative)
+            {
+                if (!Exists(uid))
+                {
+                    hiddenToRemove.Add(uid);
+                    continue;
+                }
+
+                HideProjectile(uid);
+            }
+
+            foreach (var uid in hiddenToRemove)
+                _hiddenAuthoritative.Remove(uid);
+        }
+
         // Resolve pending server entity hides.
         if (_pendingHide.Count == 0)
             return;
@@ -78,7 +104,12 @@ public sealed class PredictedProjectileSystem : EntitySystem
             if (!uid.IsValid())
                 continue;
 
-            HideAuthoritativeVisuals(uid);
+            _hiddenAuthoritative.Add(uid);
+            HideProjectile(uid);
+
+            if (_pendingAuthoritativeLinks.Remove(netEnt, out var promoted))
+                LinkAuthoritativeProjectile(uid, promoted);
+
             resolved.Add(netEnt);
         }
 
@@ -88,7 +119,7 @@ public sealed class PredictedProjectileSystem : EntitySystem
 
     private void OnUpdateIsPredicted(Entity<ProjectileComponent> ent, ref Robust.Client.Physics.UpdateIsPredictedEvent args)
     {
-        // Promoted entities are manually integrated — exclude from physics prediction
+        // Promoted entities are manually integrated - exclude from physics prediction
         // to prevent rollback to garbage coordinates (they have no server state).
         if (!_promoted.ContainsKey(ent))
             args.IsPredicted = true;
@@ -120,27 +151,74 @@ public sealed class PredictedProjectileSystem : EntitySystem
                 Velocity = localVel,
                 Rotation = _transform.GetWorldRotation(xform),
             };
+            _pendingPromoted.Enqueue(args.Projectile);
         }
         else
         {
             // Re-sim: hide transient duplicate (deleted next frame).
-            if (TryComp<SpriteComponent>(args.Projectile, out var sprite))
-                _sprite.SetVisible((args.Projectile, sprite), false);
-            if (TryComp<PointLightComponent>(args.Projectile, out var light))
-                _lights.SetEnabled(args.Projectile, false, light);
+            HideProjectile(args.Projectile);
         }
     }
 
     private void OnShotPredictedProjectile(ShotPredictedProjectileEvent args)
     {
+        EntityUid? promoted = null;
+        if (_pendingPromoted.Count > 0)
+            promoted = _pendingPromoted.Dequeue();
+
         var uid = GetEntity(args.Projectile);
         if (uid.IsValid())
-            HideAuthoritativeVisuals(uid);
+        {
+            _hiddenAuthoritative.Add(uid);
+            HideProjectile(uid);
+
+            if (promoted is { } promotedUid)
+                LinkAuthoritativeProjectile(uid, promotedUid);
+        }
         else
+        {
             _pendingHide.Add(args.Projectile);
+            if (promoted is { } promotedUid)
+                _pendingAuthoritativeLinks[args.Projectile] = promotedUid;
+        }
     }
 
-    private void HideAuthoritativeVisuals(EntityUid uid)
+    private void OnProjectileTerminating(Entity<ProjectileComponent> ent, ref EntityTerminatingEvent args)
+    {
+        var uid = ent.Owner;
+        _promoted.Remove(uid);
+        _hiddenAuthoritative.Remove(uid);
+
+        if (_authoritativeToPromoted.Remove(uid, out var promoted))
+        {
+            _promotedToAuthoritative.Remove(promoted);
+
+            if (!TerminatingOrDeleted(promoted))
+                PredictedQueueDel(promoted);
+
+            return;
+        }
+
+        if (_promotedToAuthoritative.Remove(uid, out var authoritative))
+            _authoritativeToPromoted.Remove(authoritative);
+    }
+
+    private void LinkAuthoritativeProjectile(EntityUid authoritative, EntityUid promoted)
+    {
+        if (TerminatingOrDeleted(authoritative) || TerminatingOrDeleted(promoted))
+            return;
+
+        if (_authoritativeToPromoted.TryGetValue(authoritative, out var existingPromoted))
+            _promotedToAuthoritative.Remove(existingPromoted);
+
+        if (_promotedToAuthoritative.TryGetValue(promoted, out var existingAuthoritative))
+            _authoritativeToPromoted.Remove(existingAuthoritative);
+
+        _authoritativeToPromoted[authoritative] = promoted;
+        _promotedToAuthoritative[promoted] = authoritative;
+    }
+
+    private void HideProjectile(EntityUid uid)
     {
         if (!HasComp<ProjectileComponent>(uid))
             return;
@@ -150,5 +228,8 @@ public sealed class PredictedProjectileSystem : EntitySystem
 
         if (TryComp<PointLightComponent>(uid, out var light))
             _lights.SetEnabled(uid, false, light);
+
+        if (TryComp<PhysicsComponent>(uid, out var physics))
+            _physics.SetCanCollide(uid, false, body: physics);
     }
 }
