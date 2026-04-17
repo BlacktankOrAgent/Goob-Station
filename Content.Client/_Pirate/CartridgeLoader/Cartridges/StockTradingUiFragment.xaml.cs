@@ -217,10 +217,14 @@ public sealed partial class StockTradingUiFragment : BoxContainer
             _priceLabel.Text = $"${company.CurrentPrice:F2}";
             _sharesLabel.Text = Loc.GetString("stock-trading-owned-shares", ("shares", ownedStocks));
 
+            var priceHistory = company.PriceHistory is { Count: > 0 }
+                ? company.PriceHistory
+                : Enumerable.Repeat(company.CurrentPrice > 0 ? company.CurrentPrice : company.BasePrice, 5).ToList();
+
             var priceChange = 0f;
-            if (company.PriceHistory is { Count: > 0 })
+            if (priceHistory.Count > 0)
             {
-                var previousPrice = company.PriceHistory[^1];
+                var previousPrice = priceHistory[^1];
                 priceChange = (company.CurrentPrice - previousPrice) / previousPrice * 100;
             }
 
@@ -232,8 +236,7 @@ public sealed partial class StockTradingUiFragment : BoxContainer
                 _ => NeutralColor,
             };
 
-            if (company.PriceHistory != null)
-                _priceHistory.Update(company.PriceHistory);
+            _priceHistory.Update(priceHistory);
 
             _sellButton.Disabled = ownedStocks <= 0;
         }

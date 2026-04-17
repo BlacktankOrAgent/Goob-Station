@@ -30,6 +30,7 @@ public sealed class StockMarketSystem : EntitySystem
 
     private ISawmill _sawmill = default!;
     private const float MaxPrice = 262144;
+    private readonly Dictionary<EntityUid, TimeSpan> _nextUpdate = new();
 
     public override void Initialize()
     {
@@ -48,35 +49,30 @@ public sealed class StockMarketSystem : EntitySystem
 
         while (query.MoveNext(out var uid, out var component))
         {
-            if (curTime < component.NextUpdate)
+            if (!_nextUpdate.TryGetValue(uid, out var nextUpdate))
+            {
+                _nextUpdate[uid] = curTime + component.UpdateInterval;
+                continue;
+            }
+
+            if (curTime < nextUpdate)
                 continue;
 
-            component.NextUpdate = curTime + component.UpdateInterval;
+            _nextUpdate[uid] = curTime + component.UpdateInterval;
             UpdateStockPrices(uid, component);
         }
     }
 
     private void OnStationInitialized(StationInitializedEvent args)
     {
-        if (!HasComp<StationCargoOrderDatabaseComponent>(args.Station) ||
+        if (!TryComp<StationStockMarketComponent>(args.Station, out var stockMarket) ||
+            !HasComp<StationCargoOrderDatabaseComponent>(args.Station) ||
             !HasComp<StationBankAccountComponent>(args.Station))
         {
             return;
         }
 
-        var stockMarket = EnsureComp<StationStockMarketComponent>(args.Station);
-
-        if (stockMarket.Companies.Count == 0)
-            stockMarket.Companies = CreateDefaultCompanies();
-
-        for (var i = 0; i < stockMarket.Companies.Count; i++)
-        {
-            var company = stockMarket.Companies[i];
-            UpdatePriceHistory(ref company);
-            stockMarket.Companies[i] = company;
-        }
-
-        stockMarket.NextUpdate = _timing.CurTime + stockMarket.UpdateInterval;
+        _nextUpdate[args.Station] = _timing.CurTime + stockMarket.UpdateInterval;
         UpdateStockMarket(args.Station);
     }
 
@@ -134,19 +130,6 @@ public sealed class StockMarketSystem : EntitySystem
         {
             UpdateStockMarket(station);
         }
-    }
-
-    private static List<StockCompany> CreateDefaultCompanies()
-    {
-        return
-        [
-            new("stock-trading-company-nanotrasen", 310f, 310f, null),
-            new("stock-trading-company-einstein", 185f, 185f, null),
-            new("stock-trading-company-idris", 260f, 260f, null),
-            new("stock-trading-company-zavodskiy", 115f, 115f, null),
-            new("stock-trading-company-hephaestus", 235f, 235f, null),
-            new("stock-trading-company-zenghu", 225f, 225f, null),
-        ];
     }
 
     private void UpdateStockMarket(EntityUid station)
