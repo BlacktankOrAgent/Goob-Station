@@ -59,7 +59,7 @@ public sealed partial class TimedDeflectBlockComponent : Component
     public float DeflectStaminaMultiplier = 1.2f;
 
     [DataField]
-    public float StaminaReferenceDamage = 10f;
+    public float StaminaReferenceDamage = 12f;
 
     [DataField]
     public float DeflectWindowBonusPerLevel = 0.9f;
