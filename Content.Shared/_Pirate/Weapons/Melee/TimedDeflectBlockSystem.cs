@@ -177,7 +177,9 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         if (!TryGetActiveDeflectWeapon(ent, out var weapon, out var block) || block == null)
             return;
 
-        ApplyDefense(ent.Owner, weapon, block, args.User, projectile: null, out var deflected);
+        if (!ApplyDefense(ent.Owner, weapon, block, args.User, projectile: null, out _))
+            return;
+
         args.Cancel();
 
         // If the attacker was wielding a TimedDeflectBlock weapon, break their grip —
@@ -212,7 +214,9 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
             return;
         }
 
-        ApplyDefense(args.Args.Target, ent.Owner, ent.Comp, args.Args.Component.Shooter, args.Args.ProjUid, out _);
+        if (!ApplyDefense(args.Args.Target, ent.Owner, ent.Comp, args.Args.Component.Shooter, args.Args.ProjUid, out _))
+            return;
+
         args.Args.Cancelled = true;
     }
 
@@ -248,7 +252,9 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
             return;
         }
 
-        ApplyDefense(args.Args.Target, ent.Owner, ent.Comp, args.Args.Shooter, projectile: null, out _);
+        if (!ApplyDefense(args.Args.Target, ent.Owner, ent.Comp, args.Args.Shooter, projectile: null, out _))
+            return;
+
         args.Args.Cancelled = true;
     }
 
@@ -330,7 +336,8 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         TimedDeflectBlockComponent block,
         EntityUid attacker)
     {
-        if (!IsWithinDeflectWindow(defender, block))
+        if (!CanDefendAgainst(defender, attacker) ||
+            !IsWithinDeflectWindow(defender, block))
             return false;
 
         ApplySuccessfulDeflect(defender, weapon, block, attacker);
@@ -346,6 +353,9 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         EntityUid projectileUid,
         ProjectileComponent projectile)
     {
+        if (!CanDefendAgainst(defender, attacker))
+            return false;
+
         // Validate all redirect prerequisites before committing any side effects.
         if (!TryComp<PhysicsComponent>(projectileUid, out var physics))
             return false;
@@ -392,7 +402,7 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         return true;
     }
 
-    private void ApplyDefense(
+    private bool ApplyDefense(
         EntityUid defender,
         EntityUid weapon,
         TimedDeflectBlockComponent block,
@@ -400,6 +410,11 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
         EntityUid? projectile,
         out bool deflected)
     {
+        deflected = false;
+
+        if (!CanDefendAgainst(defender, attacker))
+            return false;
+
         deflected = IsWithinDeflectWindow(defender, block);
 
         if (deflected)
@@ -419,6 +434,13 @@ public sealed class TimedDeflectBlockSystem : EntitySystem
             RaiseLocalEvent(ref deleteEv);
             PredictedQueueDel(projectileUid);
         }
+
+        return true;
+    }
+
+    private static bool CanDefendAgainst(EntityUid defender, EntityUid? attacker)
+    {
+        return attacker == null || attacker != defender;
     }
 
     private void ApplySuccessfulDeflect(
