@@ -275,3 +275,19 @@
   - MeteorSwarmScheduler
   - SpaceTrafficControlEventScheduler
   - BasicRoundstartVariation
+
+- type: gamePreset
+  id: Oldops # _Pirate gamemode
+  alias:
+    - oldops
+  name: nukeops-title
+  description: nukeops-description
+  showInVote: false
+  rules:
+    - Oldops
+    - SubGamemodesRule
+    - BasicStationEventScheduler
+    - MeteorSwarmScheduler
+    - SpaceTrafficControlEventScheduler
+    - BasicRoundstartVariation
+    - PsionicEventsScheduler # Pirate
