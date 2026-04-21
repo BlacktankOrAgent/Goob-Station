@@ -443,3 +443,72 @@
       - MindRoleThief
       briefing:
         sound: "/Audio/Misc/thief_greeting.ogg"
+
+        - type: entity
+  parent: BaseNukeopsRule
+  id: oldops
+  components:
+  - type: GameRule
+    minPlayers: 30
+  - type: LoadMapRule
+    mapPath: /Maps/Nonstations/nukieplanet.yml # _pirates
+  - type: AntagSelection
+    selectionTime: PrePlayerSpawn
+    definitions:
+    - prefRoles: [ NukeopsCommander ]
+      fallbackRoles: [ Nukeops, NukeopsMedic ]
+      spawnerPrototype: SpawnPointNukeopsCommander
+      playerRatio: 15
+      startingGear: SyndicateCommanderGearFull
+      unequipOldGear: true
+      components:
+      - type: NukeOperative
+      - type: RandomMetadata
+        nameSegments:
+        - NamesSyndicateElite
+        nameFormat: name-format-nukie-commander
+      - type: NpcFactionMember
+        factions:
+        - Syndicate
+      mindRoles:
+      - MindRoleNukeopsCommander
+    - prefRoles: [ NukeopsMedic ]
+      fallbackRoles: [ Nukeops, NukeopsCommander ]
+      spawnerPrototype: SpawnPointNukeopsMedic
+      playerRatio: 15
+      startingGear: SyndicateOperativeMedicFull
+      unequipOldGear: true
+      components:
+      - type: NukeOperative
+      - type: RandomMetadata
+        nameSegments:
+        - NamesSyndicateElite
+        nameFormat: name-format-nukie-agent
+      - type: NpcFactionMember
+        factions:
+        - Syndicate
+      - type: SurgerySpeedModifier # shitmed
+        speedModifier: 2
+      mindRoles:
+      - MindRoleNukeopsMedic
+    - prefRoles: [ Nukeops ]
+      fallbackRoles: [ NukeopsCommander, NukeopsMedic ]
+      spawnerPrototype: SpawnPointNukeopsOperative
+      max: 10
+      playerRatio: 20
+      startingGear: SyndicateOperativeGearFull
+      unequipOldGear: true
+      components:
+      - type: NukeOperative
+      - type: RandomMetadata
+        nameSegments:
+        - NamesSyndicateElite
+        nameFormat: name-format-nukie-operator
+      - type: NpcFactionMember
+        factions:
+        - Syndicate
+      mindRoles:
+      - MindRoleNukeops
+  - type: Tag
+    tags:
+      - CalmAntag
