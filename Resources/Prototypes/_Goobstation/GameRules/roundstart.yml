@@ -446,12 +446,12 @@
 
         - type: entity
   parent: BaseNukeopsRule
-  id: Oldops
+  id: Oldops # _pirates
   components:
   - type: GameRule
     minPlayers: 30
   - type: LoadMapRule
-    mapPath: /Maps/Nonstations/nukieplanet.yml # _pirates
+    mapPath: /Maps/Nonstations/nukieplanet.yml # _pirates: adds old non-Goob nukie base
   - type: AntagSelection
     selectionTime: PrePlayerSpawn
     definitions:
