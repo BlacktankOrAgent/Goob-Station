@@ -228,3 +228,12 @@
   alpha: 1
   ghostName: щурик в капелюсі
   ghostDescription: "пік! пік-пік!"
+
+- type: customGhost
+  id: Zubr-ghost
+  ckey: Zubr
+  sprite:
+    - _Pirate/Ghosts/Zubr.rsi
+  alpha: 1
+  ghostName: Zubr
+  ghostDescription: I fucking hate these people. This party sucks.
