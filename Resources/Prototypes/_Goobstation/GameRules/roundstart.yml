@@ -446,7 +446,7 @@
 
         - type: entity
   parent: BaseNukeopsRule
-  id: Oldops
+  id: Oldops # _pirates
   components:
   - type: GameRule
     minPlayers: 30
