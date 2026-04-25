@@ -440,6 +440,8 @@
     - GrenadeTriggersStatic
     - TapeRecorderStatic
     - MiscSignallersStatic
+    dynamicPacks: # Pirate - tweak fab recepies | Add advanced power cells to each fab
+    - PowerCells  # Pirate - tweak fab recepies | Add advanced power cells to each fab
   - type: EmagLatheRecipes
     emagStaticPacks:
     - SecurityWeaponsStatic
@@ -768,9 +770,9 @@
     - ScienceExplosives
     - GrenadeTriggersStatic
     - SecurityWeaponsStaticGoob
-    - SecurityWeaponsNonEmaggableStaticGoob
     # Pirate Packs
     - SecurityAmmoStaticPirate
+    - PirateStraightjacketLatheRecipePackStatic # Pirate - tweak recipes | Add straint-jacket to med and sec fabs.
     dynamicPacks:
     - SalvageSecurityBoards
     - SalvageSecurityWeapons
@@ -793,7 +795,6 @@
     - PowerCells
     # Pirate Packs
     - SecurityAmmoPirate
-    - SecurityWeaponsPirate
   - type: EmagLatheRecipes # Goobstation
     emagStaticPacks:
     - SyndicateAmmoLightStatic
@@ -890,6 +891,7 @@
     - GrenadeTriggersStatic
     # Einstein Engines Packs
     - SyringeCase
+    - PirateStraightjacketLatheRecipePackStatic # Pirate - tweak recipes | Add straint-jacket to med and sec fabs.
     dynamicPacks:
     - Chemistry
     # Goobstation Packs
@@ -902,9 +904,14 @@
     - MedicalBoards
     - Janitor
     - Genetics
+    - MedicalCloning
     # Einstein Engines Packs
     - Translators # Language
     - TranslatorImplanters # Language
+    # Pirate start - add cybernetic limbs and organs to medfab
+    - BasicCybernetics
+    - AdvancedCybernetics
+    # Pirate end - add cybernetic limbs and organs to medfab
   - type: Machine
     board: MedicalTechFabCircuitboard
   - type: EmagLatheRecipes # Goobstation Packs
@@ -914,7 +921,7 @@
     stealGroup: MedicalTechFabCircuitboard
 
 - type: entity
-  parent: BaseLathe
+  parent: [BaseLatheLube, BaseSiloUtilizer] #Goob edit
   id: UniformPrinter
   name: uniform printer
   description: Prints new or replacement uniforms.

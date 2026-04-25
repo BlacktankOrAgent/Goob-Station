@@ -145,8 +145,10 @@ public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecords
             // this is impossible
             _ => "not-wanted"
         };
+        // Get radio channel from IdExaminablePsionicsComponent or use default
+        var radioChannel = "Science";
         _radio.SendRadioMessage(ent, Loc.GetString($"psionics-records-console-{statusString}", args),
-            ent.Comp.RadioChannel, ent);
+            radioChannel, ent);
 
         UpdateUserInterface(ent);
         UpdatePsionicsIdentity(name, msg.Status);
@@ -218,12 +220,20 @@ public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecords
     }
 
     /// <summary>
-    /// Checks if the new identity's name has a psionics record attached to it, and gives the entity the icon that
+    /// Checks if the entity's ID card name has a psionics record attached to it, and gives the ID card the icon that
     /// belongs to the status if it does.
     /// </summary>
     public void CheckNewIdentity(EntityUid uid)
     {
-        var name = Identity.Name(uid, EntityManager);
+        // Try to find the entity's ID card
+        if (!_idCard.TryFindIdCard(uid, out var idCardEntity))
+            return;
+
+        var idCard = idCardEntity.Comp;
+        if (string.IsNullOrEmpty(idCard.FullName))
+            return;
+
+        var name = idCard.FullName;
         var xform = Transform(uid);
 
         // TODO use the entity's station? Not the station of the map that it happens to currently be on?
@@ -236,11 +246,11 @@ public sealed partial class PsionicsRecordsConsoleSystem : SharedPsionicsRecords
             {
                 if (record.Status != PsionicsStatus.None)
                 {
-                    SetPsionicsIcon(name, record.Status, uid);
+                    SetPsionicsIcon(name, record.Status, idCardEntity.Owner);
                     return;
                 }
             }
         }
-        RemComp<PsionicsRecordComponent>(uid);
+        RemComp<PsionicsRecordComponent>(idCardEntity.Owner);
     }
 }

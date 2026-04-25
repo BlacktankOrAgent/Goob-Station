@@ -159,6 +159,7 @@ using System.Numerics;
 using Content.Client.Humanoid;
 using Content.Client.Lobby.UI.Loadouts;
 using Content.Client.Lobby.UI.Roles;
+using Content.Client._Pirate.Traits.UI; // Pirate: port and modified DV traits UI
 using Content.Client.Message;
 using Content.Client.Players.PlayTimeTracking;
 using Content.Client.Sprite;
@@ -257,7 +258,6 @@ namespace Content.Client.Lobby.UI
         // Pirate edit start - port EE contractors
         private List<NationalityPrototype> _nationalies = new();
         private List<EmployerPrototype> _employers = new();
-        private List<LifepathPrototype> _lifepaths = new();
         // Pirate edit end - port EE contractors
 
         private List<(string, RequirementsSelector)> _jobPriorities = new();
@@ -417,7 +417,6 @@ namespace Content.Client.Lobby.UI
 
             RefreshNationalities();
             RefreshEmployers();
-            RefreshLifepaths();
 
             NationalityButton.OnItemSelected += args =>
             {
@@ -433,14 +432,6 @@ namespace Content.Client.Lobby.UI
                     return;
                 EmployerButton.SelectId(args.Id);
                 SetEmployer(_employers[args.Id].ID);
-            };
-
-            LifepathButton.OnItemSelected += args =>
-            {
-                if (_suppressSelectors)
-                    return;
-                LifepathButton.SelectId(args.Id);
-                SetLifepath(_lifepaths[args.Id].ID);
             };
 
             #endregion Contractors
@@ -654,6 +645,7 @@ namespace Content.Client.Lobby.UI
             #endregion Jobs
 
             TabContainer.SetTabTitle(2, Loc.GetString("humanoid-profile-editor-antags-tab"));
+            TabContainer.SetTabTitle(3, Loc.GetString("trait-editor-title")); // Pirate: port and modified DV traits UI
 
             RefreshTraits();
 
@@ -694,6 +686,16 @@ namespace Content.Client.Lobby.UI
 
             SpeciesInfoButton.OnPressed += OnSpeciesInfoButtonPressed;
 
+            // Pirate start: port and modified DV traits UI
+            TraitsTab.OnTraitsChanged += traits =>
+            {
+                if (Profile == null)
+                    return;
+                Profile = Profile.WithTraitPreferences(traits);
+                SetDirty();
+            };
+            // Pirate end: port and modified DV traits UI
+
             UpdateSpeciesGuidebookIcon();
             IsDirty = false;
         }
@@ -732,123 +734,16 @@ namespace Content.Client.Lobby.UI
         /// <summary>
         /// Refreshes traits selector
         /// </summary>
+        // Pirate start: port and modified DV traits UI
         public void RefreshTraits()
         {
-            TraitsList.DisposeAllChildren();
-
-            var traits = _prototypeManager.EnumeratePrototypes<TraitPrototype>().OrderBy(t => t.Cost).ToList(); // Pirate - Traits Rework
-            TabContainer.SetTabTitle(3, Loc.GetString("humanoid-profile-editor-traits-tab"));
-
-            if (traits.Count < 1)
-            {
-                TraitsList.AddChild(new Label
-                {
-                    Text = Loc.GetString("humanoid-profile-editor-no-traits"),
-                    FontColorOverride = Color.Gray,
-                });
+            if (Profile == null)
                 return;
-            }
 
-            // Setup model
-            Dictionary<string, List<string>> traitGroups = new();
-            List<string> defaultTraits = new();
-            traitGroups.Add(TraitCategoryPrototype.Default, defaultTraits);
-
-            foreach (var trait in traits)
-            {
-                // Begin Goobstation: ported from DeltaV - Species trait exclusion
-                if (Profile?.Species is { } selectedSpecies && (trait.ExcludedSpecies.Contains(selectedSpecies) ||
-                    trait.IncludedSpecies.Count > 0 && !trait.IncludedSpecies.Contains(selectedSpecies)))
-                {
-                    Profile = Profile?.WithoutTraitPreference(trait.ID, _prototypeManager);
-                    continue;
-                }
-                // End Goobstation: ported from DeltaV - Species trait exclusion
-
-                if (trait.Category == null)
-                {
-                    defaultTraits.Add(trait.ID);
-                    continue;
-                }
-
-                if (!_prototypeManager.HasIndex(trait.Category))
-                    continue;
-
-                var group = traitGroups.GetOrNew(trait.Category);
-                group.Add(trait.ID);
-            }
-
-            // Create UI view from model
-            foreach (var (categoryId, categoryTraits) in traitGroups)
-            {
-                TraitCategoryPrototype? category = null;
-
-                if (categoryId != TraitCategoryPrototype.Default)
-                {
-                    category = _prototypeManager.Index<TraitCategoryPrototype>(categoryId);
-                    // Label
-                    TraitsList.AddChild(new Label
-                    {
-                        Text = Loc.GetString(category.Name),
-                        Margin = new Thickness(0, 10, 0, 0),
-                        StyleClasses = { StyleBase.StyleClassLabelHeading },
-                    });
-                }
-
-                List<TraitPreferenceSelector?> selectors = new();
-                var selectionCount = 0;
-
-                foreach (var traitProto in categoryTraits)
-                {
-                    var trait = _prototypeManager.Index<TraitPrototype>(traitProto);
-                    var selector = new TraitPreferenceSelector(trait);
-
-                    selector.Preference = Profile?.TraitPreferences.Contains(trait.ID) == true;
-                    if (selector.Preference)
-                        selectionCount += trait.Cost;
-
-                    selector.PreferenceChanged += preference =>
-                    {
-                        if (preference)
-                        {
-                            Profile = Profile?.WithTraitPreference(trait.ID, _prototypeManager);
-                        }
-                        else
-                        {
-                            Profile = Profile?.WithoutTraitPreference(trait.ID, _prototypeManager);
-                        }
-
-                        SetDirty();
-                        RefreshTraits(); // If too many traits are selected, they will be reset to the real value.
-                    };
-                    selectors.Add(selector);
-                }
-
-                // Selection counter
-                if (category is { MaxTraitPoints: >= 0 })
-                {
-                    TraitsList.AddChild(new Label
-                    {
-                        Text = Loc.GetString("humanoid-profile-editor-trait-count-hint", ("current", selectionCount), ("max", category.MaxTraitPoints)),
-                        FontColorOverride = Color.Gray
-                    });
-                }
-
-                foreach (var selector in selectors)
-                {
-                    if (selector == null)
-                        continue;
-
-                    if (category is { MaxTraitPoints: >= 0 } &&
-                        selector.Cost + selectionCount > category.MaxTraitPoints)
-                    {
-                        selector.Checkbox.Label.FontColorOverride = Color.DarkGray; // Pirate - Traits Rework
-                    }
-
-                    TraitsList.AddChild(selector);
-                }
-            }
+            TraitsTab.SetSelectedTraits(Profile.TraitPreferences);
+            TraitsTab.UpdateConditions(Profile);
         }
+        // Pirate end: port and modified DV traits UI
 
         /// <summary>
         /// Refreshes the species selector.
@@ -982,77 +877,6 @@ namespace Content.Client.Lobby.UI
             }
         }
 
-        public void RefreshLifepaths()
-        {
-            LifepathButton.Clear();
-            _lifepaths.Clear();
-
-            var prof = Profile ?? HumanoidCharacterProfile.DefaultWithSpecies();
-
-            if (Profile != null && _prototypeManager.TryIndex(Profile.Lifepath, out LifepathPrototype? currentLife))
-            {
-                if (!CheckRequirementsValid(currentLife.Requirements, prof))
-                {
-                    Profile = Profile.WithLifepath(SharedHumanoidAppearanceSystem.DefaultLifepath);
-                    prof = Profile;
-                    SetDirty();
-                }
-            }
-
-            _lifepaths.AddRange(_prototypeManager.EnumeratePrototypes<LifepathPrototype>()
-                .Where(o =>
-                {
-                    var prof = Profile ?? HumanoidCharacterProfile.DefaultWithSpecies();
-                    return CheckRequirementsValid(o.Requirements, prof);
-                }));
-
-            _suppressSelectors = true;
-            try
-            {
-                // Preserve saved lifepath if filtered out.
-                if (Profile != null && !_lifepaths.Any(l => l.ID == Profile.Lifepath)
-                    && _prototypeManager.TryIndex(Profile.Lifepath, out LifepathPrototype? savedLife))
-                {
-                    _lifepaths.Insert(0, savedLife);
-                }
-
-                var selectedLifepath = -1;
-                for (var i = 0; i < _lifepaths.Count; i++)
-                {
-                    LifepathButton.AddItem(Loc.GetString(_lifepaths[i].NameKey), i);
-                    if (selectedLifepath < 0 && Profile?.Lifepath == _lifepaths[i].ID)
-                        selectedLifepath = i;
-                }
-                if (selectedLifepath >= 0)
-                    LifepathButton.SelectId(selectedLifepath);
-            }
-            finally
-            {
-                _suppressSelectors = false;
-            }
-        }
-
-        private void UpdateLifepathDescription()
-        {
-            if (Profile == null)
-            {
-                LifepathDescriptionLabel.SetMessage("");
-                return;
-            }
-
-            var lifepathId = Profile.Lifepath;
-
-            if (string.IsNullOrEmpty(lifepathId))
-            {
-                LifepathDescriptionLabel.SetMessage("");
-                return;
-            }
-
-            var descriptionKey = $"lifepath_description_{lifepathId}";
-
-            LifepathDescriptionLabel.SetMessage(Loc.GetString(descriptionKey));
-        }
-
         private bool CheckRequirementsValid(IReadOnlyCollection<JobRequirement>? requirements, HumanoidCharacterProfile profile)
         {
             if (requirements == null || requirements.Count == 0)
@@ -1118,18 +942,45 @@ namespace Content.Client.Lobby.UI
                 selector.OnSelected += preference =>
                 {
                     Profile = Profile?.WithAntagPreference(antag.ID, preference == 0);
+                    RefreshTraits(); // Pirate: port and modified DV traits UI
                     SetDirty();
                 };
 
                 antagContainer.AddChild(selector);
 
-                antagContainer.AddChild(new Button()
+                var loadoutWindowBtn = new Button()
                 {
-                    Disabled = true,
                     Text = Loc.GetString("loadout-window"),
                     HorizontalAlignment = HAlignment.Right,
                     Margin = new Thickness(3f, 0f, 0f, 0f),
-                });
+                };
+
+                // Goob start
+                if (!_prototypeManager.TryIndex<RoleLoadoutPrototype>(LoadoutSystem.GetAntagPrototype(antag.ID), out var roleLoadoutProto))
+                {
+                    loadoutWindowBtn.Disabled = true;
+                }
+                else
+                {
+                    loadoutWindowBtn.OnPressed += _ =>
+                    {
+                        RoleLoadout? loadout = null;
+
+                        Profile?.Loadouts.TryGetValue(LoadoutSystem.GetAntagPrototype(antag.ID), out loadout);
+                        loadout = loadout?.Clone();
+
+                        if (loadout == null)
+                        {
+                            loadout = new RoleLoadout(roleLoadoutProto.ID);
+                            loadout.SetDefault(Profile, _playerManager.LocalSession, _prototypeManager);
+                        }
+
+                        OpenLoadout(null, loadout, roleLoadoutProto, Loc.GetString(antag.Name));
+                    };
+                }
+
+                antagContainer.AddChild(loadoutWindowBtn);
+                // Goob end
 
                 AntagList.AddChild(antagContainer);
             }
@@ -1239,8 +1090,6 @@ namespace Content.Client.Lobby.UI
             RefreshSpecies();
             RefreshNationalities(); // Pirate - port EE contractors
             RefreshEmployers(); // Pirate - port EE contractors
-            RefreshLifepaths(); // Pirate - port EE contractors
-            UpdateLifepathDescription(); // Pirate - port EE contractors
             RefreshTraits();
             RefreshFlavorText();
             ReloadPreview();
@@ -1425,6 +1274,7 @@ namespace Content.Client.Lobby.UI
                         ReloadPreview();
 
                         UpdateJobPriorities();
+                        RefreshTraits(); // Pirate: port and modified DV traits UI
                         SetDirty();
                     };
 
@@ -1495,7 +1345,7 @@ namespace Content.Client.Lobby.UI
             UpdateAlternativeJobs(); // Pirate - Alternative Jobs
         }
 
-        private void OpenLoadout(JobPrototype? jobProto, RoleLoadout roleLoadout, RoleLoadoutPrototype roleLoadoutProto)
+        private void OpenLoadout(JobPrototype? jobProto, RoleLoadout roleLoadout, RoleLoadoutPrototype roleLoadoutProto, string? title = null)
         {
             _loadoutWindow?.Dispose();
             _loadoutWindow = null;
@@ -1509,7 +1359,7 @@ namespace Content.Client.Lobby.UI
 
             _loadoutWindow = new LoadoutWindow(Profile, roleLoadout, roleLoadoutProto, _playerManager.LocalSession, collection)
             {
-                Title = jobProto?.ID + "-loadout",
+                Title = Loc.GetString("loadout-window-title-loadout", ("job", $"{jobProto?.LocalizedName}")),
             };
 
             // Refresh the buttons etc.
@@ -1739,8 +1589,6 @@ namespace Content.Client.Lobby.UI
             UpdateSpeciesGuidebookIcon();
             RefreshNationalities(); // Pirate - port EE contractors
             RefreshEmployers(); // Pirate - port EE contractors
-            RefreshLifepaths(); // Pirate - port EE contractors
-            UpdateLifepathDescription();
             ReloadPreview();
             UpdateBarkVoice(); // Goob Station - Barks
             // begin Goobstation: port EE height/width sliders
@@ -1770,22 +1618,11 @@ namespace Content.Client.Lobby.UI
             ReloadClothes();
         }
 
-        private void SetLifepath(string newLifepath)
-        {
-            Profile = Profile?.WithLifepath(newLifepath);
-            UpdateCharacterRequired();
-            IsDirty = true;
-            ReloadProfilePreview();
-            ReloadClothes();
-            UpdateLifepathDescription();
-        }
-
         private void UpdateCharacterRequired()
         {
             // Refresh requirement-gated UI after profile changes that may affect availability.
             RefreshNationalities();
             RefreshEmployers();
-            RefreshLifepaths();
             RefreshJobs();
         }
 

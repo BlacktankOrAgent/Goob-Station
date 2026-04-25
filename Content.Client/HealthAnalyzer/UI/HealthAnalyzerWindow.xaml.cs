@@ -69,6 +69,7 @@
 
 using System.Linq;
 using System.Numerics;
+using Content.Shared._Pirate.Traits.Assorted; // Pirate port: DeltaV
 using Content.Shared.Atmos;
 using Content.Client.UserInterface.Controls;
 using Content.Shared.Damage;
@@ -100,6 +101,7 @@ using Content.Shared.Body.Part;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Reagent;
 using System.Globalization;
+using Content.Goobstation.Shared.Disease.Components;
 
 namespace Content.Client.HealthAnalyzer.UI
 {
@@ -110,6 +112,7 @@ namespace Content.Client.HealthAnalyzer.UI
         private readonly SpriteSystem _spriteSystem;
         private readonly IPrototypeManager _prototypes;
         private readonly IResourceCache _cache;
+        private readonly UnborgableSystem _unborgable; // Pirate port: DeltaV - unborgable trait
 
         // Shitmed Change Start
         private readonly WoundSystem _wound;
@@ -133,6 +136,7 @@ namespace Content.Client.HealthAnalyzer.UI
             _spriteSystem = _entityManager.System<SpriteSystem>();
             _prototypes = dependencies.Resolve<IPrototypeManager>();
             _cache = dependencies.Resolve<IResourceCache>();
+            _unborgable = _entityManager.System<UnborgableSystem>(); // Pirate port: DeltaV - unborgable trait
             // Shitmed Change Start
             _wound = _entityManager.System<WoundSystem>();
             _bodyPartControls = new Dictionary<TargetBodyPart, TextureButton>
@@ -292,9 +296,9 @@ namespace Content.Client.HealthAnalyzer.UI
             DrawDiagnosticGroups(damageSortedGroups, damagePerType);
 
             // Goobstation
-            if (_entityManager.TryGetComponent<Goobstation.Shared.Disease.Components.DiseaseCarrierComponent>(_target, out var carrier))
+            if (_entityManager.TryGetComponent<DiseaseCarrierComponent>(_target, out var carrier))
             {
-                DrawDiseases(carrier.Diseases);
+                DrawDiseases(carrier.Diseases.ContainedEntities);
             }
 
             ConditionsListContainer.RemoveAllChildren();
@@ -303,6 +307,13 @@ namespace Content.Client.HealthAnalyzer.UI
                 ConditionsListContainer.AddChild(new RichTextLabel
                 {
                     Text = Loc.GetString("condition-body-unrevivable", ("entity", Identity.Name(_target.Value, _entityManager))),
+                    Margin = new Thickness(0, 4),
+                });
+
+            if (_unborgable.IsUnborgable(_target.Value)) // Pirate port: DeltaV - unborgable trait
+                ConditionsListContainer.AddChild(new RichTextLabel
+                {
+                    Text = Loc.GetString("health-analyzer-window-entity-unborgable-text"),
                     Margin = new Thickness(0, 4),
                 });
 
@@ -595,7 +606,7 @@ namespace Content.Client.HealthAnalyzer.UI
         }
 
         // Goobstation
-        private void DrawDiseases(List<EntityUid> diseases)
+        private void DrawDiseases(IReadOnlyList<EntityUid> diseases)
         {
             DiseasesContainer.RemoveAllChildren();
 
@@ -615,7 +626,7 @@ namespace Content.Client.HealthAnalyzer.UI
 
             foreach (var diseaseUid in diseases)
             {
-                if (!_entityManager.TryGetComponent<Goobstation.Shared.Disease.Components.DiseaseComponent>(diseaseUid, out var disease))
+                if (!_entityManager.TryGetComponent<DiseaseComponent>(diseaseUid, out var disease))
                     continue;
 
                 var diseaseInfoContainer = new BoxContainer

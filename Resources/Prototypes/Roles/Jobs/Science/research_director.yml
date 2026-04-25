@@ -142,10 +142,22 @@
     time: 18000 # 5 hours
   - !type:RoleTimeRequirement
     role: JobScientist
-    time: 18000 #5 hrs
+    time: 21600 #6 hrs
   - !type:DepartmentTimeRequirement
     department: Science
     time: 36000 #10 hrs
+  - !type:SpeciesRequirement # Pirate no ipc psionics
+      inverted: true
+      species:
+        - IPC
+  - !type:TraitsRequirement
+      inverted: true
+      traits:
+      - DeafTrait
+      - Blindness
+      - Narcolepsy
+      - Muted
+      - WheelchairBound # Pirate end
   #- !type:SpeciesRequirement # Pirate remove requirement
   #  inverted: true
   #  species:
@@ -155,27 +167,19 @@
     employers:
     - NanoTrasen
     - Interdyne
-  - !type:CharacterLifepathRequirement
-    inverted: true
-    lifepaths:
-    - Cultist
-    - Smuggler
-    - ExCriminal
-    - Enforcer
-    - Hacker
-    - ConArtist
   # Pirate contractor end
   weight: 10
   startingGear: ResearchDirectorGear
   icon: "JobIconResearchDirector"
   supervisors: job-supervisors-captain
   #canBeAntag: false
+  whitelisted: true # Pirate
   antagAdvantage: 75 # Goobstation
   guides: # goobstation
   - Science
   - Command
-  - ResearchDirector SOP
-  - Science SOP
+  - ResearchDirectorSOP
+  - ScienceSOP
   goobcoins: 40 #Goob content
   access:
   - Research
@@ -208,9 +212,9 @@
   equipment:
     id: RnDPDA
     ears: ClothingHeadsetAltScience # Goobstation
-  storage:
-    back:
-    - Flash
+  #storage: # Pirate
+    #back: # Pirate
+    #- Flash # Pirate
     #- TelescopicBaton # Goobstation # PIRATE, moved to loadouts
 
 - type: chameleonOutfit
