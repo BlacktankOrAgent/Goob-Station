@@ -19,6 +19,9 @@ public sealed partial class SelfHarmSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _protoManager = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
 
+    /// <summary>
+    /// Species with claws that deal slash damage
+    /// </summary>
     private static readonly HashSet<string> ClawSpecies = new()
     {
         "Shadowkin",
@@ -31,6 +34,22 @@ public sealed partial class SelfHarmSystem : EntitySystem
         "Hydrakin",
         "Rodentia",
         "Felinid"
+    };
+
+    /// <summary>
+    /// Species with bare hands that deal brute damage
+    /// </summary>
+    private static readonly HashSet<string> BareHandsSpecies = new()
+    {
+        "Owyie",
+        "Dwarf",
+        "Human",
+        "Oni",
+        "Diona",
+        "IPC",
+        "Moth",
+        "Slime",
+        "Thaven"
     };
 
     public override void Initialize()
@@ -88,16 +107,23 @@ public sealed partial class SelfHarmSystem : EntitySystem
         if (TryComp<HumanoidAppearanceComponent>(uid, out var humanoid))
         {
             var speciesId = humanoid.Species.ToString();
-            
+
             // Check if this species has claws
             if (ClawSpecies.Contains(speciesId))
             {
                 // Slash damage for creatures with claws
                 return new DamageSpecifier(_protoManager.Index<DamageTypePrototype>("Slash"), 10);
             }
+
+            // Check if this species has bare hands
+            if (BareHandsSpecies.Contains(speciesId))
+            {
+                // Brute damage for creatures with bare hands
+                return new DamageSpecifier(_protoManager.Index<DamageGroupPrototype>("Brute"), 8);
+            }
         }
 
-        // Otherwise default to punch (brute damage) for bare hands
+        // Default fallback for unknown species - bare hands
         return new DamageSpecifier(_protoManager.Index<DamageGroupPrototype>("Brute"), 8);
     }
 }
