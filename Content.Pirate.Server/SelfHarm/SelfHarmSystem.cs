@@ -1,6 +1,7 @@
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Content.Shared.Damage;
+using Content.Shared.DoAfter;
 using Content.Shared.Popups;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -10,14 +11,21 @@ namespace Content.Pirate.Server.SelfHarm;
 /// <summary>
 /// Allows a character to harm themselves with their natural damage types.
 /// Uses claws for slash damage, punch for brute damage only.
+/// Includes a 3 second do-after with messages visible to nearby entities.
 /// </summary>
 public sealed partial class SelfHarmSystem : EntitySystem
 {
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly SharedActionsSystem _actions = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
     [Dependency] private readonly IPrototypeManager _protoManager = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
+
+    /// <summary>
+    /// Time in seconds for self-harm action to complete
+    /// </summary>
+    private const float SelfHarmDuration = 3f;
 
     /// <summary>
     /// Species with claws that deal slash damage
@@ -59,6 +67,7 @@ public sealed partial class SelfHarmSystem : EntitySystem
         SubscribeLocalEvent<SelfHarmComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SelfHarmComponent, ComponentShutdown>(OnShutdown);
         SubscribeLocalEvent<SelfHarmComponent, SelfHarmActionEvent>(OnSelfHarm);
+        SubscribeLocalEvent<SelfHarmComponent, SelfHarmDoAfterEvent>(OnSelfHarmComplete);
     }
 
     private void OnMapInit(Entity<SelfHarmComponent> ent, ref MapInitEvent args)
@@ -89,13 +98,43 @@ public sealed partial class SelfHarmSystem : EntitySystem
             return;
         }
 
+        // Determine attack type for messages
+        var attackType = damage.Value.DamageDict.ContainsKey("Slash") ? "claws" : "fist";
+
+        // Show startup message to nearby entities
+        _popup.PopupEntity($"[color=red]{performer} begins to harm themselves with their {attackType}![/color]", performer, PopupType.MediumCaution);
+
+        // Start the do-after delay
+        var doAfterArgs = new DoAfterArgs(EntityManager, performer, TimeSpan.FromSeconds(SelfHarmDuration), new SelfHarmDoAfterEvent(), performer)
+        {
+            BreakOnDamage = false,
+            BreakOnMove = false,
+            NeedHand = false,
+        };
+
+        _doAfter.TryStartDoAfter(doAfterArgs);
+    }
+
+    private void OnSelfHarmComplete(Entity<SelfHarmComponent> ent, ref SelfHarmDoAfterEvent args)
+    {
+        if (args.Cancelled)
+            return;
+
+        var performer = ent.Owner;
+        var damage = DetermineDamageType(performer);
+
+        if (damage == null)
+        {
+            _popup.PopupClient("You cannot harm yourself!", performer, performer);
+            return;
+        }
+
         // Apply the damage to self
         _damageable.TryChangeDamage(performer, damage.Value, true, origin: performer);
 
-        // Show feedback
+        // Show completion feedback to everyone nearby
         var attackType = damage.Value.DamageDict.ContainsKey("Slash") ? "claws" : "fist";
-        _popup.PopupEntity($"You slash yourself with your {attackType}!", performer, performer, PopupType.MediumCaution);
-        _popup.PopupEntity($"{performer} slashes themselves with their {attackType}!", performer, PopupType.MediumCaution);
+        _popup.PopupEntity($"[color=red]{performer} harms themselves with their {attackType}![/color]", performer, PopupType.MediumCaution);
     }
 
     /// <summary>
@@ -132,5 +171,13 @@ public sealed partial class SelfHarmSystem : EntitySystem
 /// Event raised when a self-harm action is performed.
 /// </summary>
 public sealed partial class SelfHarmActionEvent : InstantActionEvent
+{
+}
+
+/// <summary>
+/// Event raised when the do-after for self-harm completes.
+/// </summary>
+[Serializable, NetSerializable]
+public sealed partial class SelfHarmDoAfterEvent : SimpleDoAfterEvent
 {
 }
