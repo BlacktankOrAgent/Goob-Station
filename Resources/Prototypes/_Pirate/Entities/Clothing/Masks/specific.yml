@@ -77,15 +77,3 @@
   - type: Clothing
     sprite: _Pirate/Clothing/Mask/balaclavas/skull.rsi
 
-    - type: entity
-  parent: Clothing
-  id: ClothingMaskIndexOracleMask
-  name: балаклава з черепем
-  description: Стара маска, яка раніше закривала чиюсь рану. На ній все ще присутні плями огидної рідини, чому ви хочете це носити?
-  components:
-  - type: Sprite
-    sprite: _Pirate/Clothing/Mask/RienMask.rsi
-    state: icon
-  - type: Clothing
-    sprite: _Pirate/Clothing/Mask/RienMask.rsi
-
