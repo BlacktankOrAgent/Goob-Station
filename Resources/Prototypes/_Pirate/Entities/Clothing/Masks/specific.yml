@@ -68,7 +68,7 @@
 - type: entity
   parent: ClothingBalaclavaBase
   id: SkullBalaclava
-  name: стара брудна маска
+  name: балаклава з черепем
   description: Чорна балаклава з черепом, по всім канонам супер-елітних отрядів хах...
   components:
   - type: Sprite
